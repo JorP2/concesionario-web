@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Usuario {
@@ -13,18 +14,23 @@ public class Usuario {
 	private Integer id;
 	
 	@Column(nullable = false, unique = true)
+	@NotBlank(message = "El nombre de usuario no puede estar vacío")
     private String username;
 
     @Column(nullable = false)
+    @NotBlank(message = "La contraseña no puede estar vacía")
     private String password;
 
     @Column(nullable = false)
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
 
     @Column(nullable = false)
+    @NotBlank(message = "El email no puede estar vacío")
     private String email;
 
     @Column(nullable = false)
+    @NotBlank(message = "El teléfono no puede estar vacío")
     private String telefono;
     
     public Usuario() {

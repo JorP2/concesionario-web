@@ -4,5 +4,8 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class Imagen {
-
+	
+	
+	public Imagen() {
+	}
 }
