@@ -1,4 +1,4 @@
-package Dominio;
+package com.concesionario.backend.dominio;
 
 import jakarta.persistence.Entity;
 
