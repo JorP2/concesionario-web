@@ -33,8 +33,7 @@ public class Usuario {
     @NotBlank(message = "El teléfono no puede estar vacío")
     private String telefono;
     
-    public Usuario() {
-    }
+    public Usuario() {}
 
     public Integer getId() { return id; }
     public String getUsername() { return username; }
