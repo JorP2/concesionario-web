@@ -15,30 +15,59 @@ public class Vehiculo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
+	@NotBlank(message = "Marca no puede quedar vacio")
+	@Column(nullable = false)
 	private String marca;
-	@NotNull
+	
+	@NotBlank(message = "Modelo no puede quedar vacio")
+	@Column(nullable = false)
 	private String modelo;
-	@NotNull
+	
+	@NotNull(message = "Precio no puede quedar vacio")
+	@Positive
+	@Column(nullable = false)
 	private Double precio;
-	@NotNull
+	
+	@NotNull(message = "Año no puede quedar vacio")
+	@Positive
+	@Column(nullable = false)
 	private Integer anio;
-	@NotNull
+	
+	@NotNull(message = "kilometros no puede quedar vacio")
+	@Positive
+	@Column(nullable = false)
 	private Integer kilometros;
-	@NotNull
+	
+	@NotBlank(message = "combustible no puede quedar vacio")
+	@Column(nullable = false)
 	private String combustible;
-	@NotNull
+	
+	@NotBlank(message = "Color no puede quedar vacio")
+	@Column(nullable = false)
 	private String colorExterior;
-	@NotNull
+	
+	@NotNull(message = "Asientos no puede quedar vacio")
+	@Positive
+	@Column(nullable = false)
 	private Integer asientos;
-	@NotNull
+	
+	@NotNull(message = "Puertas no puede quedar vacio")
+	@Positive
+	@Column(nullable = false)
 	private Integer puertas;
-	@NotNull
+	
+	@NotNull(message = "Motor no puede quedar vacio")
+	@Column(nullable = false)
 	private String motor;
-	@NotNull
+	
+	@NotNull(message = "Cambio no puede quedar vacio")
+	@Column(nullable = false)
 	private String cambio;
-	@NotNull
+	
+	@NotNull(message = "Descripcion no puede quedar vacio")
+	@Column(nullable = false)
 	private String descripcion;
+	
 	private String extras;
 	
 	// C
