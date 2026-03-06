@@ -14,52 +14,57 @@ public class Vehiculo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "Marca no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String marca;
 	
+	@NotBlank(message = "Modelo no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String modelo;
 	
+	@NotNull(message = "Precio no puede quedar vacio")
+	@Positive
 	@Column(nullable = false)
-	@NotBlank
 	private Double precio;
 	
+	@NotNull(message = "Año no puede quedar vacio")
+	@Positive
 	@Column(nullable = false)
-	@NotBlank
 	private Integer anio;
 	
+	@NotNull(message = "kilometros no puede quedar vacio")
+	@Positive
 	@Column(nullable = false)
-	@NotBlank
 	private Integer kilometros;
 	
+	@NotBlank(message = "combustible no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String combustible;
 	
+	@NotBlank(message = "Color no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String colorExterior;
 	
+	@NotNull(message = "Asientos no puede quedar vacio")
+	@Positive
 	@Column(nullable = false)
-	@NotBlank
 	private Integer asientos;
 	
+	@NotNull(message = "Puertas no puede quedar vacio")
+	@Positive
 	@Column(nullable = false)
-	@NotBlank
 	private Integer puertas;
 	
+	@NotNull(message = "Motor no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String motor;
 	
+	@NotNull(message = "Cambio no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String cambio;
 	
+	@NotNull(message = "Descripcion no puede quedar vacio")
 	@Column(nullable = false)
-	@NotBlank
 	private String descripcion;
 	
 	private String extras;
@@ -96,5 +101,4 @@ public class Vehiculo {
 	public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 	public String getExtras() { return extras; }
 	public void setExtras(String extras) { this.extras = extras; }
-	
 }
