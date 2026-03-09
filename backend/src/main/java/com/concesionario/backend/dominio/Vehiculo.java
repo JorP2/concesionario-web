@@ -1,78 +1,61 @@
 package com.concesionario.backend.dominio;
 
-// Paquete jakarta
 import jakarta.persistence.*;
-// Paquete validaciones
 import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "vehiculo")
 public class Vehiculo {
 	
-	// A
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	@NotBlank(message = "Marca no puede quedar vacio")
 	@Column(nullable = false)
 	private String marca;
-	
 	@NotBlank(message = "Modelo no puede quedar vacio")
 	@Column(nullable = false)
 	private String modelo;
-	
 	@NotNull(message = "Precio no puede quedar vacio")
 	@Positive
 	@Column(nullable = false)
 	private Double precio;
-	
 	@NotNull(message = "Año no puede quedar vacio")
 	@Positive
 	@Column(nullable = false)
 	private Integer anio;
-	
 	@NotNull(message = "kilometros no puede quedar vacio")
-	@Positive
+	@PositiveOrZero
 	@Column(nullable = false)
 	private Integer kilometros;
-	
 	@NotBlank(message = "combustible no puede quedar vacio")
 	@Column(nullable = false)
 	private String combustible;
-	
 	@NotBlank(message = "Color no puede quedar vacio")
 	@Column(nullable = false)
 	private String colorExterior;
-	
 	@NotNull(message = "Asientos no puede quedar vacio")
 	@Positive
 	@Column(nullable = false)
 	private Integer asientos;
-	
 	@NotNull(message = "Puertas no puede quedar vacio")
 	@Positive
 	@Column(nullable = false)
 	private Integer puertas;
-	
 	@NotNull(message = "Motor no puede quedar vacio")
 	@Column(nullable = false)
 	private String motor;
-	
 	@NotNull(message = "Cambio no puede quedar vacio")
 	@Column(nullable = false)
-	private String cambio;
-	
+	private String marchas;
 	@NotNull(message = "Descripcion no puede quedar vacio")
 	@Column(nullable = false)
 	private String descripcion;
 	
 	private String extras;
 	
-	// C
 	public Vehiculo() {}
 	
-	// G y S
 	public Long getId() { return id; }
 	public void setId(Long id) { this.id = id; }
 	public String getMarca() { return marca; }
@@ -95,8 +78,8 @@ public class Vehiculo {
 	public void setPuertas(Integer puertas) { this.puertas = puertas; }
 	public String getMotor() { return motor; }
 	public void setMotor(String motor) { this.motor = motor; }
-	public String getCambio() { return cambio; }
-	public void setCambio(String cambio) { this.cambio = cambio; }
+	public String getCambio() { return marchas; }
+	public void setCambio(String marchas) { this.marchas = marchas; }
 	public String getDescripcion() { return descripcion; }
 	public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 	public String getExtras() { return extras; }
