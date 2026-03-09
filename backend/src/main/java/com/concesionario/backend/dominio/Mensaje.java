@@ -26,8 +26,7 @@ public class Mensaje {
 	@NotBlank(message = "El email no puede estar vacío")
 	private String email;
 	
-	public Mensaje() {
-    }
+	public Mensaje() {}
 
     public Long getId() { return id; }
     public String getNombre() { return nombre; }
