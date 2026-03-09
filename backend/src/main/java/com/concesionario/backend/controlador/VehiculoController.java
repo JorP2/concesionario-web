@@ -8,7 +8,8 @@ import com.concesionario.backend.dominio.Vehiculo;
 import com.concesionario.backend.servicio.VehiculoService;
 
 @RestController
-@RequestMapping("/vehiculos")
+@RequestMapping("/api/vehiculos")
+@CrossOrigin(origins = "*")
 public class VehiculoController {
 
     private final VehiculoService vehiculoService;
