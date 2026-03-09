@@ -51,7 +51,6 @@ public class Vehiculo {
 	@NotNull(message = "Descripcion no puede quedar vacio")
 	@Column(nullable = false)
 	private String descripcion;
-	
 	private String extras;
 	
 	public Vehiculo() {}
