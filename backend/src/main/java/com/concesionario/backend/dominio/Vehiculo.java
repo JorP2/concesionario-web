@@ -52,6 +52,8 @@ public class Vehiculo {
 	@Column(nullable = false)
 	private String descripcion;
 	private String extras;
+	// descuento
+	// estado
 	
 	public Vehiculo() {}
 	

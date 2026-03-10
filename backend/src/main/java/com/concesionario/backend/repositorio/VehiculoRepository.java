@@ -7,6 +7,8 @@ import com.concesionario.backend.dominio.Vehiculo;
 
 @Repository
 public interface VehiculoRepository extends JpaRepository<Vehiculo, Long>{
+	
+	// Filtro
 	List<Vehiculo> findByMarca(String marca);
 	List<Vehiculo> findByModelo(String modelo);
 }
