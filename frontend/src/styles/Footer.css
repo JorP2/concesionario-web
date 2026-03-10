@@ -1,13 +1,24 @@
 footer {
-  background-color: #222;
-  color: white;
-  padding: 30px 20px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  background-color: #222;
+  color: white;
+  padding: 30px 20px;
+  align-items: flex-start;
 }
 
-footer div {
+.footer-logo-div {
+  flex: 0 0 120px;
+  margin-right: 20px;
+}
+
+.footer-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer-div {
   flex: 1;
   min-width: 150px;
   margin: 10px;
@@ -24,4 +35,20 @@ footer h3 {
 
 footer p, footer li {
   margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-logo-div {
+    margin-bottom: 20px;
+  }
+
+  .footer-div {
+    margin: 10px 0;
+  }
 }
