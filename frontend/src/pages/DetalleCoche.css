@@ -1,0 +1,282 @@
+.detalle-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.btn-volver {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s;
+  font-weight: 600;
+}
+
+.btn-volver:hover {
+  background: #f0f9ff;
+}
+
+.detalle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+/* COLUMNA DE FOTOS */
+.fotos-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Foto principal */
+.foto-principal {
+  width: 100%;
+  height: 400px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.foto-principal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sin-foto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+}
+
+/* Sección de videos */
+.videos-seccion {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.videos-seccion h3 {
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.videos-grid-detalle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.video-item-detalle {
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-item-detalle video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Galería de fotos */
+.galeria-seccion {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.galeria-seccion h3 {
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.galeria-grid {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.galeria-item {
+  width: 80px;
+  height: 60px;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  opacity: 0.7;
+}
+
+.galeria-item:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.galeria-item.activo {
+  border-color: #3b82f6;
+  opacity: 1;
+}
+
+.galeria-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* COLUMNA DE INFORMACIÓN */
+.info-columna {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  height: fit-content;
+}
+
+.info-columna h1 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  font-size: 2rem;
+}
+
+.precio-detalle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #3b82f6;
+  margin: 0 0 2rem 0;
+}
+
+.caracteristicas-detalle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.caracteristica-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.valor {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.descripcion-detalle,
+.extras-detalle {
+  margin-bottom: 2rem;
+}
+
+.descripcion-detalle h3,
+.extras-detalle h3 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.descripcion-detalle p,
+.extras-detalle p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Contacto rápido */
+.contacto-rapido {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  padding: 1.5rem;
+  border-radius: 10px;
+  color: white;
+  margin-top: 2rem;
+}
+
+.contacto-rapido h3 {
+  margin: 0 0 1rem 0;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.botones-contacto {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-telefono,
+.btn-email {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.btn-telefono {
+  background: white;
+  color: #3b82f6;
+}
+
+.btn-email {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-telefono:hover,
+.btn-email:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .detalle-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .foto-principal {
+    height: 300px;
+  }
+  
+  .videos-grid-detalle {
+    grid-template-columns: 1fr;
+  }
+  
+  .galeria-grid {
+    justify-content: center;
+  }
+  
+  .info-columna {
+    padding: 1.5rem;
+  }
+  
+  .precio-detalle {
+    font-size: 2rem;
+  }
+}

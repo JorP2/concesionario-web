@@ -1,0 +1,334 @@
+/* Coches.css - Estilo azul elegante */
+
+.coches-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* PESTAÑAS SUPERIORES */
+.pestanas {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.pestanas button {
+  padding: 0.8rem 2rem;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.pestanas button:hover {
+  color: #3b82f6;
+}
+
+.pestanas button.activa {
+  color: #3b82f6;
+}
+
+.pestanas button.activa::after {
+  content: '';
+  position: absolute;
+  bottom: -0.7rem;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #3b82f6;
+  border-radius: 3px 3px 0 0;
+}
+
+/* CONTENEDOR PRINCIPAL (2 columnas) */
+.contenedor-principal {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+}
+
+/* BARRA DE FILTROS */
+.barra-filtros {
+  background: rgba(59, 130, 246, 0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 1rem;
+}
+
+.barra-filtros h3 {
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 0.5rem;
+}
+
+.grupo-filtro {
+  margin-bottom: 1.5rem;
+}
+
+.grupo-filtro label {
+  display: block;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.grupo-filtro input,
+.grupo-filtro select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+
+.grupo-filtro input:focus,
+.grupo-filtro select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.rango-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rango-inputs input {
+  width: calc(50% - 1rem);
+}
+
+.rango-inputs span {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.btn-limpiar {
+  width: 100%;
+  padding: 0.8rem;
+  background: white;
+  color: #3b82f6;
+  border: 2px solid #3b82f6;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+}
+
+.btn-limpiar:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* LISTA DE COCHES */
+.lista-coches {
+  flex: 1;
+}
+
+.resultados {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.grid-coches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* TARJETA DE COCHE */
+.tarjeta-coche {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+.tarjeta-coche:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* ETIQUETAS DE ESTADO */
+.etiqueta {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.etiqueta-vendido {
+  background: #ef4444;
+  color: white;
+}
+
+.etiqueta-proximo {
+  background: #f59e0b;
+  color: white;
+}
+
+.etiqueta-oculto {
+  background: #64748b;
+  color: white;
+  left: 1rem;
+  right: auto;
+}
+
+/* IMAGEN */
+.imagen-container {
+  height: 200px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.imagen-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.tarjeta-coche:hover .imagen-container img {
+  transform: scale(1.05);
+}
+
+/* INFO DEL COCHE */
+.info-coche {
+  padding: 1.5rem;
+}
+
+.info-coche h4 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  font-size: 1.2rem;
+}
+
+.precio {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #3b82f6;
+  margin: 0 0 1rem 0;
+}
+
+.caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.caracteristicas span {
+  color: #475569;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.descripcion-corta {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.btn-ver-detalle {
+  width: 100%;
+  padding: 0.8rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-ver-detalle:hover {
+  background: #2563eb;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .contenedor-principal {
+    grid-template-columns: 1fr;
+  }
+  
+  .barra-filtros {
+    position: static;
+    margin-bottom: 1rem;
+  }
+  
+  .pestanas button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+/* Indicador de más fotos */
+.contador-fotos {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 2;
+}
+
+
+/* AÑADE ESTO AL FINAL DE Coches.css */
+.imagen-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.imagen-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contador-fotos {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  z-index: 2;
+}

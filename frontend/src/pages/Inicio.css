@@ -1,0 +1,109 @@
+.inicio {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+  color: white;
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 3rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #ffd700;
+}
+
+.slogan {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.garantia {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #ffd700;
+}
+
+.btn-ver-catalogo {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #ffd700;
+  color: #1a1a1a;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.btn-ver-catalogo:hover {
+  transform: scale(1.05);
+}
+
+.caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.caracteristica {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.icono {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.filtros-rapidos {
+  text-align: center;
+  padding: 3rem;
+  background: #f5f5f5;
+  margin-bottom: 3rem;
+}
+
+.botones-filtro {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-filtro {
+  padding: 1rem 2rem;
+  background: #1a1a1a;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.btn-filtro:hover {
+  background: #ffd700;
+  color: #1a1a1a;
+}
+
+.contacto-rapido {
+  text-align: center;
+  padding: 3rem;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+  border-radius: 20px;
+  margin: 3rem 2rem;
+}
+
+.info-contacto p {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  color: #1a1a1a;
+}

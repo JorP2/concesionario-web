@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Inicio from './pages/Inicio';
+import Coches from './pages/Coches';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
+import DetalleCoche from './pages/DetalleCoche';  // ← NUEVA IMPORTACIÓN
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/coches" element={<Coches />} />
+            <Route path="/coche/:id" element={<DetalleCoche />} />  {/* ← NUEVA RUTA */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
