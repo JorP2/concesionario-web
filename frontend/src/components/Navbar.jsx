@@ -27,11 +27,18 @@ export const Navbar = () => {
 
         {/* Links */}
         <div className='collapse navbar-collapse' id='navbarMain'>
-          <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
+          <ul className='navbar-nav mx-auto mb-2 mb-lg-0 gap-5 fw-semibold'>
+
+            {/* Inicio */}
+            <li className='nav-item'>
+              <a className='nav-link active' href='/Inicio'>
+                Inicio
+              </a>
+            </li>
 
             {/* Coches */}
             <li className='nav-item'>
-              <a className='nav-link active' href='/vehiculos'>
+              <a className='nav-link ' href='/vehiculos'>
                 Coches
               </a>
             </li>
@@ -83,7 +90,7 @@ export const Navbar = () => {
           {/* Buscador */}
           <form className='d-flex' role='search'>
             <input
-              className='form-control me-2'
+              className='form-control me-3'
               type='search'
               placeholder='Buscar coche...'
               aria-label='Buscar'
