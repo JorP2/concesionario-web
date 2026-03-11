@@ -12,7 +12,7 @@ function Footer() {
         <h3>Horarios:</h3>
         <ul>
           <li><MdAccessTime/> Lunes a viernes: 09:30 - 13:30 | 16:30- 20:00</li>
-          <li><MdAccessTime/> Sabados: 10:00 - 14:00</li>
+          <li><MdAccessTime/> Sábados: 10:00 - 14:00</li>
         </ul>
       </div>
 
