@@ -10,7 +10,7 @@ import com.concesionario.backend.servicio.VehiculoService;
 @RestController
 @RequestMapping("/api/vehiculos")
 
-//🔹 Permite que el frontend (React) consuma la API sin errores CORS
+//Permite que el frontend (React) consuma la API sin errores CORS
 @CrossOrigin(origins = "*")
 public class VehiculoController {
 
