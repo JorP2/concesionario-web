@@ -4,14 +4,12 @@ import React from 'react'
 export const Navbar = () => {
   return (
     <>
-    {/* Titulo posible logo */}
-        {/* Navbar concesionario */}
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark shadow'>
       <div className='container-fluid'>
 
         {/* Logo / Nombre */}
-        <a className='navbar-brand fw-bold' href='/'>
-          Concesionario
+        <a className='navbar-brand' href='/'>
+        <img src="/logoNohalesAutomoviles.png" alt="Concesionario-Nohales" width="140" height="50"></img>
         </a>
 
         {/* Botón hamburguesa */}
