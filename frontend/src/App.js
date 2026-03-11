@@ -1,6 +1,6 @@
 import { Navbar } from "./components/Navbar";
-import Vehiculos from "./pages/Vehiculos";
 import Footer from "./components/Footer";
+import Home from "./pages/Home"
 import "./App.css";
 
 function App() {
@@ -8,8 +8,7 @@ function App() {
     <div className="app-div">
       <Navbar />
       <main className="main-content">
-        <h1>Concesionario</h1>
-        <Vehiculos />
+        <Home></Home>
       </main>
       <Footer />
     </div>
