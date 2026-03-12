@@ -6,8 +6,13 @@ const CardVehiculoGPT = ({ vehiculo }) => {
       <div className="row g-0">
         {/* Imagen */}
         <div className="col-md-4">
-          <img
+          {/* <img
             src={vehiculo.imagen || "/placeholder.jpg"}
+            className="img-fluid rounded-start h-100 object-fit-cover"
+            alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+          /> */}
+          <img
+            src={`https://picsum.photos/300/200?random=${vehiculo.id}`}
             className="img-fluid rounded-start h-100 object-fit-cover"
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           />
@@ -33,6 +38,12 @@ const CardVehiculoGPT = ({ vehiculo }) => {
             <p className="card-text text-primary fw-semibold">
               €{vehiculo.precio}
             </p>
+
+            {/* Botón */}
+            {/* Boton */}
+            <button className="btn btn-outline-success w-100 mt-2">
+              Ver detalles
+            </button>
           </div>
         </div>
       </div>

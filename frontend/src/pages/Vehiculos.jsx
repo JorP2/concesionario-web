@@ -2,8 +2,13 @@ import React from "react";
 import { getVehiculos } from "../api/vehiculoApi";
 import CardVehiculo from "../components/CardVehiculo";
 import CardVehiculoGPT from "../components/CardVehiculoGPT";
+import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import CardVehiculoDEEP from "../components/CardVehiculoDEEP";
 import CardVehiculoCLAU from "../components/CardVehiculoCLAU";
+
+// Estilo
+import "../styles/vehiculos.css";
+import FiltroVehiculo from "../components/FiltroVehiculo";
 
 function Vehiculos() {
   // Estado para guardar los vehículos
@@ -35,14 +40,18 @@ function Vehiculos() {
         <p>Cargando vehículos...</p>
       ) : (
         <>
+          <FiltroVehiculo />
+          <h2>Normal</h2>
           {vehiculos.map((vehiculo) => (
             <CardVehiculo key={vehiculo.id} vehiculo={vehiculo} />
           ))}
+          <h2>GPT</h2>
           {/* GPT */}
           {vehiculos.map((vehiculo2) => (
             <CardVehiculoGPT key={vehiculo2.id} vehiculo={vehiculo2} />
           ))}
 
+          <h2>GPT 1.1</h2>
           <div className="container">
             <div className="row g-3">
               {vehiculos.map((vehiculo2) => (
@@ -53,14 +62,28 @@ function Vehiculos() {
             </div>
           </div>
 
-          {/* GPT */}
-          {vehiculos.map((vehiculo2) => (
-            <CardVehiculoGPT key={vehiculo2.id} vehiculo={vehiculo2} />
-          ))}
+          <h2>GPT 2</h2>
+          {/* GPT 2 */}
+          <div className="vehiculos-grid">
+            {vehiculos.map((vehiculo) => (
+              <CardVehiculoGPT key={vehiculo.id} vehiculo={vehiculo} />
+            ))}
+          </div>
+
+          <h2>GPT 2.1</h2>
+          {/* GPT 2 */}
+          <div className="vehiculos-grid">
+            {vehiculos.map((vehiculo) => (
+              <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
+            ))}
+          </div>
+
+          <h2>DEEP</h2>
           {/* DEEP */}
           {vehiculos.map((vehiculo3) => (
             <CardVehiculoDEEP key={vehiculo3.id} vehiculo={vehiculo3} />
           ))}
+          <h2>CLAU</h2>
           {/* CLAU */}
           {vehiculos.map((vehiculo4) => (
             <CardVehiculoCLAU key={vehiculo4.id} vehiculo={vehiculo4} />

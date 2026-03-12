@@ -7,7 +7,7 @@ const CardVehiculoDEEP = ({ vehiculo }) => {
         <div className="col-md-4">
           {/* Asegúrate de que vehiculo.imagenUrl contenga la ruta de la imagen */}
           <img
-            src={vehiculo.imagenUrl}
+            src={`https://picsum.photos/300/200?random=${vehiculo.id}`}
             className="img-fluid rounded-start"
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           />
