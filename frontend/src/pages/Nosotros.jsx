@@ -3,7 +3,7 @@ function Nosotros() {
     <div className="container my-5">
 
       {/* Título */}
-      <div className="bg-dark text-white text-center p-4 mb-4">
+      <div className="bg-dark text-white text-center p-4 mb-4 rounded">
         <h1 className="h4 m-0">
           Compraventa de vehículos en Toledo
         </h1>
@@ -12,7 +12,7 @@ function Nosotros() {
       {/* Contenido en columnas con ancho igual */}
       <div className="row">
 
-        <div className="col-12 col-lg-6 bg-dark text-white text-center">
+        <div className="col-12 col-lg-6 bg-dark text-white text-center rounded">
           <h3 className="pt-3 mb-3">Concesionario de confianza</h3>
           <p>
             Trabajamos por y para nuestros clientes, ofreciendo vehículos totalmente revisados y con garantía. 
@@ -21,7 +21,7 @@ function Nosotros() {
           </p>
         </div>
 
-        <div className="col-12 col-lg-6 bg-light text-center">
+        <div className="col-12 col-lg-6 bg-light text-center rounded">
           <h3 className="pt-3 mb-3">Profesionalidad y transparencia</h3>
           <p>
             Te ayudamos ofreciéndote nuestro asesoramiento profesional durante todo el proceso de compra. 
