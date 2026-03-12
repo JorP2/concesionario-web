@@ -32,7 +32,7 @@ function Footer() {
           <div className="col-12 col-md-3">
             <h5>Contáctanos</h5>
             <p><MdEmail className="me-2"/> nohalesautomoviles@gmail.com</p>
-            <p><MdPhone className="me-2"/> +34 651 86 82 30</p>
+            <p><MdPhone className="me-2"/> +34 651 86 82 30 | +34 925 39 31 86</p>
           </div>
 
         </div>
