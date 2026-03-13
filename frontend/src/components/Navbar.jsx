@@ -38,7 +38,11 @@ export const Navbar = () => {
 
             {/* Coches */}
             <li className='nav-item'>
+<<<<<<< HEAD
               <a className='nav-link ' href='/vehiculos'>
+=======
+              <a className='nav-link' href='/vehiculos'>
+>>>>>>> alejandro
                 Coches
               </a>
             </li>

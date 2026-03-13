@@ -1,18 +1,17 @@
 import { Navbar } from "./components/Navbar";
-import Vehiculos from "./pages/Vehiculos";
 import Footer from "./components/Footer";
+import Home from "./pages/Home"
+import "./App.css";
+//import Contacto from "./pages/Contacto";
+//import Nosotros from "./pages/Nosotros";
 
 function App() {
   return (
-
-    <div className='app-div'>
+    <div className="app-div">
       <Navbar />
-      
-      <main className='main-content'>
-        <h1>Concesionario</h1>
-        <Vehiculos />
+      <main className="main-content">
+        <Home/>
       </main>
-      
       <Footer />
     </div>
   );
