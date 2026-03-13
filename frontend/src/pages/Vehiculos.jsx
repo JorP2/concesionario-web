@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import { getVehiculos } from "../api/vehiculoApi";
 import CardVehiculo from "../components/CardVehiculo";
@@ -91,12 +90,6 @@ function Vehiculos() {
           ))}
         </>
       )}
-=======
-function Vehiculos() {
-  return (
-    <div className="main-div">
-      <p>Página de Vehículos</p>
->>>>>>> alejandro
     </div>
   );
 }
