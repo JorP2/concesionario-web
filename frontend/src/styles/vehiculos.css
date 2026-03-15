@@ -62,3 +62,36 @@ h1 {
   font-weight: bold;
   color: #0d6efd;
 }
+
+/* OVERLAY */
+.vehiculo-img {
+  position: relative;
+}
+
+.vehiculo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.overlay-icon {
+  font-size: 38px;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+/* HOVER */
+.vehiculo-card:hover .vehiculo-overlay {
+  opacity: 1;
+}
+
+.vehiculo-card:hover .overlay-icon {
+  transform: scale(1.15);
+}

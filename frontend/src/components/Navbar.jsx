@@ -1,6 +1,8 @@
 import React from "react";
 // NavLink para navegación
 import { NavLink } from "react-router-dom";
+// Icono
+import { FaUserCircle } from "react-icons/fa";
 
 // Barra Superior de Navegación
 export const Navbar = () => {
@@ -92,19 +94,10 @@ export const Navbar = () => {
               </li>
             </ul>
 
-            {/* Buscador */}
-            <form className="d-flex" role="search">
-              <input
-                className="form-control me-3"
-                type="search"
-                placeholder="Buscar coche..."
-                aria-label="Buscar"
-              />
-
-              <button className="btn btn-outline-light" type="submit">
-                Buscar
-              </button>
-            </form>
+            {/* ADMINISTRADOR/LOGIN */}
+            <NavLink to="/login" className="nav-link ms-4 me-2">
+              <FaUserCircle size={30} color="white" />
+            </NavLink>
           </div>
         </div>
       </nav>

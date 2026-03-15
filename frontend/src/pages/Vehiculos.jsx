@@ -1,21 +1,19 @@
 import React from "react";
+// API
 import { getVehiculos } from "../api/vehiculoApi";
-import CardVehiculo from "../components/CardVehiculo";
-import CardVehiculoGPT from "../components/CardVehiculoGPT";
+// Componentes
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
-import CardVehiculoDEEP from "../components/CardVehiculoDEEP";
-import CardVehiculoCLAU from "../components/CardVehiculoCLAU";
-
+import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 // Estilo
 import "../styles/vehiculos.css";
 import FiltroVehiculo from "../components/FiltroVehiculo";
 
-function Vehiculos() {
-  // Estado para guardar los vehículos
-  const [vehiculos, setVehiculos] = React.useState([]);
+// CARGA DE DATOS
 
-  // Estado para loading (cargando)
-  const [loading, setLoading] = React.useState(true);
+function Vehiculos() {
+  const [vehiculos, setVehiculos] = React.useState([]); // Variable para el estado de los vehículos
+  const [loading, setLoading] = React.useState(true); // Variable para el estado de carga
+  const [error, setError] = React.useState(false); // Variable para el estado de error
 
   // Función para cargar vehículos desde la API
   const loadVehiculos = async () => {
@@ -24,6 +22,7 @@ function Vehiculos() {
       setVehiculos(data);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -34,60 +33,32 @@ function Vehiculos() {
     loadVehiculos();
   }, []);
 
+  // Renderizado
   return (
     <div>
-      {loading ? (
-        <p>Cargando vehículos...</p>
-      ) : (
+      {loading && <SkeletonVehiculo />}
+
+      {!loading && error && (
+        <p className="text-center mt-4"> Error cargando vehículos...</p>
+      )}
+
+      {!loading && !error && vehiculos.length === 0 && (
+        <p className="text-center mt-4"> No hay vehículos disponibles...</p>
+      )}
+
+      {!loading && !error && vehiculos.length > 0 && (
         <>
           <FiltroVehiculo />
-          <h2>Normal</h2>
-          {vehiculos.map((vehiculo) => (
-            <CardVehiculo key={vehiculo.id} vehiculo={vehiculo} />
-          ))}
-          <h2>GPT</h2>
-          {/* GPT */}
-          {vehiculos.map((vehiculo2) => (
-            <CardVehiculoGPT key={vehiculo2.id} vehiculo={vehiculo2} />
-          ))}
 
-          <h2>GPT 1.1</h2>
-          <div className="container">
-            <div className="row g-3">
-              {vehiculos.map((vehiculo2) => (
-                <div key={vehiculo2.id} className="col 12 col-md-6 col-lg-4">
-                  <CardVehiculoGPT vehiculo={vehiculo2} />
-                </div>
+          <div className="ms-3 bg-light">
+            <h2 className="ms-3 pt-2">COCHES</h2>
+
+            <div className="vehiculos-grid">
+              {vehiculos.map((vehiculo) => (
+                <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
               ))}
             </div>
           </div>
-
-          <h2>GPT 2</h2>
-          {/* GPT 2 */}
-          <div className="vehiculos-grid">
-            {vehiculos.map((vehiculo) => (
-              <CardVehiculoGPT key={vehiculo.id} vehiculo={vehiculo} />
-            ))}
-          </div>
-
-          <h2>GPT 2.1</h2>
-          {/* GPT 2 */}
-          <div className="vehiculos-grid">
-            {vehiculos.map((vehiculo) => (
-              <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
-            ))}
-          </div>
-
-          <h2>DEEP</h2>
-          {/* DEEP */}
-          {vehiculos.map((vehiculo3) => (
-            <CardVehiculoDEEP key={vehiculo3.id} vehiculo={vehiculo3} />
-          ))}
-          <h2>CLAU</h2>
-          {/* CLAU */}
-          {vehiculos.map((vehiculo4) => (
-            <CardVehiculoCLAU key={vehiculo4.id} vehiculo={vehiculo4} />
-          ))}
         </>
       )}
     </div>
