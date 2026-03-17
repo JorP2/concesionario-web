@@ -5,6 +5,7 @@ import "./App.css";
 // Rutas
 import { Route, Routes } from "react-router-dom";
 // Páginas
+import Login from "./pages/Login";
 import Vehiculos from "./pages/Vehiculos";
 import Contacto from "./pages/Contacto";
 import Nosotros from "./pages/Nosotros";
@@ -16,6 +17,7 @@ function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/vehiculos" element={<Vehiculos />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
