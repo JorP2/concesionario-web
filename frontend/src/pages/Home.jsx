@@ -7,7 +7,7 @@ function Home() {
       {/* Título */}
       <div className="bg-dark text-white text-center p-4 rounded mb-2">
         <h1 className="h3 m-0">Bienvenido</h1>
-        <h3 className="h5 m-0">Nohales Automoviles, vehículos de confianza</h3>
+        <h3 className="h5 m-0">Nohales Automóviles, vehículos de confianza</h3>
       </div>
 
       <div className="card mb-4 border-0 shadow">
