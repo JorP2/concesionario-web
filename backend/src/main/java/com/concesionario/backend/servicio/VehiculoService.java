@@ -11,11 +11,12 @@ public class VehiculoService {
 
     private final VehiculoRepository vehiculoRepository;
 
-    //CRUD
+    
     public VehiculoService(VehiculoRepository vehiculoRepository) {
         this.vehiculoRepository = vehiculoRepository;
     }
     
+    //CRUD
     public List<Vehiculo> obtenerTodos() {
         return vehiculoRepository.findAll();
     }
