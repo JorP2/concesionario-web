@@ -30,7 +30,7 @@ public class UsuarioController {
 		return usuarioService.obtenerTodos();
 	}
 	
-	@GetMapping("{/id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> obtenerPorId(Long id){
 		Optional<Usuario> u = usuarioService.obtenerPorId(id);
 		return u.map(ResponseEntity::ok)
