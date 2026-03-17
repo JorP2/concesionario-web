@@ -45,7 +45,7 @@ public class Vehiculo {
 	@NotNull(message = "Motor no puede quedar vacio")
 	@Column(nullable = false)
 	private String motor;
-	@NotNull(message = "Cambio no puede quedar vacio")
+	@NotBlank(message = "Cambio no puede quedar vacio")
 	@Column(nullable = false)
 	private String marchas;
 	@NotNull(message = "Descripcion no puede quedar vacio")
@@ -79,8 +79,13 @@ public class Vehiculo {
 	public void setPuertas(Integer puertas) { this.puertas = puertas; }
 	public String getMotor() { return motor; }
 	public void setMotor(String motor) { this.motor = motor; }
-	public String getCambio() { return marchas; }
-	public void setCambio(String marchas) { this.marchas = marchas; }
+	public String getMarchas() {
+		return marchas;
+	}
+
+	public void setMarchas(String marchas) {
+		this.marchas = marchas;
+	}
 	public String getDescripcion() { return descripcion; }
 	public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 	public String getExtras() { return extras; }
