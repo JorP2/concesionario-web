@@ -10,6 +10,7 @@ import Vehiculos from "./pages/Vehiculos";
 import Contacto from "./pages/Contacto";
 import Nosotros from "./pages/Nosotros";
 import Administrador from "./pages/Administrador";
+import VehiculoDetalle from "./pages/VehiculoDetalle";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/administrador" element={<Administrador />} />
+          <Route path="/vehiculos/:id" element={<VehiculoDetalle />} />
           <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
         </Routes>
       </main>
