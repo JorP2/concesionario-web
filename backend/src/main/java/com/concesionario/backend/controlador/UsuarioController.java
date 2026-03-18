@@ -32,7 +32,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> obtenerPorId(Long id){
+	public ResponseEntity<Usuario> obtenerPorId(@PathVariable Long id){
 		Optional<Usuario> u = usuarioService.obtenerPorId(id);
 		return u.map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());
