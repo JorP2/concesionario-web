@@ -6,6 +6,9 @@ import { FaUserCircle } from "react-icons/fa";
 
 // Barra Superior de Navegación
 export const Navbar = () => {
+  // Constante del usuario logueado
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow">
@@ -42,6 +45,15 @@ export const Navbar = () => {
                   Inicio
                 </NavLink>
               </li>
+
+              {/* Administrador */}
+              {usuario && (
+                <li className="nav-item">
+                  <NavLink to="/administrador" className="nav-link">
+                    Administrador
+                  </NavLink>
+                </li>
+              )}
 
               {/* Coches */}
               <li className="nav-item">
