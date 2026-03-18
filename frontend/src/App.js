@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import Vehiculos from "./pages/Vehiculos";
 import Contacto from "./pages/Contacto";
 import Nosotros from "./pages/Nosotros";
+import VehiculoDetalle from "./pages/VehiculoDetalle";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/vehiculos" element={<Vehiculos />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/vehiculos/:id" element={<VehiculoDetalle />} />
           <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
         </Routes>
       </main>
