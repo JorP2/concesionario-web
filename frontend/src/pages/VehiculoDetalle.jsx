@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVehiculoById } from "../api/vehiculoApi";
+import { FaArrowLeft } from "react-icons/fa"
 
 function VehiculoDetalle() {
   const { id } = useParams();
@@ -17,7 +18,12 @@ function VehiculoDetalle() {
   }
 
   return (
-    <div className="container my-5">
+    <div className="container my-1">
+      <button className="btn btn-ligth btn-outline-secondary border border-5 mb-3 rounded-circle d-flex align-items-center" 
+        onClick={() => window.history.back()}
+        style={{ width: "45px", height: "45px" }}>
+        <FaArrowLeft />
+      </button>
       <div className="card">
         <div className="row g-0">
           <div className="col-md-6">
@@ -26,7 +32,7 @@ function VehiculoDetalle() {
               className="img-fluid rounded-start"
               alt={`${vehiculo.marca} ${vehiculo.modelo}`}
             />
-            <p className="card-text text-center mt-3"><strong>Descripción:</strong> {vehiculo.descripcion}</p>
+            <p className="card-text text-center m-3"><strong>Descripción:</strong> {vehiculo.descripcion}</p>
           </div>
           <div className="col-md-6">
             <div className="card-body">
@@ -39,11 +45,7 @@ function VehiculoDetalle() {
               <p className="card-text"><strong>Puertas:</strong> {vehiculo.puertas}</p>
               <p className="card-text"><strong>Asientos:</strong> {vehiculo.asientos}</p>
               <p className="card-text"><strong>Precio:</strong> €{vehiculo.precio}</p>
-              
               <p className="card-text"><strong>Extras:</strong> {vehiculo.extras}</p>
-              <button className="btn btn-primary mt-3" onClick={() => window.history.back()}>
-                Volver
-              </button>
             </div>
           </div>
         </div>
