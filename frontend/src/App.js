@@ -1,3 +1,4 @@
+
 import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home"
@@ -33,6 +34,7 @@ function App() {
       </main>
       <Footer />
     </div>
+
   );
 }
 
