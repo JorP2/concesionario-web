@@ -1,13 +1,12 @@
 import React from "react";
 import "../styles/vehiculos.css";
-import { useNavigate } from "react-router-dom";
 // Icono
 import { FaSearchPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const CardVehiculoGPT = ({ vehiculo }) => {
   // Constante para mostrar u ocultar la galería de imágenes
   const [showGallery, setShowGallery] = React.useState(false);
-  const navigate = useNavigate();
 
   return (
     <>
@@ -39,12 +38,12 @@ const CardVehiculoGPT = ({ vehiculo }) => {
 
           <span className="precio">€{vehiculo.precio}</span>
 
-          <button
+          <Link
             className="btn btn-outline-success w-100 mt-2"
-            onClick={() => navigate(`/vehiculos/${vehiculo.id}`)}
+            to={`/vehiculos/${vehiculo.id}`}
           >
             Ver detalles
-          </button>
+          </Link>
         </div>
       </div>
 

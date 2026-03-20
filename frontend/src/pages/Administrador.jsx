@@ -3,6 +3,7 @@ import React from "react";
 import { getVehiculos } from "../api/vehiculoApi";
 // Componentes
 import VehiculosLista from "../components/admin/VehiculosLista";
+import { Link } from "react-router-dom";
 
 function Administrador() {
   // Constante del usuario logueado
@@ -58,13 +59,22 @@ function Administrador() {
         />
         {/* LISTA */}
         <VehiculosLista vehiculos={vehiculosFiltrados} />
+
         {/* BOTON LOGOUT */}
-        <button
-          onClick={logout}
-          className="btn btn-danger mt-4 w-25 d-block mx-auto"
-        >
-          Logout
-        </button>
+        <div className="d-flex">
+          <Link
+            to="/administrador/vehiculo-form"
+            className="btn btn-success mt-4 w-25 d-block mx-auto"
+          >
+            Añadir
+          </Link>
+          <button
+            onClick={logout}
+            className="btn btn-danger mt-4 w-25 d-block mx-auto"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </>
   );
