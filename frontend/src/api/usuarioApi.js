@@ -1,8 +1,10 @@
 //API
-const API_URL = "http://localhost:8080/api/usuario";
+const API_URL = process.env.REACT_APP_API_URL + "/usuarios"; 
+
+console.log("API_URL:", API_URL);
 
 //GET
-//Backend: listarTodos()
+// Listar Todos()
 export const getUsuarios = async () => {
   try {
     const response = await fetch(API_URL);
@@ -16,7 +18,21 @@ export const getUsuarios = async () => {
   }
 };
 
-//Backend: obtenerPorId()
+// Listar Activos
+export const getUsuariosActivos = async () => {
+  try {
+    const response = await fetch(`${API_URL}/activos`);
+    if (!response.ok) throw new Error("Error al obetener usuarios activos");
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error en getUsuariosActivos:", error);
+    throw error;
+  }
+};
+
+
+// ObtenerPorId()
 export const getUsuarioById = async (id) => {
   try {
     const response = await fetch(`${API_URL}/${id}`);
@@ -32,7 +48,7 @@ export const getUsuarioById = async (id) => {
 };
 
 //POST
-//Backend: crear()
+// crear Usuario
 export const addUsuario = async (usuario) => {
   try {
     const response = await fetch(API_URL, {
@@ -52,8 +68,30 @@ export const addUsuario = async (usuario) => {
   }
 };
 
+
+// Login
+export const login = async (username, password) => {
+  try {
+    const response = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"      },
+      body: JSON.stringify({ username, password })
+    });
+    if (!response.ok) {
+      throw new Error("Error al iniciar sesión");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en login:", error);
+    throw error;
+  }
+};
+
+
 //PUT
-//Backend: actualizar()
+//actualizar()
 export const updateUsuario = async (id, usuario) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -73,8 +111,63 @@ export const updateUsuario = async (id, usuario) => {
   }
 };
 
+
+// PATCH
+// Cambiar Contraseña
+export const changePassword = async (id, newPassword) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/password?password=${newPassword}`, {
+      method: "PATCH"
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cambiar la contraseña");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en changePassword:", error);
+    throw error;
+  }
+};
+
+// Activa Usuario
+export const activateUser = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/activar`, {
+      method: "PATCH"
+    });
+    if (!response.ok) {
+      throw new Error("Error al activar el usuario");
+
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en activateUser:", error);
+    throw error;
+  }
+};
+
+// Desactivar Usuario
+export const deactivateUser = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/desactivar`, {
+      method: "PATCH"
+    });
+    if (!response.ok) {
+      throw new Error("Error al desactivar el usuario");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en deactivateUser:", error);
+    throw error;
+  }
+};
+
 //DELETE
-//Backend: eliminar()
+// eliminar()
 export const deleteUsuario = async (id) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -83,6 +176,7 @@ export const deleteUsuario = async (id) => {
     if(!response.ok){
       throw new Error("Error al borrar el usuario")
     }
+    return await response;
   } catch (error) {
     console.error("Error en deleteUsuario: ", error)
     throw error
