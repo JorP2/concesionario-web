@@ -1,13 +1,13 @@
 import React from "react";
 // API
-import { getUsuarios } from "../api/usuarioApi";
+import { login } from "../api/usuarioApi";
 
 // Icono
 import { FaUserCircle } from "react-icons/fa";
 
 function Login() {
   // Constantes para el estado del formulario
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   //const [remember, setRemember] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -17,25 +17,15 @@ function Login() {
     e.preventDefault(); // la pagina no se recarga
 
     try {
-      const usuarios = await getUsuarios(); // Obtener usuarios desde la API
-
-      // Verificamos el email y password ingresados
-      const user = usuarios.find(
-        (u) => u.email === email && u.password === password,
-      );
-
-      if (user) {
-        alert("Inicio de sesión exitoso");
-        // aquí lo redirigimos al futuro paginaAdministrador o algo asi
-        localStorage.setItem("usuario", JSON.stringify(user));
-        window.location.href = "/administrador"; // Redirige a la página de administrador
-
-        setError("");
-      } else {
-        setError("Credenciales incorrectas");
-      }
+      const user = await login(username, password); // Obtener usuario desde la API
+      alert("Inicio de sesión exitoso");
+      // aquí lo redirigimos al futuro paginaAdministrador o algo asi
+      localStorage.setItem("usuario", JSON.stringify(user));
+      window.location.href = "/administrador"; // Redirige a la página de administrador
     } catch (error) {
-      setError("Error de servidor al iniciar sesión");
+      setError(
+        "Credenciales incorrectas o Error de servidor al iniciar sesión",
+      );
     }
   };
 
@@ -51,16 +41,16 @@ function Login() {
           <FaUserCircle size={100} color="black" />
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
+          <label htmlFor="username" className="form-label">
+            Username
           </label>
           <input
-            type="email"
+            type="text"
             className="form-control"
-            id="email"
-            placeholder="ejemplo@gmail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="username"
+            placeholder="Nombre de usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
