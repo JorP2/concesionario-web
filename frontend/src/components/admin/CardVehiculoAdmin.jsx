@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function CardVehiculoAdmin({ vehiculo }) {
   return (
@@ -34,9 +35,56 @@ function CardVehiculoAdmin({ vehiculo }) {
           {/* BOTONES */}
           <div className="col-md-3 text-center">
             <div className="d-flex flex-column gap-2 p-3">
-              <button className="btn btn-warning">Editar</button>
+              <Link
+                to={`/administrador/vehiculo-form/${vehiculo.id}`}
+                className="btn btn-warning"
+              >
+                Editar
+              </Link>
 
-              <button className="btn btn-danger">Eliminar</button>
+              <button
+                className="btn btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#eliminarModal"
+              >
+                Eliminar
+              </button>
+
+              {/* Modal de confirmación */}
+              <div
+                className="modal fade"
+                id="eliminarModal"
+                tabIndex={-1}
+                aria-labelledby="eliminarModal"
+                aria-hidden="true"
+              >
+                <div className="modal-dialog modal-dialog-centered">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h1 className="modal-title fs-5" id="eliminarModal">
+                        ¿Seguro desea eliminar este vehículo?
+                      </h1>
+                      <button
+                        className="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      Esta acción no se puede deshacer.
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <button className="btn btn-danger">Eliminar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
