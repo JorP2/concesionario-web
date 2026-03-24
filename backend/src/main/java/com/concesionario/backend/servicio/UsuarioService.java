@@ -1,11 +1,14 @@
 package com.concesionario.backend.servicio;
 
-import com.concesionario.backend.dominio.Usuario;
-import com.concesionario.backend.repositorio.UsuarioRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
+import com.concesionario.backend.dominio.Usuario;
+import com.concesionario.backend.repositorio.UsuarioRepository;
+import com.concesionario.backend.utils.PasswordEncoder;
 
 @Service
 @Transactional
@@ -14,6 +17,8 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // CRUD BÁSICO
 
@@ -61,8 +66,8 @@ public class UsuarioService {
             usuario.setEsSuperUsuario(false);
         }
 
-        // 6. Encriptar contraseña (simulado)
-        usuario.setPassword(encriptarPassword(usuario.getPassword()));
+        // 6. Encriptar contraseña con BCrypt
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
         return usuarioRepository.save(usuario);
     }
@@ -119,7 +124,7 @@ public class UsuarioService {
             throw new RuntimeException("La contraseña debe tener al menos 4 caracteres");
         }
 
-        usuario.setPassword(encriptarPassword(passwordNueva));
+        usuario.setPassword(passwordEncoder.encode(passwordNueva));
         return usuarioRepository.save(usuario);
     }
 
@@ -133,8 +138,7 @@ public class UsuarioService {
             throw new RuntimeException("Usuario desactivado");
         }
 
-        String passwordEncriptada = encriptarPassword(password);
-        if (!usuario.getPassword().equals(passwordEncriptada)) {
+        if (!passwordEncoder.matches(password, usuario.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
@@ -186,10 +190,4 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
-    // MÉTODO PRIVADO  (FALTA ENCRIPAR ES BASICO)
-
-    private String encriptarPassword(String password) {
-        // Aquí iría BCrypt, por ahora simple
-        return "enc_" + password;
-    }
 }
