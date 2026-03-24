@@ -31,7 +31,7 @@ function Home() {
         <div className="col-12 col-md-4">
           <div className="card h-100 text-center shadow-sm feature-card">
             <div className="card-body">
-              <MdCheck size={50} className="mb-3" />
+              <MdCheck size={50} className="mb-3 text-primary" />
               <h5 className="card-title">Máxima garantía</h5>
               <p className="card-text">
                 Sometemos a nuestros coches a las más estrictas revisiones, lo
@@ -47,7 +47,7 @@ function Home() {
         <div className="col-12 col-md-4">
           <div className="card h-100 text-center shadow-sm feature-card">
             <div className="card-body">
-              <MdEuroSymbol size={50} className="mb-3" />
+              <MdEuroSymbol size={50} className="mb-3 text-primary" />
               <h5 className="card-title">Financiación</h5>
               <p className="card-text">
                 Te ayudamos con la posibilidad de financiar tu vehículo en hasta
@@ -62,7 +62,7 @@ function Home() {
         <div className="col-12 col-md-4">
           <div className="card h-100 text-center shadow-sm feature-card">
             <div className="card-body">
-              <MdLocationOn size={50} className="mb-3" />
+              <MdLocationOn size={50} className="mb-3 text-primary" />
               <h5 className="card-title">Compraventa en Toledo</h5>
               <p className="card-text">
                 Contamos con un catálogo permanente de más de 40 vehículos en
