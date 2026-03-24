@@ -1,8 +1,10 @@
 package com.concesionario.backend.controlador;
 
 import com.concesionario.backend.dominio.Vehiculo;
-import com.concesionario.backend.dto.VehiculoResponseDTO;
+import com.concesionario.backend.dto.request.VehiculoRequestDTO;
+import com.concesionario.backend.dto.response.VehiculoResponseDTO;
 import com.concesionario.backend.servicio.VehiculoService;
+import com.concesionario.backend.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehiculos")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class VehiculoController {
 
     @Autowired
@@ -21,19 +22,25 @@ public class VehiculoController {
     @GetMapping("/public/en-venta")
     public List<VehiculoResponseDTO> listarEnVenta() {
         List<Vehiculo> vehiculos = vehiculoService.obtenerVehiculosEnVenta();
-        return vehiculos.stream().map(this::convertirADTO).toList();
+        return vehiculos.stream()
+        		.map(DTOConverter::toVehiculoResponseDTO)
+        		.toList();
     }
 
     @GetMapping("/public/proximos")
     public List<VehiculoResponseDTO> listarProximos() {
         List<Vehiculo> vehiculos = vehiculoService.obtenerProximos();
-        return vehiculos.stream().map(this::convertirADTO).toList();
+        return vehiculos.stream()
+        		.map(DTOConverter::toVehiculoResponseDTO)
+        		.toList();
     }
 
     @GetMapping("/public/vendidos")
     public List<VehiculoResponseDTO> listarVendidos() {
         List<Vehiculo> vehiculos = vehiculoService.obtenerVendidos();
-        return vehiculos.stream().map(this::convertirADTO).toList();
+        return vehiculos.stream()
+        		.map(DTOConverter::toVehiculoResponseDTO)
+        		.toList();
     }
 
     @GetMapping("/public/buscar")
@@ -42,7 +49,9 @@ public class VehiculoController {
             @RequestParam(required = false) Double precioMin,
             @RequestParam(required = false) Double precioMax) {
         List<Vehiculo> vehiculos = vehiculoService.buscarVehiculos(marca, precioMin, precioMax);
-        return vehiculos.stream().map(this::convertirADTO).toList();
+        return vehiculos.stream()
+        		.map(DTOConverter::toVehiculoResponseDTO)
+        		.toList();
     }
 
     @GetMapping("/public/{id}")
@@ -51,30 +60,49 @@ public class VehiculoController {
         if (!vehiculo.getVisible() || !vehiculo.getEstadoVenta().equals("en_venta")) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(convertirADTO(vehiculo));
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     // ENDPOINTS ADMIN (siguen con Vehiculo)
     @GetMapping
-    public List<Vehiculo> listarTodos() {
-        return vehiculoService.obtenerTodos();
+    public List<VehiculoResponseDTO> listarTodos() {
+        List<Vehiculo> vehiculos = vehiculoService.obtenerTodos();
+        return vehiculos.stream()
+                .map(DTOConverter::toVehiculoResponseDTO)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehiculo> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(vehiculoService.obtenerPorId(id));
+    public ResponseEntity<VehiculoResponseDTO> obtenerPorId(@PathVariable Long id) {
+        Vehiculo vehiculo = vehiculoService.obtenerPorId(id);
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     @PostMapping
-    public Vehiculo crear(@RequestBody Vehiculo vehiculo) {
-        return vehiculoService.crearVehiculo(vehiculo);
+    public VehiculoResponseDTO crear(@RequestBody VehiculoRequestDTO requestDTO) {
+        // 1. Request → Entidad (usando DTOConverter)
+        Vehiculo vehiculo = DTOConverter.toEntity(requestDTO);
+
+        // 2. Service guarda y devuelve entidad
+        Vehiculo vehiculoCreado = vehiculoService.crearVehiculo(vehiculo);
+
+        // 3. Entidad → Response (usando DTOConverter)
+        return DTOConverter.toVehiculoResponseDTO(vehiculoCreado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vehiculo> actualizar(
+    public ResponseEntity<VehiculoResponseDTO> actualizar(
             @PathVariable Long id,
-            @RequestBody Vehiculo vehiculo) {
-        return ResponseEntity.ok(vehiculoService.actualizarVehiculo(id, vehiculo));
+            @RequestBody VehiculoRequestDTO requestDTO) {
+
+        // 1. Request → Entidad
+        Vehiculo vehiculoActualizado = DTOConverter.toEntity(requestDTO);
+
+        // 2. Service actualiza y devuelve entidad
+        Vehiculo vehiculo = vehiculoService.actualizarVehiculo(id, vehiculoActualizado);
+
+        // 3. Entidad → Response
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     @DeleteMapping("/{id}")
@@ -84,54 +112,34 @@ public class VehiculoController {
     }
 
     @PatchMapping("/{id}/visible")
-    public ResponseEntity<Vehiculo> cambiarVisibilidad(
+    public ResponseEntity<VehiculoResponseDTO> cambiarVisibilidad(
             @PathVariable Long id,
             @RequestParam Boolean visible) {
-        return ResponseEntity.ok(vehiculoService.cambiarVisibilidad(id, visible));
+        Vehiculo vehiculo = vehiculoService.cambiarVisibilidad(id, visible);
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Vehiculo> cambiarEstado(
+    public ResponseEntity<VehiculoResponseDTO> cambiarEstado(
             @PathVariable Long id,
             @RequestParam String estado) {
-        return ResponseEntity.ok(vehiculoService.cambiarEstadoVenta(id, estado));
+        Vehiculo vehiculo = vehiculoService.cambiarEstadoVenta(id, estado);
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     @PostMapping("/{id}/oferta")
-    public ResponseEntity<Vehiculo> aplicarOferta(
+    public ResponseEntity<VehiculoResponseDTO> aplicarOferta(
             @PathVariable Long id,
             @RequestParam Double descuento) {
-        return ResponseEntity.ok(vehiculoService.aplicarOferta(id, descuento));
+        Vehiculo vehiculo = vehiculoService.aplicarOferta(id, descuento);
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
     @DeleteMapping("/{id}/oferta")
-    public ResponseEntity<Vehiculo> quitarOferta(@PathVariable Long id) {
-        return ResponseEntity.ok(vehiculoService.quitarOferta(id));
+    public ResponseEntity<VehiculoResponseDTO> quitarOferta(@PathVariable Long id) {
+        Vehiculo vehiculo = vehiculoService.quitarOferta(id);
+        return ResponseEntity.ok(DTOConverter.toVehiculoResponseDTO(vehiculo));
     }
 
-    // Método privado de conversión
-    private VehiculoResponseDTO convertirADTO(Vehiculo v) {
-        VehiculoResponseDTO dto = new VehiculoResponseDTO();
-        dto.setId(v.getId());
-        dto.setMarca(v.getMarca());
-        dto.setModelo(v.getModelo());
-        dto.setPrecio(v.getPrecio());
-        dto.setAnio(v.getAnio());
-        dto.setKilometros(v.getKilometros());
-        dto.setCombustible(v.getCombustible());
-        dto.setColorExterior(v.getColorExterior());
-        dto.setInterior(v.getInterior());
-        dto.setAsientos(v.getAsientos());
-        dto.setPuertas(v.getPuertas());
-        dto.setMotor(v.getMotor());
-        dto.setCambio(v.getCambio());
-        dto.setPegatina(v.getPegatina());
-        dto.setDescripcion(v.getDescripcion());
-        dto.setExtras(v.getExtras());
-        dto.setEnOferta(v.getEnOferta());
-        dto.setPrecioOferta(v.getPrecioOferta());
-        dto.setFechaFinOferta(v.getFechaFinOferta() != null ? v.getFechaFinOferta().toString() : null);
-        dto.setEstadoVenta(v.getEstadoVenta());
-        return dto;
-    }
+
 }

@@ -1,11 +1,6 @@
-package com.concesionario.backend.dto;
+package com.concesionario.backend.dto.request;
 
-import java.util.List;
-
-import com.concesionario.backend.dominio.Vehiculo;
-
-public class VehiculoResponseDTO {
-    private Long id;
+public class VehiculoRequestDTO {
     private String marca;
     private String modelo;
     private Double precio;
@@ -21,17 +16,8 @@ public class VehiculoResponseDTO {
     private String pegatina;
     private String descripcion;
     private String extras;
-    private Boolean enOferta;
-    private Double precioOferta;
-    private String fechaFinOferta;
-    private String estadoVenta;
-    private List<String> imagenes;
 
-    public VehiculoResponseDTO() {}
-
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Getters y Setters
     public String getMarca() { return marca; }
     public void setMarca(String marca) { this.marca = marca; }
     public String getModelo() { return modelo; }
@@ -62,40 +48,4 @@ public class VehiculoResponseDTO {
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     public String getExtras() { return extras; }
     public void setExtras(String extras) { this.extras = extras; }
-    public Boolean getEnOferta() { return enOferta; }
-    public void setEnOferta(Boolean enOferta) { this.enOferta = enOferta; }
-    public Double getPrecioOferta() { return precioOferta; }
-    public void setPrecioOferta(Double precioOferta) { this.precioOferta = precioOferta; }
-    public String getFechaFinOferta() { return fechaFinOferta; }
-    public void setFechaFinOferta(String fechaFinOferta) { this.fechaFinOferta = fechaFinOferta; }
-    public String getEstadoVenta() { return estadoVenta; }
-    public void setEstadoVenta(String estadoVenta) { this.estadoVenta = estadoVenta; }
-    public List<String> getImagenes() { return imagenes; }
-    public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }
-
-    private VehiculoResponseDTO convertirADTO(Vehiculo v) {
-        VehiculoResponseDTO dto = new VehiculoResponseDTO();
-        dto.setId(v.getId());
-        dto.setMarca(v.getMarca());
-        dto.setModelo(v.getModelo());
-        dto.setPrecio(v.getPrecio());
-        dto.setAnio(v.getAnio());
-        dto.setKilometros(v.getKilometros());
-        dto.setCombustible(v.getCombustible());
-        dto.setColorExterior(v.getColorExterior());
-        dto.setInterior(v.getInterior());
-        dto.setAsientos(v.getAsientos());
-        dto.setPuertas(v.getPuertas());
-        dto.setMotor(v.getMotor());
-        dto.setCambio(v.getCambio());
-        dto.setPegatina(v.getPegatina());
-        dto.setDescripcion(v.getDescripcion());
-        dto.setExtras(v.getExtras());
-        dto.setEnOferta(v.getEnOferta());
-        dto.setPrecioOferta(v.getPrecioOferta());
-        dto.setFechaFinOferta(v.getFechaFinOferta() != null ? v.getFechaFinOferta().toString() : null);
-        dto.setEstadoVenta(v.getEstadoVenta());
-        // Las imágenes se cargan aparte
-        return dto;
-    }
 }

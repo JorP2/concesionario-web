@@ -1,21 +1,22 @@
 package com.concesionario.backend.servicio;
 
 
-import com.concesionario.backend.dominio.Imagen;
-import com.concesionario.backend.dominio.Vehiculo;
-import com.concesionario.backend.repositorio.ImagenRepository;
-import com.concesionario.backend.repositorio.VehiculoRepository;
-import com.concesionario.backend.utils.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import com.concesionario.backend.config.UploadConfig;
+import com.concesionario.backend.dominio.Imagen;
+import com.concesionario.backend.dominio.Vehiculo;
+import com.concesionario.backend.repositorio.ImagenRepository;
+import com.concesionario.backend.repositorio.VehiculoRepository;
+import com.concesionario.backend.utils.FileUtils;
 
 
 @Service
@@ -28,47 +29,43 @@ public class ImagenService {
     @Autowired
     private VehiculoRepository vehiculoRepository;
 
-    private final String CARPETA_PRINCIPAL = "uploads/vehiculos/";
+    @Autowired
+    private UploadConfig uploadConfig;
+
 
     // SUBIR IMAGEN (con carpeta /imagenes)
 
     public Imagen subirImagen(Long vehiculoId, MultipartFile archivo) throws IOException {
 
-        // 1. Buscar vehículo
+        // VALIDAR QUE SEA IMAGEN
+        if (!FileUtils.esImagen(archivo)) {
+            throw new RuntimeException("El archivo debe ser una imagen (JPEG, PNG, JPG, GIF)");
+        }
+
+        // Buscar vehículo
         Vehiculo vehiculo = vehiculoRepository.findById(vehiculoId)
                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
 
-        // 2. Crear carpeta: uploads/vehiculos/1/imagenes/
-        String carpetaVehiculo = CARPETA_PRINCIPAL + vehiculoId + "/imagenes/";
-
+        // Crear carpeta: uploads/vehiculos/1/imagenes/
+        String carpetaVehiculo = uploadConfig.getRuta() + vehiculoId + "/imagenes/";
         FileUtils.crearCarpeta(carpetaVehiculo);
 
+        //  GUARDAR ARCHIVO (genera nombre único y lo guarda)
+        String uid = FileUtils.guardarArchivo(archivo, carpetaVehiculo);
 
-        String nombreOriginal = archivo.getOriginalFilename();
-        String extension = nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
-        String uid = FileUtils.generarNombreUnico(archivo.getOriginalFilename());
-
-
-        Path ruta = Paths.get(carpetaVehiculo + uid);
-        Files.copy(archivo.getInputStream(), ruta);
-
-
+        // Calcular orden
         Integer ultimoOrden = imagenRepository.findMaxOrdenByVehiculoId(vehiculoId);
         int nuevoOrden = (ultimoOrden == null) ? 1 : ultimoOrden + 1;
 
+        // Crear entidad Imagen
         Imagen imagen = new Imagen();
         imagen.setVehiculo(vehiculo);
         imagen.setUid(uid);
         imagen.setOrden(nuevoOrden);
 
         // Si es la primera imagen, que sea portada
-
         long totalImagenes = imagenRepository.countByVehiculoId(vehiculoId);
-        if (totalImagenes == 0) {
-            imagen.setEsPortada(true);
-        } else {
-            imagen.setEsPortada(false);
-        }
+        imagen.setEsPortada(totalImagenes == 0);
 
         return imagenRepository.save(imagen);
     }
@@ -132,14 +129,11 @@ public class ImagenService {
                 .orElseThrow(() -> new RuntimeException("Imagen no encontrada"));
 
         // Eliminar archivo físico
-        String rutaArchivo = CARPETA_PRINCIPAL +
+        String rutaArchivo = uploadConfig.getRuta() +
                             imagen.getVehiculo().getId() +
                             "/imagenes/" +
                             imagen.getUid();
-        File archivo = new File(rutaArchivo);
-        if (archivo.exists()) {
-            archivo.delete();
-        }
+        FileUtils.eliminarArchivo(rutaArchivo);
 
         // Eliminar registro BD
         imagenRepository.deleteById(id);

@@ -1,4 +1,4 @@
-package com.concesionario.backend.dto;
+package com.concesionario.backend.dto.request;
 
 
 public class LoginRequest {
@@ -9,4 +9,5 @@ public class LoginRequest {
     public void setUsername(String username) { this.username = username; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    
 }
