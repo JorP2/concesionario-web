@@ -28,11 +28,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-<<<<<<< HEAD
     // LOGIN
-=======
     // ENDPOINTS ESPECÍFICOS
->>>>>>> dcc80149a3c518ce7be48bc6cf63240ea97deeba
 
     @PostMapping("/login")
     public ResponseEntity<UsuarioResponseDTO> login(@RequestBody LoginRequest loginRequest) {
@@ -58,11 +55,7 @@ public class UsuarioController {
         return ResponseEntity.ok(dtos);
     }
 
-<<<<<<< HEAD
-    // CRUD
-=======
     // ENDPOINTS CRUD
->>>>>>> dcc80149a3c518ce7be48bc6cf63240ea97deeba
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
@@ -131,21 +124,5 @@ public class UsuarioController {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
-<<<<<<< HEAD
 
-    // DTO
-
-    private UsuarioResponseDTO convertirADTO(Usuario u) {
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
-        dto.setId(u.getId());
-        dto.setUsername(u.getUsername());
-        dto.setNombre(u.getNombre());
-        dto.setEmail(u.getEmail());
-        dto.setTelefono(u.getTelefono());
-        dto.setActivo(u.getActivo());
-        dto.setEsSuperUsuario(u.getEsSuperUsuario());
-        return dto;
-    }
-=======
->>>>>>> dcc80149a3c518ce7be48bc6cf63240ea97deeba
 }

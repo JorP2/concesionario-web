@@ -1,6 +1,6 @@
 import React from "react";
 // API
-import { getVehiculos } from "../api/vehiculoApi";
+import { getVehiculosEnVenta } from "../api/vehiculoApi";
 // Componentes
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
@@ -18,7 +18,7 @@ function Vehiculos() {
   // Función para cargar vehículos desde la API
   const loadVehiculos = async () => {
     try {
-      const data = await getVehiculos();
+      const data = await getVehiculosEnVenta();
       setVehiculos(data);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
