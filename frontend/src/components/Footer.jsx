@@ -2,9 +2,9 @@ import { MdEmail, MdPhone, MdLocationOn, MdHome, MdAccessTime } from "react-icon
 
 function Footer() {
   return (
-    <footer className="bg-dark text-white py-4 mt-5">
+    <footer className="bg-dark text-white py-4 mt-5" style={{ borderTop: "1px solid rgba(180, 180, 180, 0.75)" }}>
       <div className="container">
-        <div className="row text-center text-md-start align-items-start">
+        <div className="row text-center text-md-start align-items-center">
 
           <div className="col-12 col-md-3 mb-4 mb-md-0 text-center">
             <img 
@@ -35,6 +35,11 @@ function Footer() {
             <p><MdPhone className="me-2"/> +34 651 86 82 30 | +34 925 39 31 86</p>
           </div>
 
+        </div>
+
+        {/* Línea de copyright */}
+        <div className="text-center mt-4 pt-3 border-top border-secondary" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          © 2026 Nohales Automóviles. Todos los derechos reservados.
         </div>
       </div>
     </footer>
