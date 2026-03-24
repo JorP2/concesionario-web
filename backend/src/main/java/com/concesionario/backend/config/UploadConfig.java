@@ -16,7 +16,7 @@ public class UploadConfig {
         File carpeta = new File(ruta);
         if (!carpeta.exists()) {
             carpeta.mkdirs();
-            System.out.println("📁 Carpeta creada: " + ruta);
+            System.out.println("Carpeta creada: " + ruta);
         }
     }
 
