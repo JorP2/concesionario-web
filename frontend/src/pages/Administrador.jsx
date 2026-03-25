@@ -18,13 +18,24 @@ function Administrador() {
   // Vehiculos
   const [vehiculos, setVehiculos] = React.useState([]);
   const [busqueda, setBusqueda] = React.useState("");
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
 
   // Cargar vehículos al montar el componente
-  React.useEffect(() => {
-    const cargar = async () => {
+  const cargar = async () => {
+    try {
       const data = await getVehiculos();
       setVehiculos(data);
-    };
+    } catch (error) {
+      console.error("Error al cargar los vehículos:", error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Se ejecuta al cargar la página
+  React.useEffect(() => {
     cargar();
   }, []);
 
@@ -58,7 +69,15 @@ function Administrador() {
           onChange={(e) => setBusqueda(e.target.value)}
         />
         {/* LISTA */}
-        <VehiculosLista vehiculos={vehiculosFiltrados} />
+        {loading && <p className="text-center mt-4">Cargando vehículos...</p>}
+        {!loading && error && (
+          <p className="text-center mt-4 text-danger">
+            Error al cargar los vehículos.
+          </p>
+        )}
+        {!loading && !error && (
+          <VehiculosLista vehiculos={vehiculosFiltrados} />
+        )}
 
         {/* BOTON LOGOUT */}
         <div className="d-flex">
