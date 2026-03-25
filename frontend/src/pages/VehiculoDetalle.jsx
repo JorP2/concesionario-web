@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getVehiculoById } from "../api/vehiculoApi";
+import "../styles/VehiculoDetalle.css"
 import { FaGasPump, FaCogs, FaTachometerAlt, FaArrowLeft } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
 
@@ -32,25 +33,40 @@ function VehiculoDetalle() {
         <h2 className="fw-bold fs-4 m-0">
           {vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}
         </h2>
-        <h1 className="fw-bold fs-4 m-0 ms-auto text-primary">
-          {vehiculo.precio}€
-        </h1>
+        <div className="ms-auto">
+          {vehiculo.precioOferta ? (
+            <>
+              <h2 className="text-decoration-line-through text-muted me-2">
+                {vehiculo.precio}€
+              </h2>
+              <h1 className="fw-bold text-success">
+                {vehiculo.precioOferta}€
+              </h1>
+            </>
+          ) : (
+            <h1 className="fw-bold text-primary">
+              {vehiculo.precio}€
+            </h1>
+          )}
+        </div>
       </div>
 
-      {/* Imagen principal + descripción */}
-      <div>
+      {/* Imagen principal */}
+      <div className="mb-4 text-center">
         <img
           src={`https://picsum.photos/1200/500?random=${vehiculo.id}`}
           alt={`${vehiculo.marca} ${vehiculo.modelo}`}
-          style={{ width: "100%", height: "auto", objectFit: "cover" }}
+          className="img-fluid rounded"
         />
-        <p className="mt-2 text-muted text-italic text-center">{vehiculo.descripcion}</p>
+        {vehiculo.descripcion && <p className="text-muted fst-italic mt-2">{vehiculo.descripcion}</p>}
       </div>
 
-      {/* Mini-cards con iconos */}
-      <div className="d-flex justify-content-around text-center my-3 flex-wrap">
-
-        <div className="card flex-fill me-1 mb-2 border-light bg-dark text-light">
+      {/* Mini-cards con iconos pegadas */}
+      <div className="d-flex text-center my-3" style={{ gap: 0 }}>
+        <div
+          className="card bg-dark text-light flex-fill overflow-hidden"
+          style={{ borderTopLeftRadius: '1rem', borderBottomLeftRadius: '1rem', borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+        >
           <div className="card-body d-flex flex-column align-items-center">
             <FaGasPump size={40} className="mb-1" />
             <p className="mb-1">Combustible</p>
@@ -58,7 +74,7 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card flex-fill mx-1 mb-2 border-light bg-dark text-light">
+        <div className="card bg-dark text-light flex-fill border-start border-end border-start-secondary border-end-secondary" style={{ borderRadius: 0 }}>
           <div className="card-body d-flex flex-column align-items-center">
             <FaCogs size={40} className="mb-1" />
             <p className="mb-1">Motor</p>
@@ -66,7 +82,7 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card flex-fill mx-1 mb-2 border-light bg-dark text-light">
+        <div className="card bg-dark text-light flex-fill border-end border-end-secondary" style={{ borderRadius: 0 }}>
           <div className="card-body d-flex flex-column align-items-center">
             <FaTachometerAlt size={40} className="mb-1" />
             <p className="mb-1">Kilómetros</p>
@@ -74,7 +90,10 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card flex-fill ms-1 mb-2 border-light bg-dark text-light">
+        <div
+          className="card bg-dark text-light flex-fill overflow-hidden"
+          style={{ borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+        >
           <div className="card-body d-flex flex-column align-items-center">
             <GiGearStick size={40} className="mb-1" />
             <p className="mb-1">Cambio</p>
@@ -83,14 +102,38 @@ function VehiculoDetalle() {
         </div>
       </div>
 
-      {/* Datos técnicos + extras */}
-      <div className="card shadow-sm my-3 p-3">
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item"><strong>Color:</strong> {vehiculo.colorExterior}</li>
-          <li className="list-group-item"><strong>Puertas:</strong> {vehiculo.puertas}</li>
-          <li className="list-group-item"><strong>Asientos:</strong> {vehiculo.asientos}</li>
-          <li className="list-group-item"><strong>Pegatina:</strong> {vehiculo.pegatina}</li>
-        </ul>
+      {/* Extras */}
+      <h2 className="text-center my-5 fw-bold fs-4 m-0">
+        Conoce más sobre este vehículo
+      </h2>
+      <div className="stats-container my-4">
+        <div className="stats-row flex-row">
+          <div className="stat-circle">
+            <p>Puertas</p>
+            <h5>{vehiculo.puertas}</h5>
+          </div>
+
+          <div className="stat-circle">
+            <p>Asientos</p>
+            <h5>{vehiculo.asientos}</h5>
+          </div>
+
+          <div className="stat-circle">
+            <p>Pegatina</p>
+            <h5>{vehiculo.pegatina}</h5>
+          </div>
+        </div>
+        <div className="stats-row flex-row">
+          <div className="stat-circle">
+            <p>Color</p>
+            <h5>{vehiculo.colorExterior}</h5>
+          </div>
+
+          <div className="stat-circle">
+            <p>Interior</p>
+            <h5>{vehiculo.interior}</h5>
+          </div>
+        </div>
       </div>
 
       <div>
