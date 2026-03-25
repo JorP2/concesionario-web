@@ -1,18 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getVehiculoById } from "../api/vehiculoApi";
 import "../styles/VehiculoDetalle.css"
 import { FaGasPump, FaCogs, FaTachometerAlt, FaArrowLeft } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
+import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 
 function VehiculoDetalle() {
   const { id } = useParams();
   const [vehiculo, setVehiculo] = useState(null);
 
   useEffect(() => {
-    getVehiculoById(id)
-      .then(data => setVehiculo(data))
-      .catch(error => console.error("Error al cargar vehículo:", error));
+    getVehiculoByIdPublic(id)
+      .then((data) => setVehiculo(data))
+      .catch((error) => console.error("Error al cargar vehículo:", error));
   }, [id]);
 
   if (!vehiculo) {
@@ -82,7 +82,7 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card bg-dark text-light flex-fill border-end border-end-secondary" style={{ borderRadius: 0 }}>
+        <div className="card bg-dark text-light flex-fill border-end" style={{ borderRadius: 0 }}>
           <div className="card-body d-flex flex-column align-items-center">
             <FaTachometerAlt size={40} className="mb-1" />
             <p className="mb-1">Kilómetros</p>

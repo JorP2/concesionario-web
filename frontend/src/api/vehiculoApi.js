@@ -1,8 +1,89 @@
 //API
-const API_URL = "http://localhost:8080/api/vehiculos";
+const API_URL = process.env.REACT_APP_API_URL + "/vehiculos";
+const API_URL_PUBLIC = process.env.REACT_APP_API_URL + "/vehiculos/public";
 
 //GET
-//Backend: listarTodos()
+// PUBLIC : Listar en Venta
+export const getVehiculosEnVenta = async () => {
+  try {
+    const response = await fetch(`${API_URL_PUBLIC}/en-venta`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los vehículos en venta");
+    }
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error en getVehiculosEnVenta:", error);
+    throw error;
+  }
+};
+
+// PUBLIC : Listar Proximos
+export const getVehiculosProximos = async () => {
+  try {
+    const response = await fetch(`${API_URL_PUBLIC}/proximos`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los vehículos próximos");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en getVehiculosProximos:", error);
+    throw error;
+  }
+};
+
+// PUBLIC : Listar Vendidos
+export const getVehiculosVendidos = async () => {
+  try {
+    const response = await fetch(`${API_URL_PUBLIC}/vendidos`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los vehículos vendidos");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("Error en getVehiculosVendidos:", error);
+    throw error;
+  }
+};
+
+// PUBLIC: Listar Buscar
+export const serchVehiculos = async (marca, precioMin, precioMax) => {
+  const params = new URLSearchParams();
+  if (marca) params.append("marca", marca);
+  if (precioMin) params.append("precioMin", precioMin);
+  if (precioMax) params.append("precioMax", precioMax);
+
+  try {
+    const response = await fetch(`${API_URL_PUBLIC}/buscar?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error("Error al buscar vehículos");
+    }
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error en serchVehiculos:", error);
+    throw error;
+  }
+};
+
+// PUBLIC: obtenerPorId()
+export const getVehiculoByIdPublic = async (id) => {
+  try {
+    const response = await fetch(`${API_URL_PUBLIC}/${id}`);
+
+    if (!response.ok) {
+      throw new Error("Error al obtener el vehículo");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getVehiculoById:", error);
+    throw error;
+  }
+};
+
+// ADMIN: listarTodos()
 export const getVehiculos = async () => {
   try {
     const response = await fetch(API_URL);
@@ -16,7 +97,7 @@ export const getVehiculos = async () => {
   }
 };
 
-//Backend: obtenerPorId()
+// ADMIN: obtenerPorId()
 export const getVehiculoById = async (id) => {
   try {
     const response = await fetch(`${API_URL}/${id}`);
@@ -32,7 +113,7 @@ export const getVehiculoById = async (id) => {
 };
 
 //POST
-//Backend: crear()
+//ADMIN: crear()
 export const addVehiculo = async (vehiculo) => {
   try {
     const response = await fetch(API_URL, {
@@ -53,7 +134,7 @@ export const addVehiculo = async (vehiculo) => {
 };
 
 //PUT
-//Backend: actualizar()
+//ADMIN: actualizar()
 export const updateVehiculo = async (id, vehiculo) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -74,7 +155,7 @@ export const updateVehiculo = async (id, vehiculo) => {
 };
 
 //DELETE
-//Backend: eliminar()
+//ADMIN: eliminar()
 export const deleteVehiculo = async (id) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -88,3 +169,71 @@ export const deleteVehiculo = async (id) => {
     throw error
   }
 }
+
+//ADMIN: eliminarOferta()
+export const deleteOferta = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/oferta`, {
+      method: "DELETE"
+    })
+    if(!response.ok){
+      throw new Error("Error al borrar el vehículo")
+    }
+  } catch (error) {
+    console.error("Error en deleteOferta: ", error)
+    throw error
+  }
+}
+
+// PATCH
+//ADMIN: actualizarEstado()
+export const updateEstadoVehiculo = async (id, estado) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/estado?estado=${estado}`, {
+      method: "PATCH"
+    });
+    if (!response.ok) {
+      throw new Error("Error al actualizar el estado del vehículo");
+    }
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error en updateEstadoVehiculo:", error);
+    throw error;
+  }
+}
+
+// ADMIN: cambiarVisibilidad()
+export const cambiarVisibilidad = async (id, visible) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/visible?visible=${visible}`, {
+      method: "PATCH"
+    });
+    if (!response.ok) {
+      throw new Error("Error al cambiar la visibilidad del vehículo");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error en cambiarVisibilidad:", error);
+    throw error;
+  }
+};
+
+// ADMIN: aplicarOferta()
+export const aplicarOferta = async (id, descuento) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}/oferta?descuento=${descuento}`, {
+      method: "PATCH"
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al aplicar la oferta al vehículo");
+    }
+
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error en aplicarOferta:", error);
+    throw error;
+  }
+};
