@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/VehiculoDetalle.css"
 import { FaGasPump, FaCogs, FaTachometerAlt, FaArrowLeft } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
@@ -8,6 +9,7 @@ import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 function VehiculoDetalle() {
   const { id } = useParams();
   const [vehiculo, setVehiculo] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getVehiculoByIdPublic(id)
@@ -25,7 +27,7 @@ function VehiculoDetalle() {
       <div className="d-flex align-items-center gap-3 mb-3">
         <button
           className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-          onClick={() => window.history.back()}
+          onClick={() => navigate(-1)}
           style={{ width: "45px", height: "45px" }}
         >
           <FaArrowLeft />

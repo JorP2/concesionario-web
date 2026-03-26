@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // API
 import { getVehiculoById } from "../api/vehiculoApi";
 
@@ -8,6 +9,7 @@ function VehiculoFormulario() {
   // Obtener el ID del vehículo de la URL
   const { id } = useParams();
   const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
+  const navigate = useNavigate();
 
   // Función para cargar los datos del vehículo si estamos editando
   React.useEffect(() => {
@@ -63,8 +65,8 @@ function VehiculoFormulario() {
     <>
       <div>
         <button
-          className="btn btn-light btn-outline-secondary border border-5 mb-3 rounded-circle d-flex align-items-center justify-content-center"
-          onClick={() => window.history.back()}
+          className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+          onClick={() => navigate(-1)}
           style={{ width: "45px", height: "45px" }}
         >
           <FaArrowLeft />
