@@ -1,9 +1,45 @@
+.hero-section {
+  min-height: 60vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 30px;
+  border-radius: 12px;
+}
+
 .feature-card {
-  transition: transform 0.25s ease, 
-  box-shadow 0.25s ease;
+  transition: all 0.3s ease;
+  border-radius: 12px;
 }
 
 .feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.featured-card img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.overlay-dark {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.1)
+  );
 }
