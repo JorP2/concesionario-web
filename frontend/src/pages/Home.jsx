@@ -3,71 +3,84 @@ import "../styles/Home.css";
 
 function Home() {
   return (
-    <div className="container my-5">
-      {/* Título */}
-      <div className="bg-dark text-white text-center p-4 rounded mb-2">
-        <h1 className="h3 m-0">Bienvenido</h1>
-        <h3 className="h5 m-0">Nohales Automóviles, vehículos de confianza</h3>
-      </div>
+    <div className="home-page">
 
-      <div className="card mb-4 border-0 shadow">
-        <img
-          src="https://picsum.photos/900/350?random=1"
-          className="card-img-top"
-          alt="Vehículo destacado"
-        />
-        {/* Texto */}
-        <div className="card-body text-center">
-          <p className="card-text">
-            Nuestros más de 25 años en el sector de la compraventa de
-            automóviles nos avalan.
+      {/* HERO */}
+      <div className="hero-section text-white d-flex align-items-center"
+        style={{ backgroundImage: `url(/imagenHome.jpeg)` }}>
+        <div className="container text-center hero-content">
+          <h1 className="display-5 fw-bold">Nohales Automóviles</h1>
+          <p className="lead">
+            Vehículos de confianza · Más de 25 años de experiencia
           </p>
+
+          <div className="mt-4 d-flex gap-3 justify-content-center mb-4">
+            <a href="/vehiculos" className="btn btn-primary btn-lg">
+              Ver coches
+            </a>
+            <a href="/contacto" className="btn btn-outline-light btn-lg">
+              Contactar
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Sección de características */}
-      <div className="row g-4">
-        {/* CARD 1 */}
-        <div className="col-12 col-md-4">
-          <div className="card h-100 text-center shadow-sm feature-card">
-            <div className="card-body">
-              <MdCheck size={50} className="mb-3 text-primary" />
-              <h5 className="card-title">Máxima garantía</h5>
-              <p className="card-text">
-                Sometemos a nuestros coches a las más estrictas revisiones, lo
-                que nos permite ofrecer 12 meses de garantía en todos los
-                vehículos. Tenemos taller propio con más de 35 años de
-                experiencia.
-              </p>
+      {/* FEATURES */}
+      <div className="container my-5">
+        <div className="row g-4">
+
+          <div className="col-md-4">
+            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+              <div className="card-body">
+                <MdCheck size={45} className="text-primary mb-3" />
+                <h5>Máxima garantía</h5>
+                <p>
+                  12 meses de garantía en todos los vehículos con taller propio.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* CARD 2 */}
-        <div className="col-12 col-md-4">
-          <div className="card h-100 text-center shadow-sm feature-card">
-            <div className="card-body">
-              <MdEuroSymbol size={50} className="mb-3 text-primary" />
-              <h5 className="card-title">Financiación</h5>
-              <p className="card-text">
-                Te ayudamos con la posibilidad de financiar tu vehículo en hasta
-                96 meses y sin entrada, independientemente de la edad del
-                vehículo.
-              </p>
+          <div className="col-md-4">
+            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+              <div className="card-body">
+                <MdEuroSymbol size={45} className="text-primary mb-3" />
+                <h5>Financiación flexible</h5>
+                <p>
+                  Hasta 96 meses sin entrada. Te ayudamos a conseguir tu coche.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* CARD 3 */}
-        <div className="col-12 col-md-4">
-          <div className="card h-100 text-center shadow-sm feature-card">
-            <div className="card-body">
-              <MdLocationOn size={50} className="mb-3 text-primary" />
-              <h5 className="card-title">Compraventa en Toledo</h5>
-              <p className="card-text">
-                Contamos con un catálogo permanente de más de 40 vehículos en
-                nuestro concesionario en Toledo, con coches de todas las gamas y
-                precios.
+          <div className="col-md-4">
+            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+              <div className="card-body">
+                <MdLocationOn size={45} className="text-primary mb-3" />
+                <h5>Ubicación</h5>
+                <p>
+                  Concesionario en Toledo con más de 40 vehículos disponibles.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* DESTACADO */}
+      <div className="container my-5">
+        <div className="card border-0 shadow-lg overflow-hidden featured-card">
+          <img
+            src="https://picsum.photos/1200/400?random=2"
+            className="card-img"
+            alt="Vehículo destacado"
+          />
+          <div className="card-img-overlay d-flex align-items-end overlay-dark">
+            <div className="text-white">
+              <h2 className="fw-bold">Stock renovado semanalmente</h2>
+              <p>
+                Seleccionamos cada vehículo con revisión completa y garantía.
               </p>
             </div>
           </div>

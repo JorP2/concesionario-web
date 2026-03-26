@@ -1,8 +1,9 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 // Componentes
 import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
-
 // API
 import { getVehiculoById } from "../api/vehiculoApi";
 
@@ -11,6 +12,7 @@ function VehiculoFormulario() {
   const { id } = useParams();
   const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
   const [imagenesNuevas, setImagenesNuevas] = React.useState([]); // Estado para las nuevas imágenes a subir
+  const navigate = useNavigate();
 
   // Función para manejar el estado del formulario
   const [vehiculo, setVehiculo] = React.useState({
@@ -76,12 +78,15 @@ function VehiculoFormulario() {
   return (
     <>
       <div className="container-fluid px-4">
-        <Link to="/administrador" className="btn btn-danger mt-4">
-          Volver
-        </Link>
-
-        <h2 className="text-center my-4">
-          {esEdicion ? "Editar Vehículo" : "Agregar Vehículo"}
+        <button
+          className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+          onClick={() => navigate(-1)}
+          style={{ width: "45px", height: "45px" }}
+        >
+          <FaArrowLeft />
+        </button>
+        <h2 className="text-center mb-4">
+          {id ? "Editar Vehículo" : "Agregar Vehículo"}
         </h2>
 
         <form onSubmit={handleSubmit}>

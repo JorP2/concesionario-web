@@ -28,9 +28,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // LOGIN
-    // ENDPOINTS ESPECÍFICOS
-
     @PostMapping("/login")
     public ResponseEntity<UsuarioResponseDTO> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -54,8 +51,6 @@ public class UsuarioController {
                 .toList();
         return ResponseEntity.ok(dtos);
     }
-
-    // ENDPOINTS CRUD
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
@@ -124,5 +119,4 @@ public class UsuarioController {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
-
 }

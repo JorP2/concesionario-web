@@ -1,0 +1,25 @@
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra las filas */
+  gap: 20px; /* separación entre filas */
+}
+
+.stats-row {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
