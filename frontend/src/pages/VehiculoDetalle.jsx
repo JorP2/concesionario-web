@@ -1,6 +1,5 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/VehiculoDetalle.css"
 import { FaGasPump, FaCogs, FaTachometerAlt, FaArrowLeft } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
@@ -9,16 +8,24 @@ import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 function VehiculoDetalle() {
   const { id } = useParams();
   const [vehiculo, setVehiculo] = useState(null);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     getVehiculoByIdPublic(id)
       .then((data) => setVehiculo(data))
-      .catch((error) => console.error("Error al cargar vehículo:", error));
+      .catch(() => setError(true));
   }, [id]);
 
+  if (error) {
+    return <p className="text-center mt-5 text-danger">Error al cargar el vehículo</p>;
+  }
+
   if (!vehiculo) {
-    return <p className="text-center mt-5">Cargando vehículo...</p>;
+    return <div className="text-center mt-5">
+              <div className="spinner-border" role="status"></div>
+              <p className="mt-2">Cargando vehículo...</p>
+            </div>
   }
 
   return (
@@ -88,7 +95,7 @@ function VehiculoDetalle() {
           <div className="card-body d-flex flex-column align-items-center">
             <FaTachometerAlt size={40} className="mb-1" />
             <p className="mb-1">Kilómetros</p>
-            <h3 className="card-title">{vehiculo.kilometros}</h3>
+            <h3 className="card-title">{vehiculo.kilometros.toLocaleString()} km</h3>
           </div>
         </div>
 
@@ -104,7 +111,9 @@ function VehiculoDetalle() {
         </div>
       </div>
 
-      {/* Extras */}
+      {/* Galeria de videos */}
+
+      {/* Detalles */}
       <h2 className="text-center my-5 fw-bold fs-4 m-0">
         Conoce más sobre este vehículo
       </h2>
@@ -125,6 +134,7 @@ function VehiculoDetalle() {
             <h5>{vehiculo.pegatina}</h5>
           </div>
         </div>
+        
         <div className="stats-row flex-row">
           <div className="stat-circle">
             <p>Color</p>
@@ -138,12 +148,13 @@ function VehiculoDetalle() {
         </div>
       </div>
 
+      {/* Extras */}
       <div>
         <h3>Extras:</h3>
         {vehiculo.extras && (
           <div className="mt-2">
             <div className="mt-1 d-flex flex-wrap gap-2">
-              {vehiculo.extras.split(",").map((extra, idx) => (
+              {vehiculo.extras?.split(",").map((extra, idx) => (
                 <span key={idx} className="badge bg-primary">
                   {extra.trim().charAt(0).toUpperCase() + extra.trim().slice(1)}
                 </span>
