@@ -1,7 +1,6 @@
 //API
 const API_URL = process.env.REACT_APP_API_URL + "/usuarios"; 
 
-console.log("API_URL:", API_URL);
 
 //GET
 // Listar Todos()
