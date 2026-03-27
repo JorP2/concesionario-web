@@ -1,46 +1,84 @@
 import { MdEmail, MdPhone, MdLocationOn, MdHome, MdAccessTime } from "react-icons/md";
+import { FaWhatsapp } from "react-icons/fa";
 
 function Footer() {
   return (
-    <footer className="bg-dark text-white py-4 mt-5" style={{ borderTop: "1px solid rgba(180, 180, 180, 0.75)" }}>
+    <footer
+      className="bg-dark text-white py-5 mt-5"
+      style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+    >
       <div className="container">
-        <div className="row text-center text-md-start align-items-center">
 
-          <div className="col-12 col-md-3 mb-4 mb-md-0 text-center">
-            <img 
+        <div className="row g-4 text-center text-md-start align-items-start">
+
+          {/* LOGO */}
+          <div className="col-12 col-md-3 text-center">
+            <img
               src="/logoNohalesAutomoviles.png"
               alt="Logo Nohales Automoviles"
-              className="img-fluid"
-              style={{ maxWidth: "180px" }}
+              className="img-fluid mb-3"
+              style={{ maxWidth: "170px" }}
             />
+            <p className="text-white-50 small">
+              Vehículos revisados, garantía y confianza.
+            </p>
           </div>
 
-          <div className="col-12 col-md-3 mb-4 mb-md-0">
-            <h5>Horarios</h5>
-            <ul className="list-unstyled">
-              <li><MdAccessTime className="me-2"/> Lunes a viernes: 09:30 - 13:30 | 16:30 - 20:00</li>
-              <li><MdAccessTime className="me-2"/> Sábados: 10:00 - 14:00</li>
+          {/* HORARIOS */}
+          <div className="col-12 col-md-3">
+            <h5 className="mb-3">Horarios</h5>
+            <ul className="list-unstyled text-white-50 small">
+              <li className="mb-2">
+                <MdAccessTime className="me-2" />
+                L-V: 09:30 - 13:30 | 16:30 - 20:00
+              </li>
+              <li>
+                <MdAccessTime className="me-2" />
+                Sábados: 10:00 - 14:00
+              </li>
             </ul>
           </div>
 
-          <div className="col-12 col-md-3 mb-4 mb-md-0">
-            <h5>Dirección</h5>
-            <p><MdLocationOn className="me-2"/> 45112 Burguillos de Toledo (Toledo)</p>
-            <p><MdHome className="me-2"/> C/ Caño S/N</p>
+          {/* DIRECCIÓN */}
+          <div className="col-12 col-md-3">
+            <h5 className="mb-3">Ubicación</h5>
+
+            <p className="text-white-50 small mb-2">
+              <MdLocationOn className="me-2" />
+              45112 Burguillos de Toledo
+            </p>
+
+            <p className="text-white-50 small">
+              <MdHome className="me-2" />
+              C/ Caño S/N
+            </p>
           </div>
 
+          {/* CONTACTO */}
           <div className="col-12 col-md-3">
-            <h5>Contáctanos</h5>
-            <p><MdEmail className="me-2"/> nohalesautomoviles@gmail.com</p>
-            <p><MdPhone className="me-2"/> +34 651 86 82 30 | +34 925 39 31 86</p>
+            <h5 className="mb-3">Contacto</h5>
+
+            <p className="text-white-50 small mb-2 footer-hover">
+              <MdEmail className="me-2" />
+              nohalesautomoviles@gmail.com
+            </p>
+
+            <p className="text-white-50 small footer-hover">
+              <FaWhatsapp className="me-2 mb-2" />
+              +34 651 86 82 30
+              <br />
+              <MdPhone className="me-2" />
+              +34 925 39 31 86
+            </p>
           </div>
 
         </div>
 
-        {/* Línea de copyright */}
-        <div className="text-center mt-4 pt-3 border-top border-secondary" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+        {/* COPYRIGHT */}
+        <div className="text-center mt-4 pt-3 border-top border-secondary small text-white-50">
           © 2026 Nohales Automóviles. Todos los derechos reservados.
         </div>
+
       </div>
     </footer>
   );

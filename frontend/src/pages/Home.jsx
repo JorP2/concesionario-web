@@ -3,7 +3,7 @@ import "../styles/Home.css";
 
 function Home() {
   return (
-    <div className="home-page">
+    <div className="home-page bg-light">
 
       {/* HERO */}
       <div className="hero-section text-white d-flex align-items-center "
