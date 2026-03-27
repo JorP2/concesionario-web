@@ -6,10 +6,15 @@ function Home() {
     <div className="home-page">
 
       {/* HERO */}
-      <div className="hero-section text-white d-flex align-items-center"
-        style={{ backgroundImage: `url(/imagenHome.jpeg)` }}>
-        <div className="container text-center hero-content">
-          <h1 className="display-5 fw-bold">Nohales Automóviles</h1>
+      <div className="hero-section text-white d-flex align-items-center "
+        style={{
+          backgroundImage: `url(/imagenHome.jpeg)`
+        }}
+      >
+        <div className="hero-content container text-center">
+          <h1 className="display-4 fw-bold mb-3">
+            Nohales Automóviles
+          </h1>
           <p className="lead">
             Vehículos de confianza · Más de 25 años de experiencia
           </p>
