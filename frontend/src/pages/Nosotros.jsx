@@ -1,4 +1,5 @@
 import { FaStar } from "react-icons/fa";
+import "../styles/Nosotros.css"
 
 function Nosotros() {
   return (
@@ -31,14 +32,12 @@ function Nosotros() {
       <div className="container py-5">
 
         {/* ABOUT */}
-
-
         <div className="row g-4 mb-5">
 
           <div className="col-12 col-lg-6">
             <div
               className="p-4 h-100 rounded-4 shadow-sm bg-dark text-white transition-card"
-              style={{ transition: "0.3s" }}
+              style={{ transition: "0.3s", cursor: "pointer" }}
             >
               <h4 className="mb-3">Concesionario de confianza</h4>
               <p className="mb-0 text-white-50">
@@ -52,7 +51,7 @@ function Nosotros() {
           <div className="col-12 col-lg-6">
             <div
               className="p-4 h-100 rounded-4 shadow-sm bg-white transition-card"
-              style={{ transition: "0.3s" }}
+              style={{ transition: "0.3s", cursor: "pointer" }}
             >
               <h4 className="mb-3">Profesionalidad y transparencia</h4>
               <p className="mb-0 text-muted">
@@ -78,35 +77,50 @@ function Nosotros() {
 
           {[
             {
-              text: "Muy buenos profesionales, tanto en la venta como en el taller. Me dejaron el coche perfecto y además me consiguieron buena financiación.",
+              text: "Muy buenos profesionales...",
               name: "Javier García",
+              link: "https://share.google/ficPdfbF2QA2WmW7x",
             },
             {
-              text: "Paulino es muy buen profesional. Sitio de fiar a la hora de comprar un vehículo de segunda mano.",
+              text: "Paulino es muy buen profesional...",
               name: "Antonio Pino",
+              link: "https://share.google/c2Oa8QxjTlui5fyP1",
             },
-          ].map((review, i) => (
-            <div key={i} className="col-12 col-md-6">
-              <div
-                className="p-4 h-100 bg-white rounded-4 shadow-sm transition-card"
-                style={{ transition: "0.3s" }}
+          ].map((review, index) => (
+            <div key={index} className="col-12 col-md-6">
+
+              <a
+                href={review.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", color: "inherit" }}
               >
+                <div className="p-4 h-100 bg-white rounded-4 shadow-sm transition-card">
 
-                <div className="text-warning mb-3">
-                  {Array(5).fill().map((_, i) => (
-                    <FaStar key={i} />
-                  ))}
+                  {/* estrellas */}
+                  <div className="text-warning mb-3">
+                    {Array(5).fill().map((_, starIndex) => (
+                      <FaStar key={starIndex} />
+                    ))}
+                  </div>
+
+                  {/* texto */}
+                  <p className="fst-italic mb-4 text-muted">
+                    “{review.text}”
+                  </p>
+
+                  {/* nombre */}
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <p className="fw-bold mb-0">{review.name}</p>
+
+                    <span className="text-primary small">
+                      Ver en Google →
+                    </span>
+                  </div>
                 </div>
-
-                <p className="fst-italic mb-4 text-muted">
-                  “{review.text}”
-                </p>
-
-                <p className="fw-bold mb-0">{review.name}</p>
-              </div>
+              </a>
             </div>
           ))}
-
         </div>
 
         {/* BUTTON */}
@@ -120,19 +134,7 @@ function Nosotros() {
             Ver más opiniones
           </a>
         </div>
-
       </div>
-
-      {/* hover effect */}
-      <style>
-        {`
-          .transition-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-          }
-        `}
-      </style>
-
     </div>
   );
 }
