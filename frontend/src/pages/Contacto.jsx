@@ -70,7 +70,7 @@ function Contacto() {
                   <textarea className="form-control" rows="4" placeholder="Mensaje"></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" className="btn btn-primary">
                   Enviar mensaje
                 </button>
 
