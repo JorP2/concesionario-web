@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL + "/api/vehiculos";
+const BASE_URL = process.env.REACT_APP_API_URL + "/vehiculos";
 
 // GET 
 // obtener videos por vehículo
