@@ -82,13 +82,13 @@ export const Navbar = () => {
 
                 <ul className="dropdown-menu">
                   <li>
-                    <a href="/whatsapp" className="dropdown-item">
+                    <a href="https://wa.me/34651868230" className="dropdown-item">
                       WhatsApp
                     </a>
                   </li>
 
                   <li>
-                    <a href="/email" className="dropdown-item">
+                    <a href="mailto:nohalesautomoviles@gmail.com" className="dropdown-item">
                       Email
                     </a>
                   </li>
