@@ -1,92 +1,191 @@
 import React from "react";
+import {
+  FaFilter,
+  FaChevronDown,
+  FaChevronUp,
+  FaBroom,
+  FaTimes,
+} from "react-icons/fa";
 
 function FiltroVehiculo({ filtros, onChange, onReset, marcas, anios }) {
-  // Controla si el panel está abierto en móvil
   const [abierto, setAbierto] = React.useState(false);
 
+  const filtrosActivos =
+    [filtros.marca, filtros.anio, filtros.precio].filter((v) => v !== "")
+      .length + (filtros.busqueda.trim() !== "" ? 1 : 0);
+
   return (
-    <div className="card p-3 mb-2 ms-3 bg-light text-dark">
-      {/* Botón solo visible en móvil */}
-      <div className="d-flex justify-content-between align-items-center d-md-none mb-2">
-        <h5 className="mb-0">Filtros</h5>
-        <button
-          className="btn btn-outline-secondary btn-sm"
-          onClick={() => setAbierto(!abierto)}
-        >
-          {abierto ? "Cerrar ▲" : "Abrir ▼"}
-        </button>
-      </div>
+    <div className="card shadow-sm border-0 rounded-4 mb-4">
+      <div className="card-body p-4">
+        {/* HEADER */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 className="mb-0 d-flex align-items-center gap-2">
+            <FaFilter /> Filtros
+            {filtrosActivos > 0 && (
+              <span className="badge bg-primary rounded-pill">
+                {filtrosActivos}
+              </span>
+            )}
+          </h5>
 
-      {/*
-        En escritorio: siempre visible (d-none d-md-block)
-        En móvil: solo si abierto === true
-      */}
-      <div className={`${abierto ? "d-block" : "d-none"} d-md-block`}>
-        <h3 className="d-none d-md-block">¿Buscas algo en específico?</h3>
-
-        {/* Barra de búsqueda */}
-        <div className="input-group mb-3 w-75">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Buscar vehículo..."
-            value={filtros.busqueda}
-            onChange={(e) => onChange("busqueda", e.target.value)}
-          />
-        </div>
-
-        <div className="row g-2">
-          {/* Select marca — opciones dinámicas según los datos reales */}
-          <div className="mb-3 col-md">
-            <select
-              className="form-select"
-              value={filtros.marca}
-              onChange={(e) => onChange("marca", e.target.value)}
-            >
-              <option value="">Todas las marcas</option>
-              {marcas.map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Select año */}
-          <div className="mb-3 col-md">
-            <select
-              className="form-select"
-              value={filtros.anio}
-              onChange={(e) => onChange("anio", e.target.value)}
-            >
-              <option value="">Cualquier año</option>
-              {anios.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Select precio */}
-          <div className="mb-3 col-md">
-            <select
-              className="form-select"
-              value={filtros.precio}
-              onChange={(e) => onChange("precio", e.target.value)}
-            >
-              <option value="">Cualquier precio</option>
-              <option value="10000">Hasta €10.000</option>
-              <option value="20000">Hasta €20.000</option>
-              <option value="30000">Hasta €30.000</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="d-flex justify-content-end gap-2">
-          <button className="btn btn-outline-secondary" onClick={onReset}>
-            Limpiar
+          <button
+            className="btn btn-sm btn-outline-secondary d-md-none"
+            onClick={() => setAbierto(!abierto)}
+          >
+            {abierto ? <FaChevronUp /> : <FaChevronDown />}
           </button>
+        </div>
+
+        {/* CHIPS ACTIVOS */}
+        {filtrosActivos > 0 && (
+          <div className="d-flex flex-wrap gap-2 mb-3">
+            {filtros.busqueda && (
+              <span className="badge bg-light text-dark border">
+                "{filtros.busqueda}"
+                <FaTimes
+                  className="ms-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onChange("busqueda", "")}
+                />
+              </span>
+            )}
+
+            {filtros.marca && (
+              <span className="badge bg-light text-dark border">
+                {filtros.marca}
+                <FaTimes
+                  className="ms-1"
+                  onClick={() => onChange("marca", "")}
+                  style={{ cursor: "pointer" }}
+                />
+              </span>
+            )}
+
+            {filtros.anio && (
+              <span className="badge bg-light text-dark border">
+                {filtros.anio}
+                <FaTimes
+                  className="ms-1"
+                  onClick={() => onChange("anio", "")}
+                  style={{ cursor: "pointer" }}
+                />
+              </span>
+            )}
+
+            {filtros.precio && (
+              <span className="badge bg-light text-dark border">
+                Hasta €{filtros.precio}
+                <FaTimes
+                  className="ms-1"
+                  onClick={() => onChange("precio", "")}
+                  style={{ cursor: "pointer" }}
+                />
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* CONTENIDO */}
+        <div className={`${abierto ? "d-block" : "d-none"} d-md-block`}>
+          {/* BUSCADOR */}
+          <div className="mb-4">
+            <label className="form-label fw-semibold">Buscar</label>
+
+            <div className="input-group">
+              <span className="input-group-text bg-white">
+                <FaFilter />
+              </span>
+
+              <input
+                type="text"
+                className={`form-control ${
+                  filtros.busqueda ? "border-primary shadow-sm" : ""
+                }`}
+                placeholder="Modelo, versión..."
+                value={filtros.busqueda}
+                onChange={(e) => onChange("busqueda", e.target.value)}
+              />
+
+              {filtros.busqueda && (
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => onChange("busqueda", "")}
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* FILTROS */}
+          <div className="row g-3 mb-4">
+            {/* MARCA */}
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Marca</label>
+              <select
+                className={`form-select ${
+                  filtros.marca ? "border-primary shadow-sm" : ""
+                }`}
+                value={filtros.marca}
+                onChange={(e) => onChange("marca", e.target.value)}
+              >
+                <option value="">Todas</option>
+                {marcas.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* AÑO */}
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Año</label>
+              <select
+                className={`form-select ${
+                  filtros.anio ? "border-primary shadow-sm" : ""
+                }`}
+                value={filtros.anio}
+                onChange={(e) => onChange("anio", e.target.value)}
+              >
+                <option value="">Todos</option>
+                {anios.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* PRECIO (SLIDER) */}
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Precio máximo</label>
+
+              <input
+                type="range"
+                min="0"
+                max="50000"
+                step="1000"
+                className="form-range"
+                value={filtros.precio || 50000}
+                onChange={(e) => onChange("precio", e.target.value)}
+              />
+
+              <div className="text-muted small">
+                Hasta €{filtros.precio || "50.000"}
+              </div>
+            </div>
+          </div>
+
+          {/* BOTÓN LIMPIAR */}
+          {filtrosActivos > 0 && (
+            <div className="text-end">
+              <button className="btn btn-outline-danger" onClick={onReset}>
+                <FaBroom className="me-2" />
+                Limpiar filtros
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

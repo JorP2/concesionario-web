@@ -101,7 +101,9 @@ function Vehiculos() {
                   <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
                 ))
               ) : (
-                <p className="ms-3">No hay vehículos con esos filtros.</p>
+                <p className="ms-3">
+                  Lo sentimos, no hay vehículos con esas características aún.
+                </p>
               )}
             </div>
           </div>
