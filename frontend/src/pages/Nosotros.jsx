@@ -35,10 +35,7 @@ function Nosotros() {
         <div className="row g-4 mb-5">
 
           <div className="col-12 col-lg-6">
-            <div
-              className="p-4 h-100 rounded-4 shadow-sm bg-dark text-white transition-card"
-              style={{ transition: "0.3s", cursor: "pointer" }}
-            >
+            <div className="p-4 h-100 rounded-4 shadow-sm bg-dark text-white">
               <h4 className="mb-3">Concesionario de confianza</h4>
               <p className="mb-0 text-white-50">
                 Trabajamos por y para nuestros clientes, ofreciendo vehículos totalmente revisados y con garantía.
@@ -49,10 +46,7 @@ function Nosotros() {
           </div>
 
           <div className="col-12 col-lg-6">
-            <div
-              className="p-4 h-100 rounded-4 shadow-sm bg-white transition-card"
-              style={{ transition: "0.3s", cursor: "pointer" }}
-            >
+            <div className="p-4 h-100 rounded-4 shadow-sm bg-white">
               <h4 className="mb-3">Profesionalidad y transparencia</h4>
               <p className="mb-0 text-muted">
                 Te ofrecemos asesoramiento profesional durante todo el proceso de compra,

@@ -1,5 +1,5 @@
 import { MdEmail, MdPhone, MdLocationOn, MdHome, MdAccessTime } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 
 function Footer() {
   return (
@@ -71,6 +71,29 @@ function Footer() {
               +34 925 39 31 86
             </p>
           </div>
+
+        </div>
+
+        {/* REDES SOCIALES */}
+        <div className="d-flex justify-content-center gap-4 mt-4 pt-3 border-top border-secondary text-white-50">
+
+          <a
+            href="https://www.facebook.com/nohalesauto#"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white fs-5 opacity-75"
+          >
+            <FaFacebookF />
+          </a>
+
+          <a
+            href="https://www.instagram.com/nohalesautomoviles/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white fs-5 opacity-75"
+          >
+            <FaInstagram />
+          </a>
 
         </div>
 

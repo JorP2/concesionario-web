@@ -58,7 +58,7 @@ export const Navbar = () => {
               {/* Coches */}
               <li className="nav-item">
                 <NavLink to="/vehiculos" className="nav-link">
-                  Coches
+                  Vehículos
                 </NavLink>
               </li>
 

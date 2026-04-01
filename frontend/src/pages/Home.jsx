@@ -80,7 +80,7 @@ function Home() {
         {/* Principal */}
         <div className="card border-0 shadow-lg mb-4 overflow-hidden">
           <img
-            src="https://picsum.photos/1200/400?random=2"
+            src="/imagenHome3.jpeg"
             className="card-img"
             alt="Vehículo destacado"
           />
@@ -100,7 +100,7 @@ function Home() {
           <div className="col-md-6">
             <div className="card border-0 shadow-sm overflow-hidden">
               <img
-                src="https://picsum.photos/600/250?random=3"
+                src="/logoNohalesAutomoviles.png"
                 className="card-img"
                 alt="Contacto"
                 style={{ height: "200px", objectFit: "cover" }}
@@ -119,7 +119,7 @@ function Home() {
           <div className="col-md-6">
             <div className="card border-0 shadow-sm overflow-hidden">
               <img
-                src="https://picsum.photos/600/250?random=4"
+                src="/imagenHome2.jpeg"
                 className="card-img"
                 alt="Confianza"
                 style={{ height: "200px", objectFit: "cover" }}

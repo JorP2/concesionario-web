@@ -1,5 +1,5 @@
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 import "../styles/Contacto.css";
 
 function Contacto() {
@@ -166,6 +166,34 @@ function Contacto() {
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Redes Sociales */}
+        <div className="text-center mt-5 pt-3 border-top border-2">
+
+          <p className="text-muted mb-3">
+            Visita nuestras redes sociales:
+          </p>
+
+          <div className="d-flex justify-content-center gap-4">
+            <a
+              href="https://www.facebook.com/nohalesauto#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary fs-4"
+            >
+              <FaFacebookF />
+            </a>
+
+            <a
+              href="https://www.instagram.com/nohalesautomoviles/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-danger fs-4"
+            >
+              <FaInstagram />
+            </a>
           </div>
         </div>
       </div>
