@@ -5,7 +5,12 @@ import { useParams } from "react-router-dom";
 // Componentes
 import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
 // API
-import { getVehiculoById } from "../api/vehiculoApi";
+import {
+  addVehiculo,
+  getVehiculoById,
+  updateVehiculo,
+} from "../api/vehiculoApi";
+import { addImagenes } from "../api/imagenApi";
 
 function VehiculoFormulario() {
   // Obtener el ID del vehículo de la URL
@@ -44,7 +49,28 @@ function VehiculoFormulario() {
       const cargarVehiculo = async () => {
         try {
           const data = await getVehiculoById(id);
-          setVehiculo(data);
+          setVehiculo({
+            marca: data.marca ?? "",
+            modelo: data.modelo ?? "",
+            anio: data.anio ?? "",
+            precio: data.precio ?? "",
+            kilometros: data.kilometros ?? "",
+            combustible: data.combustible ?? "",
+            colorExterior: data.colorExterior ?? "",
+            interior: data.interior ?? "",
+            asientos: data.asientos ?? "",
+            puertas: data.puertas ?? "",
+            motor: data.motor ?? "",
+            cambio: data.cambio ?? "",
+            pegatina: data.pegatina ?? "",
+            descripcion: data.descripcion ?? "",
+            extras: data.extras ?? "",
+            enOferta: data.enOferta ?? false,
+            precioOferta: data.precioOferta ?? "",
+            fechaFinOferta: data.fechaFinOferta ?? "",
+            visible: data.visible ?? true,
+            estadoVenta: data.estadoVenta ?? "en_venta",
+          });
         } catch (error) {
           console.error("Error al cargar el vehículo:", error);
         }
@@ -68,8 +94,22 @@ function VehiculoFormulario() {
     e.preventDefault(); // QuE No recargue
 
     try {
-      console.log("Enviadndo:", vehiculo);
-      // Futuro manejo de la API
+      let vehiculoId;
+
+      if (esEdicion) {
+        await updateVehiculo(id, vehiculo);
+        vehiculoId = id;
+      } else {
+        const data = await addVehiculo(vehiculo);
+        vehiculoId = data.id;
+      }
+
+      // Si hay imágenes nuevas, subirlas
+      if (imagenesNuevas.length > 0) {
+        await addImagenes(vehiculoId, imagenesNuevas);
+      }
+
+      navigate("/administrador");
     } catch (error) {
       console.error("Error al guardar el vehículo:", error);
     }

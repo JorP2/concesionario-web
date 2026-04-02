@@ -1,18 +1,11 @@
 package com.concesionario.backend.servicio;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.concesionario.backend.config.UploadConfig;
 import com.concesionario.backend.dominio.Vehiculo;
 import com.concesionario.backend.dominio.Video;

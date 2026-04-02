@@ -6,7 +6,8 @@ function Home() {
     <div className="home-page bg-light">
 
       {/* HERO */}
-      <div className="hero-section text-white d-flex align-items-center "
+      <div
+        className="hero-section text-white d-flex align-items-center"
         style={{
           backgroundImage: `url(/imagenHome.jpeg)`
         }}
@@ -35,7 +36,7 @@ function Home() {
         <div className="row g-4">
 
           <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+            <div className="card h-100 text-center border-0 shadow-sm">
               <div className="card-body">
                 <MdCheck size={45} className="text-primary mb-3" />
                 <h5>Máxima garantía</h5>
@@ -47,7 +48,7 @@ function Home() {
           </div>
 
           <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+            <div className="card h-100 text-center border-0 shadow-sm">
               <div className="card-body">
                 <MdEuroSymbol size={45} className="text-primary mb-3" />
                 <h5>Financiación flexible</h5>
@@ -59,7 +60,7 @@ function Home() {
           </div>
 
           <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm">
+            <div className="card h-100 text-center border-0 shadow-sm">
               <div className="card-body">
                 <MdLocationOn size={45} className="text-primary mb-3" />
                 <h5>Ubicación</h5>
@@ -75,18 +76,78 @@ function Home() {
 
       {/* DESTACADO */}
       <div className="container my-5">
-        <div className="card border-0 shadow-lg overflow-hidden featured-card">
+
+        {/* Principal */}
+        <div className="card border-0 shadow-lg mb-4 overflow-hidden">
           <img
             src="https://picsum.photos/1200/400?random=2"
             className="card-img"
             alt="Vehículo destacado"
           />
-          <div className="card-img-overlay d-flex align-items-end overlay-dark">
+          <div className="card-img-overlay d-flex align-items-end bg-dark bg-opacity-50">
             <div className="text-white">
               <h2 className="fw-bold">Stock renovado semanalmente</h2>
               <p>
                 Seleccionamos cada vehículo con revisión completa y garantía.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Secundarios compactos */}
+        <div className="row g-3">
+
+          <div className="col-md-6">
+            <div className="card border-0 shadow-sm overflow-hidden">
+              <img
+                src="https://picsum.photos/600/250?random=3"
+                className="card-img"
+                alt="Contacto"
+                style={{ height: "200px", objectFit: "cover" }}
+              />
+              <div className="card-img-overlay d-flex align-items-end bg-dark bg-opacity-50">
+                <div className="text-white">
+                  <h5 className="fw-bold mb-1">Formas de contacto</h5>
+                  <p className="mb-0 small">
+                    Mail, WhatsApp, teléfono o visita nuestras instalaciones.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="card border-0 shadow-sm overflow-hidden">
+              <img
+                src="https://picsum.photos/600/250?random=4"
+                className="card-img"
+                alt="Confianza"
+                style={{ height: "200px", objectFit: "cover" }}
+              />
+              <div className="card-img-overlay d-flex align-items-end bg-dark bg-opacity-50">
+                <div className="text-white">
+                  <h5 className="fw-bold mb-1">Concesionario de confianza</h5>
+                  <p className="mb-0 small">
+                    Te ofrecemos los mejores vehículos de segunda mano.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Admin discreto */}
+          <div className="col-12">
+            <div className="card border-0 bg-light text-center py-3">
+              <div className="card-body py-2">
+                <small className="text-muted">
+                  ¿Trabajas aquí?
+                </small>
+                <div>
+                  <a href="/login" className="text-decoration-none small fw-semibold">
+                    Acceder como empleado
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

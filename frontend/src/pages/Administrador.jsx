@@ -1,6 +1,6 @@
 import React from "react";
 // API
-import { getVehiculos } from "../api/vehiculoApi";
+import { deleteVehiculo, getVehiculos } from "../api/vehiculoApi";
 // Componentes
 import VehiculosLista from "../components/admin/VehiculosLista";
 import { Link } from "react-router-dom";
@@ -55,6 +55,18 @@ function Administrador() {
       vehiculo.modelo.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
+  // Funcion eliminar un vehículo de la lista (se llama desde CardVehiculoAdmin)
+  const handleEliminar = async (vehiculoId) => {
+    try {
+      await deleteVehiculo(vehiculoId);
+
+      // Actualizar la lista local sin recargar toda la página
+      setVehiculos((prev) => prev.filter((v) => v.id !== vehiculoId));
+    } catch (error) {
+      console.error("Error al eliminar el vehículo:", error);
+    }
+  };
+
   return (
     <>
       <div className="container mt-5">
@@ -76,7 +88,10 @@ function Administrador() {
           </p>
         )}
         {!loading && !error && (
-          <VehiculosLista vehiculos={vehiculosFiltrados} />
+          <VehiculosLista
+            vehiculos={vehiculosFiltrados}
+            onEliminar={handleEliminar}
+          />
         )}
 
         {/* BOTON LOGOUT */}
