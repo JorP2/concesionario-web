@@ -17,6 +17,9 @@ public class ImagenController {
 
     @Autowired
     private ImagenService imagenService;
+    
+    @Autowired
+    private DTOConverter dtoConverter; 
 
     // SUBIR MÚLTIPLES IMÁGENES
     @PostMapping
@@ -26,7 +29,7 @@ public class ImagenController {
         try {
             List<Imagen> imagenes = imagenService.subirMultiplesImagenes(vehiculoId, archivos);
             List<ImagenResponseDTO> dtos = imagenes.stream()
-                    .map(DTOConverter::toImagenResponseDTO)
+                    .map(dtoConverter::toImagenResponseDTO)  
                     .toList();
             return ResponseEntity.ok(dtos);
         } catch (IOException e) {
@@ -39,7 +42,7 @@ public class ImagenController {
     public ResponseEntity<List<ImagenResponseDTO>> obtenerImagenes(@PathVariable Long vehiculoId) {
         List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(vehiculoId);
         List<ImagenResponseDTO> dtos = imagenes.stream()
-                .map(DTOConverter::toImagenResponseDTO)
+                .map(dtoConverter::toImagenResponseDTO) 
                 .toList();
         return ResponseEntity.ok(dtos);
     }
