@@ -1,7 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../styles/VehiculoDetalle.css"
-import { FaGasPump, FaCogs, FaTachometerAlt, FaArrowLeft } from "react-icons/fa";
+import "../styles/vehiculoDetalle.css";
+import {
+  FaGasPump,
+  FaCogs,
+  FaTachometerAlt,
+  FaArrowLeft,
+} from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
 import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 
@@ -18,14 +23,20 @@ function VehiculoDetalle() {
   }, [id]);
 
   if (error) {
-    return <p className="text-center mt-5 text-danger">Error al cargar el vehículo</p>;
+    return (
+      <p className="text-center mt-5 text-danger">
+        Error al cargar el vehículo
+      </p>
+    );
   }
 
   if (!vehiculo) {
-    return <div className="text-center mt-5">
-              <div className="spinner-border" role="status"></div>
-              <p className="mt-2">Cargando vehículo...</p>
-            </div>
+    return (
+      <div className="text-center mt-5">
+        <div className="spinner-border" role="status"></div>
+        <p className="mt-2">Cargando vehículo...</p>
+      </div>
+    );
   }
 
   return (
@@ -48,14 +59,10 @@ function VehiculoDetalle() {
               <h2 className="text-decoration-line-through text-muted me-2">
                 {vehiculo.precio}€
               </h2>
-              <h1 className="fw-bold text-success">
-                {vehiculo.precioOferta}€
-              </h1>
+              <h1 className="fw-bold text-success">{vehiculo.precioOferta}€</h1>
             </>
           ) : (
-            <h1 className="fw-bold text-primary">
-              {vehiculo.precio}€
-            </h1>
+            <h1 className="fw-bold text-primary">{vehiculo.precio}€</h1>
           )}
         </div>
       </div>
@@ -67,14 +74,21 @@ function VehiculoDetalle() {
           alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           className="img-fluid rounded"
         />
-        {vehiculo.descripcion && <p className="text-muted fst-italic mt-2">{vehiculo.descripcion}</p>}
+        {vehiculo.descripcion && (
+          <p className="text-muted fst-italic mt-2">{vehiculo.descripcion}</p>
+        )}
       </div>
 
       {/* Mini-cards con iconos pegadas */}
       <div className="d-flex text-center my-3" style={{ gap: 0 }}>
         <div
           className="card bg-dark text-light flex-fill overflow-hidden"
-          style={{ borderTopLeftRadius: '1rem', borderBottomLeftRadius: '1rem', borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+          style={{
+            borderTopLeftRadius: "1rem",
+            borderBottomLeftRadius: "1rem",
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
         >
           <div className="card-body d-flex flex-column align-items-center">
             <FaGasPump size={40} className="mb-1" />
@@ -83,7 +97,10 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card bg-dark text-light flex-fill border-start border-end border-start-secondary border-end-secondary" style={{ borderRadius: 0 }}>
+        <div
+          className="card bg-dark text-light flex-fill border-start border-end border-start-secondary border-end-secondary"
+          style={{ borderRadius: 0 }}
+        >
           <div className="card-body d-flex flex-column align-items-center">
             <FaCogs size={40} className="mb-1" />
             <p className="mb-1">Motor</p>
@@ -91,17 +108,27 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card bg-dark text-light flex-fill border-end" style={{ borderRadius: 0 }}>
+        <div
+          className="card bg-dark text-light flex-fill border-end"
+          style={{ borderRadius: 0 }}
+        >
           <div className="card-body d-flex flex-column align-items-center">
             <FaTachometerAlt size={40} className="mb-1" />
             <p className="mb-1">Kilómetros</p>
-            <h3 className="card-title">{vehiculo.kilometros.toLocaleString()} km</h3>
+            <h3 className="card-title">
+              {vehiculo.kilometros.toLocaleString()} km
+            </h3>
           </div>
         </div>
 
         <div
           className="card bg-dark text-light flex-fill overflow-hidden"
-          style={{ borderTopRightRadius: '1rem', borderBottomRightRadius: '1rem', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+          style={{
+            borderTopRightRadius: "1rem",
+            borderBottomRightRadius: "1rem",
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+          }}
         >
           <div className="card-body d-flex flex-column align-items-center">
             <GiGearStick size={40} className="mb-1" />
@@ -134,7 +161,7 @@ function VehiculoDetalle() {
             <h5>{vehiculo.pegatina}</h5>
           </div>
         </div>
-        
+
         <div className="stats-row flex-row">
           <div className="stat-circle">
             <p>Color</p>

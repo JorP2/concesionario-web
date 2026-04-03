@@ -1,21 +1,18 @@
 import { MdCheck, MdEuroSymbol, MdLocationOn } from "react-icons/md";
-import "../styles/Home.css";
+import "../styles/home.css";
 
 function Home() {
   return (
     <div className="home-page bg-light">
-
       {/* HERO */}
       <div
         className="hero-section text-white d-flex align-items-center"
         style={{
-          backgroundImage: `url(/imagenHome.jpeg)`
+          backgroundImage: `url(/imagenHome.jpeg)`,
         }}
       >
         <div className="hero-content container text-center">
-          <h1 className="display-4 fw-bold mb-3">
-            Nohales Automóviles
-          </h1>
+          <h1 className="display-4 fw-bold mb-3">Nohales Automóviles</h1>
           <p className="lead">
             Vehículos de confianza · Más de 25 años de experiencia
           </p>
@@ -34,7 +31,6 @@ function Home() {
       {/* FEATURES */}
       <div className="container my-5">
         <div className="row g-4">
-
           <div className="col-md-4">
             <div className="card h-100 text-center border-0 shadow-sm">
               <div className="card-body">
@@ -70,13 +66,11 @@ function Home() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
       {/* DESTACADO */}
       <div className="container my-5">
-
         {/* Principal */}
         <div className="card border-0 shadow-lg mb-4 overflow-hidden">
           <img
@@ -96,7 +90,6 @@ function Home() {
 
         {/* Secundarios compactos */}
         <div className="row g-3">
-
           <div className="col-md-6">
             <div className="card border-0 shadow-sm overflow-hidden">
               <img
@@ -139,11 +132,12 @@ function Home() {
           <div className="col-12">
             <div className="card border-0 bg-light text-center py-3">
               <div className="card-body py-2">
-                <small className="text-muted">
-                  ¿Trabajas aquí?
-                </small>
+                <small className="text-muted">¿Trabajas aquí?</small>
                 <div>
-                  <a href="/login" className="text-decoration-none small fw-semibold">
+                  <a
+                    href="/login"
+                    className="text-decoration-none small fw-semibold"
+                  >
                     Acceder como empleado
                   </a>
                 </div>

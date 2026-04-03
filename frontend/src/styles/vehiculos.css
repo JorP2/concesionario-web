@@ -1,97 +1,145 @@
-h1 {
-    text-align: center;
-    margin-top: 20px;
+/* ── Layout principal ── */
+.vehiculos-layout {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem clamp(1rem, 3vw, 2rem);
+  align-items: flex-start;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
+/* ── Sidebar escritorio ── */
+.vehiculos-sidebar {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 1rem;
+}
+
+/* ── Contenido ── */
+.vehiculos-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Grid: 3 columnas, tamaño fijo ── */
 .vehiculos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-/* CARD */
-.vehiculo-card {
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-
-  transition: all 0.25s ease;
-  cursor: pointer;
+/* ── Barra sticky móvil (oculta en escritorio) ── */
+.filtro-telefono-bar {
+  display: none;
 }
 
-.vehiculo-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+/* ── Cabecera del drawer (oculta en escritorio) ── */
+.filtro-drawer-header {
+  display: none;
 }
 
-/* IMG */
-.vehiculo-img {
-  height: 180px;
-  overflow: hidden;
+/* ── Overlay oscuro ── */
+.filtro-overlay {
+  display: none;
 }
 
-.vehiculo-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
 
-.vehiculo-card:hover img {
-  transform: scale(1.05);
-}
+   /* MÓVIL  (< 768px) */
+@media (max-width: 767px) {
 
-/* INFO */
-.vehiculo-info {
-  padding: 16px;
-}
+  /* Barra sticky visible */
+  .filtro-telefono-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-.vehiculo-info h5 {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
+  .filtro-telefono-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    position: relative;
+  }
 
-/* PRECIO */
-.precio {
-  display: block;
-  margin-top: 10px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #0d6efd;
-}
+  /* Punto rojo si hay filtros activos */
+  .filtro-telefono-badge {
+    width: 8px;
+    height: 8px;
+    background: #dc3545;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+  }
 
-/* OVERLAY */
-.vehiculo-img {
-  position: relative;
-}
+  /* Layout sin sidebar */
+  .vehiculos-layout {
+    padding: 0.75rem;
+    max-width: 100%;
+  }
 
-.vehiculo-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
+  /* Sidebar como drawer lateral */
+  .vehiculos-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 200;
+    padding: 1rem;
+    transition: left 0.25s ease;
+    box-shadow: none;
+  }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .vehiculos-sidebar.abierto {
+    left: 0;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
 
-  opacity: 0;
-  transition: 0.3s ease;
-}
+  /* Cabecera del drawer */
+  .filtro-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+  }
 
-.overlay-icon {
-  font-size: 38px;
-  color: white;
-  transition: transform 0.2s ease;
-}
+  .filtro-drawer-header button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+  }
 
-/* HOVER */
-.vehiculo-card:hover .vehiculo-overlay {
-  opacity: 1;
-}
+  /* Overlay visible */
+  .filtro-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 150;
+  }
 
-.vehiculo-card:hover .overlay-icon {
-  transform: scale(1.15);
+  /* Grid 1 columna en móvil */
+  .vehiculos-grid {
+    grid-template-columns: 1fr;
+  }
 }
