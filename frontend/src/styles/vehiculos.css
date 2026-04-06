@@ -10,7 +10,7 @@
 
 /* ── Sidebar escritorio ── */
 .vehiculos-sidebar {
-  width: 400px;
+  width: 280px;
   flex-shrink: 0;
   position: sticky;
   top: 1rem;
@@ -20,13 +20,14 @@
 .vehiculos-content {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
-/* ── Grid: 3 columnas, tamaño fijo ── */
+/* ── Grid: auto-fill con mínimo fijo ── */
 .vehiculos-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
 }
 
 /* ── Barra sticky móvil (oculta en escritorio) ── */
@@ -45,7 +46,7 @@
 }
 
 
-   /* MÓVIL  (< 768px) */
+/* ── MÓVIL (< 768px) ── */
 @media (max-width: 767px) {
 
   /* Barra sticky visible */

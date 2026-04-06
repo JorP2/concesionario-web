@@ -70,8 +70,17 @@ function Administrador() {
   return (
     <>
       <div className="container mt-5">
-        <h1>Panel de Administración</h1>
-        <p>Bienvenido, {usuario.nombre}.</p>
+        {/* HEADER */}
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h1>Panel de Administración</h1>
+          <span className="text-muted">
+            {vehiculosFiltrados.length} vehículos
+          </span>
+        </div>
+
+        {/* SUBHEADER */}
+        <p className="mb-4">Bienvenido, {usuario.nombre}.</p>
+
         {/* BUSCADOR */}
         <input
           type="text"
@@ -80,13 +89,16 @@ function Administrador() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
+
         {/* LISTA */}
         {loading && <p className="text-center mt-4">Cargando vehículos...</p>}
+
         {!loading && error && (
           <p className="text-center mt-4 text-danger">
             Error al cargar los vehículos.
           </p>
         )}
+
         {!loading && !error && (
           <VehiculosLista
             vehiculos={vehiculosFiltrados}
@@ -94,18 +106,13 @@ function Administrador() {
           />
         )}
 
-        {/* BOTON LOGOUT */}
-        <div className="d-flex">
-          <Link
-            to="/administrador/vehiculo-form"
-            className="btn btn-success mt-4 w-25 d-block mx-auto"
-          >
+        {/* BOTONES */}
+        <div className="d-flex gap-3 mt-4">
+          <Link to="/administrador/vehiculo-form" className="btn btn-success">
             Añadir
           </Link>
-          <button
-            onClick={logout}
-            className="btn btn-danger mt-4 w-25 d-block mx-auto"
-          >
+
+          <button onClick={logout} className="btn btn-danger">
             Logout
           </button>
         </div>

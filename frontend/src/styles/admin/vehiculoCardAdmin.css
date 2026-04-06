@@ -1,0 +1,29 @@
+.img-admin {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px 0 0 8px;
+}
+
+.vehiculo-admin-card {
+  border-radius: 12px;
+  transition: 0.2s ease;
+  animation: fadeIn 0.5s ease;
+}
+
+.vehiculo-admin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* ── ANIMACIONES ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

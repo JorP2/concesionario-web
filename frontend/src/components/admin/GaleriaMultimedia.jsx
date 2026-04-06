@@ -1,6 +1,10 @@
 import React from "react";
 // APIs
-import { eliminarImagen, getImagenesByVehiculoId } from "../../api/imagenApi";
+import {
+  cambiarPortada,
+  eliminarImagen,
+  getImagenesByVehiculoId,
+} from "../../api/imagenApi";
 import { getVideosByVehiculoId } from "../../api/videoApi";
 
 // Iconos
@@ -34,17 +38,34 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   }, [vehiculoId]);
 
   // Funcion para eliminar una imagen (tanto de la API como del estado local)
-  const handleEliminarImg = async (imagenId) => {
+  const handleEliminarImg = async (vehiculoId, imagenId) => {
     try {
       if (!imagenId) return;
 
-      await eliminarImagen(imagenId);
+      await eliminarImagen(vehiculoId, imagenId);
 
       setImagenesExistentes(
         imagenesExistentes.filter((img) => img.id !== imagenId),
       );
     } catch (error) {
       console.error("Error al eliminar la imagen:", error);
+    }
+  };
+
+  // Funcion para cambiar la portada
+  const handlePortada = async (vehiculoId, imagenId) => {
+    try {
+      await cambiarPortada(vehiculoId, imagenId);
+
+      setImagenesExistentes((prev) =>
+        prev.map((img) =>
+          img.id === imagenId
+            ? { ...img, esPortada: true }
+            : { ...img, esPortada: false },
+        ),
+      );
+    } catch (error) {
+      console.error("Error al cambiar la portada:", error);
     }
   };
 
@@ -71,10 +92,10 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
 
         {/*grid de fotos */}
         {cargando ? (
-          // situacion 1 - Catgando...
+          // situacion 1 - Cargando...
           <div className="row g-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="col-6 col-md-3">
+              <div key={i} className="col-6 col-md-3 col-lg-2">
                 <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                   <div className="placeholder-glow w-100 h-100">
                     <span className="placeholder w-100 h-100 rounded"></span>
@@ -84,17 +105,16 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
             ))}
           </div>
         ) : (
-          //<p className="text-muted small">Sin imagenes disponibles</p> // situacion 3
           <div>
             <div className="row g-2">
               {imagenesExistentes.map((img) => (
-                <div key={img.id} className="col-6 col-md-3">
+                <div key={img.id} className="col-6 col-md-3 col-lg-2">
                   <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                     <img
-                      src={`${process.env.REACT_APP_API_URL.replace("/api", "")}/uploads/vehiculos/${vehiculoId}/imagenes/${img.url}`}
+                      src={img.url}
                       className="w-100 h-100 position-absolute top-0 start-0"
                       style={{ objectFit: "cover" }}
-                      alt={`Imagen ${img.orden + 1}`}
+                      alt={`Imagen ${img.marca} ${img.modelo}`}
                     />
 
                     {/* Portada */}
@@ -115,13 +135,18 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
                       {!img.esPortada && (
-                        <button className="btn btn-sm btn-light w-100">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-light w-100"
+                          onClick={() => handlePortada(vehiculoId, img.id)}
+                        >
                           Portada
                         </button>
                       )}
                       <button
+                        type="button"
                         className="btn btn-sm btn-danger w-100"
-                        onClick={() => handleEliminarImg(img.id)}
+                        onClick={() => handleEliminarImg(vehiculoId, img.id)}
                       >
                         Eliminar
                       </button>
@@ -131,7 +156,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
               ))}
 
               {/* Botón agregar*/}
-              <div className="col-6 col-md-3">
+              <div className="col-6 col-md-3 col-lg-2">
                 <div
                   className="ratio ratio-1x1 border rounded"
                   style={{ cursor: "pointer", borderStyle: "dashed" }}
@@ -152,7 +177,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                 </h6>
                 <div className="row g-2">
                   {imagenesNuevas.map((archivo, i) => (
-                    <div key={i} className="col-6 col-md-3">
+                    <div key={i} className="col-6 col-md-3 col-lg-2">
                       <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                         <img
                           src={URL.createObjectURL(archivo)}
@@ -187,7 +212,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
       </div>
 
       {/* Sección videos */}
-      <div>
+      <div className="mt-5">
         <h5>Videos</h5>
         {vehiculoId ? (
           <div>{/*contenido de videos */}</div>

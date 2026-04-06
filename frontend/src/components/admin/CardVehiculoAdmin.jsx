@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+// Styles
+import "../../styles/admin/vehiculoCardAdmin.css";
 
 function CardVehiculoAdmin({ vehiculo, onEliminar }) {
   // Funcion para manejar eliminar
@@ -12,13 +14,16 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
 
   return (
     <>
-      <div className="card shadow-sm">
+      <div className="card shadow-sm vehiculo-admin-card">
         <div className="row g-0 align-items-center">
           {/* IMAGEN */}
           <div className="col-md-3">
             <img
-              src={`https://picsum.photos/300/200?random=${vehiculo.id}`}
-              className="img-fluid rounded-start"
+              src={
+                vehiculo.imagenPortada ||
+                `https://picsum.photos/300/200?random=${vehiculo.id}`
+              }
+              className="img-admin"
               alt={`${vehiculo.marca} ${vehiculo.modelo}`}
             />
           </div>
@@ -29,6 +34,18 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
               <h5 className="card-title">
                 {vehiculo.marca} {vehiculo.modelo}
               </h5>
+
+              <p className="card-text mb-1">
+                <strong>Kilómetros:</strong> {vehiculo.kilometros}
+              </p>
+
+              <p className="card-text mb-1">
+                <strong>Combustible:</strong> {vehiculo.combustible}
+              </p>
+
+              <p className="card-text mb-1">
+                <strong>Cambio:</strong> {vehiculo.cambio}
+              </p>
 
               <p className="card-text mb-1">
                 <strong>Año:</strong> {vehiculo.anio}

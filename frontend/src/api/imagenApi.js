@@ -1,5 +1,5 @@
 const BASE_URL = process.env.REACT_APP_API_URL + "/vehiculos";
-
+//const BaSE_URL_IMAGENES = process.env.REACT_APP_API_URL + "/imagenes";
 // GET 
 // obtener imágenes por vehículo
 export const getImagenesByVehiculoId = async (vehiculoId) => {
@@ -63,9 +63,9 @@ export const reordenarImagenes = async (vehiculoId, idsImagenes) => {
 
 // DELETE 
 // eliminar imagen
-export const eliminarImagen = async (imagenId) => {
+export const eliminarImagen = async (vehiculoId, imagenId) => {
     try {
-        const response = await fetch(`${BASE_URL}/imagenes/${imagenId}`, {
+        const response = await fetch(`${BASE_URL}/${vehiculoId}/imagenes/${imagenId}`, {
             method: "DELETE",
         });
         if (!response.ok) throw new Error("Error al eliminar la imagen");

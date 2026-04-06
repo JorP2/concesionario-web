@@ -34,7 +34,10 @@ const CardVehiculoGPT = ({ vehiculo }) => {
         {/* ── IMAGEN ── */}
         <div className="vehiculo-img" onClick={() => setShowGallery(true)}>
           <img
-            src={`https://picsum.photos/400/240?random=${vehiculo.id}`}
+            src={
+              vehiculo.imagenPortada ||
+              `https://picsum.photos/400/225?random=${vehiculo.id}`
+            }
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           />
 
@@ -102,17 +105,14 @@ const CardVehiculoGPT = ({ vehiculo }) => {
 
           {/* Año */}
           {vehiculo.anio && (
-            <div className="vehiculo-anio">
+            <div className="spec-item vehiculo-anio">
               <FaCalendarAlt size={12} />
               <span>{vehiculo.anio}</span>
             </div>
           )}
 
           {/* CTA */}
-          <Link
-            className="btn btn-outline-success w-100 mt-2"
-            to={`/vehiculos/${vehiculo.id}`}
-          >
+          <Link className="btn-ver" to={`/vehiculos/${vehiculo.id}`}>
             Ver modelo →
           </Link>
         </div>

@@ -117,7 +117,7 @@ function VehiculoFormulario() {
 
   return (
     <>
-      <div className="container-fluid px-4">
+      <div className="containear-fluid px-4">
         <button
           className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
           onClick={() => navigate(-1)}
