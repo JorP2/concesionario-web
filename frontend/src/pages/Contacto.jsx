@@ -1,6 +1,6 @@
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
-import "../styles/Contacto.css";
+import "../styles/contacto.css";
 
 function Contacto() {
   return (
@@ -176,10 +176,7 @@ function Contacto() {
 
         {/* Redes Sociales */}
         <div className="text-center mt-5 pt-3 border-top border-2">
-
-          <p className="text-muted mb-3">
-            Visita nuestras redes sociales:
-          </p>
+          <p className="text-muted mb-3">Visita nuestras redes sociales:</p>
 
           <div className="d-flex justify-content-center gap-4">
             <a
