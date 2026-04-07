@@ -13,8 +13,10 @@ import {
 } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
+// style
+import "../styles/vehiculoCard.css";
 
-const CardVehiculoGPT = ({ vehiculo }) => {
+const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
   const [showGallery, setShowGallery] = React.useState(false);
 
   const getFuelIcon = (tipo) => {
@@ -40,6 +42,12 @@ const CardVehiculoGPT = ({ vehiculo }) => {
             }
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           />
+
+          {vendido && <div className="vendido-ribbon">VENDIDO</div>}
+
+          {vehiculo.enOferta && vehiculo.precioOferta && (
+            <div className="oferta-ribbon">OFERTA</div>
+          )}
 
           {/* Badges superiores */}
           <div className="vehiculo-badges">
@@ -69,9 +77,20 @@ const CardVehiculoGPT = ({ vehiculo }) => {
             </div>
             <div className="vehiculo-price-block">
               <span className="price-label">Desde</span>
-              <span className="precio">
-                €{Number(vehiculo.precio).toLocaleString("es-ES")}
-              </span>
+              {vehiculo.enOferta && vehiculo.precioOferta ? (
+                <>
+                  <span className="precio-tachado">
+                    €{Number(vehiculo.precio).toLocaleString("es-ES")}
+                  </span>
+                  <span className="precio precio-oferta">
+                    €{Number(vehiculo.precioOferta).toLocaleString("es-ES")}
+                  </span>
+                </>
+              ) : (
+                <span className="precio">
+                  €{Number(vehiculo.precio).toLocaleString("es-ES")}
+                </span>
+              )}
             </div>
           </div>
 
@@ -105,7 +124,7 @@ const CardVehiculoGPT = ({ vehiculo }) => {
 
           {/* Año */}
           {vehiculo.anio && (
-            <div className="spec-item vehiculo-anio">
+            <div className="vehiculo-anio">
               <FaCalendarAlt size={12} />
               <span>{vehiculo.anio}</span>
             </div>

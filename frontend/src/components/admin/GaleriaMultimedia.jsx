@@ -5,7 +5,11 @@ import {
   eliminarImagen,
   getImagenesByVehiculoId,
 } from "../../api/imagenApi";
-import { getVideosByVehiculoId } from "../../api/videoApi";
+import {
+  addVideo,
+  eliminarVideo,
+  getVideosByVehiculoId,
+} from "../../api/videoApi";
 
 // Iconos
 import { FaPlus, FaTimes } from "react-icons/fa";
@@ -15,6 +19,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   const [videosExistentes, setVideosExistentes] = React.useState([]);
   const [cargando, setCargando] = React.useState(false);
   const inputImagenRef = React.useRef(null);
+  const inputVideoRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!vehiculoId) return; // Si no hay ID, no hacemos nada
@@ -73,6 +78,30 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   const handleSeleccionarImagenes = (e) => {
     const archivos = Array.from(e.target.files);
     setImagenesNuevas((prev) => [...prev, ...archivos]);
+  };
+
+  // Funciones VIDEOS
+  const handleEliminarVideo = async (videoId) => {
+    try {
+      await eliminarVideo(videoId);
+      setVideosExistentes((prev) => prev.filter((v) => v.id !== videoId));
+    } catch (error) {
+      console.error("Error al eliminar el video:", error);
+    }
+  };
+
+  const handleSeleccionarVideo = async (e) => {
+    const archivos = Array.from(e.target.files);
+    for (const archivo of archivos) {
+      try {
+        const videoGuardado = await addVideo(vehiculoId, archivo);
+        setVideosExistentes((prev) => [...prev, videoGuardado]);
+      } catch (error) {
+        console.error("Error al subir video:", error);
+      }
+    }
+    // Resetea el input para permitir subir el mismo archivo otra vez
+    e.target.value = "";
   };
 
   return (
@@ -215,7 +244,68 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
       <div className="mt-5">
         <h5>Videos</h5>
         {vehiculoId ? (
-          <div>{/*contenido de videos */}</div>
+          <div className="mt-5">
+            <h5>Videos</h5>
+            {vehiculoId ? (
+              <div>
+                {/* Sección videos */}
+                <input
+                  type="file"
+                  ref={inputVideoRef}
+                  className="d-none"
+                  multiple
+                  accept="video/*"
+                  onChange={handleSeleccionarVideo}
+                />
+
+                <div className="row g-2">
+                  {videosExistentes.map((vid) => (
+                    <div key={vid.id} className="col-12 col-md-6 col-lg-4">
+                      <div className="position-relative rounded overflow-hidden">
+                        <video
+                          src={vid.url}
+                          className="w-100 rounded"
+                          style={{ maxHeight: "180px", objectFit: "cover" }}
+                          controls
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
+                          style={{
+                            width: "22px",
+                            height: "22px",
+                            borderRadius: "50%",
+                          }}
+                          onClick={() => handleEliminarVideo(vid.id)}
+                        >
+                          <FaTimes size={10} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Botón agregar */}
+                  <div className="col-12 col-md-6 col-lg-4">
+                    <div
+                      className="border rounded d-flex align-items-center justify-content-center"
+                      style={{
+                        height: "180px",
+                        cursor: "pointer",
+                        borderStyle: "dashed",
+                      }}
+                      onClick={() => inputVideoRef.current.click()}
+                    >
+                      <FaPlus size={28} className="text-muted" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-muted small">
+                Guarda el vehículo primero para poder subir videos
+              </p>
+            )}
+          </div>
         ) : (
           <p className="text-muted small">
             Guarda el vehículo primero para poder subir videos

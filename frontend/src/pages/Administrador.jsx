@@ -4,16 +4,12 @@ import { deleteVehiculo, getVehiculos } from "../api/vehiculoApi";
 // Componentes
 import VehiculosLista from "../components/admin/VehiculosLista";
 import { Link } from "react-router-dom";
+// Styles
+import "../styles/admin/administrador.css";
 
 function Administrador() {
   // Constante del usuario logueado
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-
-  // Función para cerrar sesión
-  const logout = () => {
-    localStorage.removeItem("usuario");
-    window.location.href = "/";
-  };
 
   // Vehiculos
   const [vehiculos, setVehiculos] = React.useState([]);
@@ -71,15 +67,24 @@ function Administrador() {
     <>
       <div className="container mt-5">
         {/* HEADER */}
-        <div className="d-flex justify-content-between align-items-center mb-2">
-          <h1>Panel de Administración</h1>
-          <span className="text-muted">
-            {vehiculosFiltrados.length} vehículos
-          </span>
-        </div>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          {/* IZQUIERDA */}
+          <div>
+            <h1 className="mb-0">Panel de Administración</h1>
+            <small className="text-muted">Bienvenido, {usuario.nombre}</small>
+          </div>
 
-        {/* SUBHEADER */}
-        <p className="mb-4">Bienvenido, {usuario.nombre}.</p>
+          {/* DERECHA */}
+          <div className="d-flex align-items-center gap-3">
+            <span className="text-muted">
+              {vehiculosFiltrados.length} vehículos
+            </span>
+
+            <Link to="/administrador/vehiculo-form" className="btn btn-success">
+              + Añadir vehículo
+            </Link>
+          </div>
+        </div>
 
         {/* BUSCADOR */}
         <input
@@ -105,17 +110,6 @@ function Administrador() {
             onEliminar={handleEliminar}
           />
         )}
-
-        {/* BOTONES */}
-        <div className="d-flex gap-3 mt-4">
-          <Link to="/administrador/vehiculo-form" className="btn btn-success">
-            Añadir
-          </Link>
-
-          <button onClick={logout} className="btn btn-danger">
-            Logout
-          </button>
-        </div>
       </div>
     </>
   );

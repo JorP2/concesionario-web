@@ -1,4 +1,44 @@
-nav.navbar .navbar-nav .nav-link {
-  padding-left: 1rem;
-  padding-right: 1rem;
+.topbar {
+  background: #198754;
+  color: white;
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+.topbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.topbar span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.topbar svg {
+  font-size: 14px;
+}
+
+/* separadores más finos */
+.topbar span:not(:last-child)::after {
+  content: "•";
+  margin-left: 12px;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    display: none;
+  }
 }

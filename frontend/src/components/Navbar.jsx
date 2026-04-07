@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 // Icons
-import { FaUserCircle } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaEuroSign,
+  FaPhone,
+  FaUserCircle,
+  FaWhatsapp,
+} from "react-icons/fa";
 // styles
 import "../styles/navbar.css";
 
@@ -18,10 +24,7 @@ export const Navbar = () => {
 
   // Bloque de usuario reutilizable — cambia según si hay sesión o no
   const UserDesktop = () => (
-    <div
-      className="ms-3 user-dropdown-wrapper d-none d-lg-block"
-      style={{ position: "relative" }}
-    >
+    <div className="ms-3 user-dropdown-wrapper d-none d-lg-block">
       <button
         className="btn btn-link p-1 border-0"
         onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -32,9 +35,9 @@ export const Navbar = () => {
       {dropdownOpen && (
         <div
           style={{
-            position: "fixed",
-            top: "56px",
-            right: "12px",
+            position: "absolute",
+            top: "110%",
+            right: 0,
             zIndex: 9999,
             backgroundColor: "white",
             borderRadius: "8px",
@@ -106,6 +109,27 @@ export const Navbar = () => {
         />
       )}
 
+      {/* TOPBAR (AQUÍ) */}
+      <div className="topbar">
+        <div className="container">
+          <div className="topbar-content">
+            <span>
+              <FaWhatsapp /> 651 86 82 30
+            </span>
+            <span>
+              <FaEuroSign /> Mejor precio
+            </span>
+            <span>
+              <FaPhone /> 925 39 31 86
+            </span>
+            <span>
+              <FaEnvelope /> nohalesautomoviles@gmail.com
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVBAR */}
       <nav
         className="navbar navbar-expand-lg navbar-dark bg-dark shadow"
         style={{ overflow: "visible" }}
@@ -193,7 +217,6 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop: user a la derecha del logo, antes del toggler — solo visible en lg+ */}
           <UserDesktop />
         </div>
       </nav>
