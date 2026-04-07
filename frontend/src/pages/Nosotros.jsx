@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa";
-import "../styles/nosotros.css";
+import "../styles/Nosotros.css";
 
 function Nosotros() {
   return (
