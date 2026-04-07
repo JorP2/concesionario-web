@@ -5,7 +5,6 @@ import "../styles/Contacto.css";
 function Contacto() {
   return (
     <div className="contacto-page bg-light">
-
       {/* HERO */}
       <div
         className="hero-section text-white d-flex align-items-center mb-5"
@@ -13,13 +12,11 @@ function Contacto() {
           backgroundImage: `url(/imagenContacto.jpeg)`,
           minHeight: "50vh",
           backgroundSize: "cover",
-          backgroundPosition: "center"
+          backgroundPosition: "center",
         }}
       >
         <div className="hero-content container text-center">
-          <h1 className="display-4 fw-bold mb-3">
-            Contáctanos
-          </h1>
+          <h1 className="display-4 fw-bold mb-3">Contáctanos</h1>
 
           <p className="lead">
             Encuentra tu coche ideal. Si no lo tenemos, te lo buscamos.
@@ -51,29 +48,43 @@ function Contacto() {
           <div className="card border-0 shadow-sm">
             <div className="card-body p-4">
               <form>
-
                 <div className="mb-3">
-                  <input type="text" className="form-control" placeholder="Nombre" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre"
+                  />
                 </div>
 
                 <div className="row g-2 mb-3">
                   <div className="col-12 col-md-6">
-                    <input type="email" className="form-control" placeholder="Tu email" />
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="Tu email"
+                    />
                   </div>
 
                   <div className="col-12 col-md-6">
-                    <input type="text" className="form-control" placeholder="Tu teléfono" />
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Tu teléfono"
+                    />
                   </div>
                 </div>
 
                 <div className="mb-3">
-                  <textarea className="form-control" rows="4" placeholder="Mensaje"></textarea>
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    placeholder="Mensaje"
+                  ></textarea>
                 </div>
 
                 <button type="submit" className="btn btn-primary">
                   Enviar mensaje
                 </button>
-
               </form>
             </div>
           </div>
@@ -102,9 +113,7 @@ function Contacto() {
                     <div className="card-body">
                       <FaWhatsapp size={35} className="text-success mb-2" />
                       <h6 className="fw-bold mb-1">WhatsApp</h6>
-                      <small className="text-muted">
-                        +34 651 86 82 30
-                      </small>
+                      <small className="text-muted">+34 651 86 82 30</small>
                     </div>
                   </div>
                 </a>
@@ -120,9 +129,7 @@ function Contacto() {
                     <div className="card-body">
                       <MdPhone size={35} className="text-primary mb-2" />
                       <h6 className="fw-bold mb-1">Teléfono</h6>
-                      <small className="text-muted">
-                        +34 925 39 31 86
-                      </small>
+                      <small className="text-muted">+34 925 39 31 86</small>
                     </div>
                   </div>
                 </a>
@@ -158,9 +165,7 @@ function Contacto() {
                     <div className="card-body">
                       <MdLocationOn size={35} className="text-danger mb-2" />
                       <h6 className="fw-bold mb-1">Ubicación</h6>
-                      <small className="text-muted">
-                        Burguillos de Toledo
-                      </small>
+                      <small className="text-muted">Burguillos de Toledo</small>
                     </div>
                   </div>
                 </a>

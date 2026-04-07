@@ -4,16 +4,12 @@ import { deleteVehiculo, getVehiculos } from "../api/vehiculoApi";
 // Componentes
 import VehiculosLista from "../components/admin/VehiculosLista";
 import { Link } from "react-router-dom";
+// Styles
+import "../styles/admin/administrador.css";
 
 function Administrador() {
   // Constante del usuario logueado
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-
-  // Función para cerrar sesión
-  const logout = () => {
-    localStorage.removeItem("usuario");
-    window.location.href = "/";
-  };
 
   // Vehiculos
   const [vehiculos, setVehiculos] = React.useState([]);
@@ -70,8 +66,26 @@ function Administrador() {
   return (
     <>
       <div className="container mt-5">
-        <h1>Panel de Administración</h1>
-        <p>Bienvenido, {usuario.nombre}.</p>
+        {/* HEADER */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          {/* IZQUIERDA */}
+          <div>
+            <h1 className="mb-0">Panel de Administración</h1>
+            <small className="text-muted">Bienvenido, {usuario.nombre}</small>
+          </div>
+
+          {/* DERECHA */}
+          <div className="d-flex align-items-center gap-3">
+            <span className="text-muted">
+              {vehiculosFiltrados.length} vehículos
+            </span>
+
+            <Link to="/administrador/vehiculo-form" className="btn btn-success">
+              + Añadir vehículo
+            </Link>
+          </div>
+        </div>
+
         {/* BUSCADOR */}
         <input
           type="text"
@@ -80,35 +94,22 @@ function Administrador() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
+
         {/* LISTA */}
         {loading && <p className="text-center mt-4">Cargando vehículos...</p>}
+
         {!loading && error && (
           <p className="text-center mt-4 text-danger">
             Error al cargar los vehículos.
           </p>
         )}
+
         {!loading && !error && (
           <VehiculosLista
             vehiculos={vehiculosFiltrados}
             onEliminar={handleEliminar}
           />
         )}
-
-        {/* BOTON LOGOUT */}
-        <div className="d-flex">
-          <Link
-            to="/administrador/vehiculo-form"
-            className="btn btn-success mt-4 w-25 d-block mx-auto"
-          >
-            Añadir
-          </Link>
-          <button
-            onClick={logout}
-            className="btn btn-danger mt-4 w-25 d-block mx-auto"
-          >
-            Logout
-          </button>
-        </div>
       </div>
     </>
   );

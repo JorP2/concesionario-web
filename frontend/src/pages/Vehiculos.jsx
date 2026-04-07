@@ -3,15 +3,28 @@ import { getVehiculosEnVenta } from "../api/vehiculoApi";
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
+// Iconos
+import { FaFilter } from "react-icons/fa";
 
 // Valores iniciales para los filtros
-const FILTROS_INICIALES = { busqueda: "", marca: "", anio: "", precio: "" };
+const FILTROS_INICIALES = {
+  busqueda: "",
+  marca: "",
+  anio: "",
+  precio: "",
+  combustible: "",
+  transmision: "",
+  km: "",
+  pegatina: "",
+  color: "",
+};
 
 function Vehiculos() {
   const [vehiculos, setVehiculos] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [filtros, setFiltros] = React.useState(FILTROS_INICIALES);
+  const [filtroAbierto, setFiltroAbierto] = React.useState(false);
 
   const loadVehiculos = async () => {
     try {
@@ -29,7 +42,7 @@ function Vehiculos() {
     loadVehiculos();
   }, []);
 
-  // 🔹 Estados UX (tu parte)
+  // 🔹 UX estados (TU PARTE - mantenida)
   if (loading) {
     return (
       <div className="container mt-4">
@@ -54,7 +67,7 @@ function Vehiculos() {
     );
   }
 
-  // 🔹 Filtros (parte de desarrollo)
+  // 🔹 Filtros (DESARROLLO)
   const handleFiltroChange = (campo, valor) => {
     setFiltros((prev) => ({ ...prev, [campo]: valor }));
   };
@@ -65,48 +78,124 @@ function Vehiculos() {
   const anios = [...new Set(vehiculos.map((v) => v.anio))].sort(
     (a, b) => b - a
   );
+  const colores = [
+    ...new Set(vehiculos.map((v) => v.colorExterior).filter(Boolean)),
+  ].sort();
+
+  const kmMax = vehiculos.length
+    ? Math.ceil(Math.max(...vehiculos.map((v) => v.kilometros)) / 5000) * 5000
+    : 200000;
 
   const vehiculosFiltrados = vehiculos.filter((v) => {
+    const texto = filtros.busqueda.toLowerCase();
+
     const textoMatch =
-      v.marca.toLowerCase().includes(filtros.busqueda.toLowerCase()) ||
-      v.modelo.toLowerCase().includes(filtros.busqueda.toLowerCase());
+      v.marca.toLowerCase().includes(texto) ||
+      v.modelo.toLowerCase().includes(texto);
+
     const marcaMatch = filtros.marca ? v.marca === filtros.marca : true;
     const anioMatch = filtros.anio ? String(v.anio) === filtros.anio : true;
     const precioMatch = filtros.precio
       ? v.precio <= Number(filtros.precio)
       : true;
+    const combustibleMatch = filtros.combustible
+      ? v.combustible?.toLowerCase() === filtros.combustible.toLowerCase()
+      : true;
+    const transmisionMatch = filtros.transmision
+      ? v.cambio?.toLowerCase().includes(filtros.transmision.toLowerCase())
+      : true;
+    const kmMatch = filtros.km ? v.kilometros <= Number(filtros.km) : true;
+    const pegatinaMatch = filtros.pegatina
+      ? v.pegatina?.toLowerCase() === filtros.pegatina.toLowerCase()
+      : true;
+    const colorMatch = filtros.color
+      ? v.colorExterior?.toLowerCase() === filtros.color.toLowerCase()
+      : true;
 
-    return textoMatch && marcaMatch && anioMatch && precioMatch;
+    return (
+      textoMatch &&
+      marcaMatch &&
+      anioMatch &&
+      precioMatch &&
+      combustibleMatch &&
+      transmisionMatch &&
+      kmMatch &&
+      pegatinaMatch &&
+      colorMatch
+    );
   });
 
   return (
     <div className="container mt-4">
-      <FiltroVehiculo
-        filtros={filtros}
-        onChange={handleFiltroChange}
-        onReset={handleReset}
-        marcas={marcas}
-        anios={anios}
-      />
 
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <p className="text-muted mt-1 mb-0">
-          Vehículos disponibles ({vehiculosFiltrados.length})
-        </p>
+      {/* Barra móvil */}
+      <div className="filtro-telefono-bar">
+        <button
+          className="filtro-telefono-btn"
+          onClick={() => setFiltroAbierto((v) => !v)}
+        >
+          <FaFilter size={20} />
+          {Object.values(filtros).some(Boolean) && (
+            <span className="filtro-telefono-badge" />
+          )}
+        </button>
+
+        <span className="text-muted" style={{ fontSize: "0.85rem" }}>
+          {vehiculosFiltrados.length} resultados
+        </span>
       </div>
 
-      <div className="row g-3">
-        {vehiculosFiltrados.length > 0 ? (
-          vehiculosFiltrados.map((vehiculo) => (
-            <div key={vehiculo.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-              <CardVehiculoGPT2 vehiculo={vehiculo} />
-            </div>
-          ))
-        ) : (
-          <p className="text-center">
-            Lo sentimos, no hay vehículos con esas características.
-          </p>
+      <div className="vehiculos-layout">
+
+        {/* SIDEBAR */}
+        <aside
+          className={`vehiculos-sidebar${filtroAbierto ? " abierto" : ""}`}
+        >
+          <div className="filtro-drawer-header">
+            <span>Filtro General</span>
+            <button onClick={() => setFiltroAbierto(false)}>✕</button>
+          </div>
+
+          <FiltroVehiculo
+            filtros={filtros}
+            onChange={handleFiltroChange}
+            onReset={handleReset}
+            marcas={marcas}
+            anios={anios}
+            colores={colores}
+            kmMax={kmMax}
+          />
+        </aside>
+
+        {filtroAbierto && (
+          <div
+            className="filtro-overlay"
+            onClick={() => setFiltroAbierto(false)}
+          />
         )}
+
+        {/* CONTENIDO */}
+        <div className="vehiculos-content">
+          <h2 className="vehiculos-titulo d-none d-md-block">
+            COCHES
+            <span className="fs-6 text-muted ms-2">
+              ({vehiculosFiltrados.length} resultados)
+            </span>
+          </h2>
+
+          {vehiculosFiltrados.length > 0 ? (
+            <div className="vehiculos-grid">
+              {vehiculosFiltrados.map((vehiculo) => (
+                <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
+              ))}
+            </div>
+          ) : (
+            <p className="ms-3">
+              Lo sentimos, no hay vehículos con esas características aún.
+            </p>
+          )}
+        </div>
+
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ import {
   addVehiculo,
   getVehiculoById,
   updateVehiculo,
+  deleteOferta,
+  aplicarOferta,
+  cambiarVisibilidad,
+  updateEstadoVehiculo,
 } from "../api/vehiculoApi";
 import { addImagenes } from "../api/imagenApi";
 
@@ -67,7 +71,9 @@ function VehiculoFormulario() {
             extras: data.extras ?? "",
             enOferta: data.enOferta ?? false,
             precioOferta: data.precioOferta ?? "",
-            fechaFinOferta: data.fechaFinOferta ?? "",
+            fechaFinOferta: data.fechaFinOferta
+              ? data.fechaFinOferta.slice(0, 16)
+              : "",
             visible: data.visible ?? true,
             estadoVenta: data.estadoVenta ?? "en_venta",
           });
@@ -82,16 +88,19 @@ function VehiculoFormulario() {
   // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setVehiculo({
-      ...vehiculo,
-      // si es checkbox usamos checked, si no, value
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const newValue = type === "checkbox" ? checked : value;
+
+    // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
+    if (name === "enOferta" && !checked && esEdicion) {
+      deleteOferta(id).catch(() => {});
+    }
+
+    setVehiculo({ ...vehiculo, [name]: newValue });
   };
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // QuE No recargue
+    e.preventDefault();
 
     try {
       let vehiculoId;
@@ -104,7 +113,25 @@ function VehiculoFormulario() {
         vehiculoId = data.id;
       }
 
-      // Si hay imágenes nuevas, subirlas
+      // ── Visibilidad ──────────────────────────────
+      await cambiarVisibilidad(vehiculoId, vehiculo.visible);
+      // ─────────────────────────────────────────────
+
+      // ── Estado venta ─────────────────────────────
+      await updateEstadoVehiculo(vehiculoId, vehiculo.estadoVenta);
+
+      // ── Gestionar oferta ──────────────────────────
+      if (vehiculo.enOferta && vehiculo.precioOferta) {
+        const descuento = Math.round(
+          ((vehiculo.precio - vehiculo.precioOferta) / vehiculo.precio) * 100,
+        );
+        await aplicarOferta(vehiculoId, descuento);
+      } else if (!vehiculo.enOferta) {
+        // Por si acaso queda oferta residual al crear sin oferta
+        await deleteOferta(vehiculoId).catch(() => {}); // silenciar si no había oferta
+      }
+      // ─────────────────────────────────────────────
+
       if (imagenesNuevas.length > 0) {
         await addImagenes(vehiculoId, imagenesNuevas);
       }
@@ -117,7 +144,7 @@ function VehiculoFormulario() {
 
   return (
     <>
-      <div className="container-fluid px-4">
+      <div className="containear-fluid px-4">
         <button
           className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
           onClick={() => navigate(-1)}
@@ -364,13 +391,31 @@ function VehiculoFormulario() {
                 {vehiculo.enOferta && (
                   <>
                     <div className="col-6">
-                      <label className="form-label">Precio oferta</label>
+                      <label className="form-label">
+                        Precio oferta{" "}
+                        {vehiculo.precioOferta && vehiculo.precio && (
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: "12px" }}
+                          >
+                            (−
+                            {Math.round(
+                              ((vehiculo.precio - vehiculo.precioOferta) /
+                                vehiculo.precio) *
+                                100,
+                            )}
+                            %)
+                          </span>
+                        )}
+                      </label>
                       <input
                         type="number"
                         className="form-control"
                         name="precioOferta"
                         value={vehiculo.precioOferta}
                         onChange={handleChange}
+                        max={vehiculo.precio} // no puede ser mayor que el precio original
+                        placeholder={`Máx. €${vehiculo.precio}`}
                       />
                     </div>
                     <div className="col-6">

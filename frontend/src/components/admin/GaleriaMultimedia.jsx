@@ -1,7 +1,15 @@
 import React from "react";
 // APIs
-import { eliminarImagen, getImagenesByVehiculoId } from "../../api/imagenApi";
-import { getVideosByVehiculoId } from "../../api/videoApi";
+import {
+  cambiarPortada,
+  eliminarImagen,
+  getImagenesByVehiculoId,
+} from "../../api/imagenApi";
+import {
+  addVideo,
+  eliminarVideo,
+  getVideosByVehiculoId,
+} from "../../api/videoApi";
 
 // Iconos
 import { FaPlus, FaTimes } from "react-icons/fa";
@@ -11,6 +19,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   const [videosExistentes, setVideosExistentes] = React.useState([]);
   const [cargando, setCargando] = React.useState(false);
   const inputImagenRef = React.useRef(null);
+  const inputVideoRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!vehiculoId) return; // Si no hay ID, no hacemos nada
@@ -34,11 +43,11 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   }, [vehiculoId]);
 
   // Funcion para eliminar una imagen (tanto de la API como del estado local)
-  const handleEliminarImg = async (imagenId) => {
+  const handleEliminarImg = async (vehiculoId, imagenId) => {
     try {
       if (!imagenId) return;
 
-      await eliminarImagen(imagenId);
+      await eliminarImagen(vehiculoId, imagenId);
 
       setImagenesExistentes(
         imagenesExistentes.filter((img) => img.id !== imagenId),
@@ -48,10 +57,51 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
     }
   };
 
+  // Funcion para cambiar la portada
+  const handlePortada = async (vehiculoId, imagenId) => {
+    try {
+      await cambiarPortada(vehiculoId, imagenId);
+
+      setImagenesExistentes((prev) =>
+        prev.map((img) =>
+          img.id === imagenId
+            ? { ...img, esPortada: true }
+            : { ...img, esPortada: false },
+        ),
+      );
+    } catch (error) {
+      console.error("Error al cambiar la portada:", error);
+    }
+  };
+
   // Funcion cuando el usuario selecciona archivos
   const handleSeleccionarImagenes = (e) => {
     const archivos = Array.from(e.target.files);
     setImagenesNuevas((prev) => [...prev, ...archivos]);
+  };
+
+  // Funciones VIDEOS
+  const handleEliminarVideo = async (videoId) => {
+    try {
+      await eliminarVideo(videoId);
+      setVideosExistentes((prev) => prev.filter((v) => v.id !== videoId));
+    } catch (error) {
+      console.error("Error al eliminar el video:", error);
+    }
+  };
+
+  const handleSeleccionarVideo = async (e) => {
+    const archivos = Array.from(e.target.files);
+    for (const archivo of archivos) {
+      try {
+        const videoGuardado = await addVideo(vehiculoId, archivo);
+        setVideosExistentes((prev) => [...prev, videoGuardado]);
+      } catch (error) {
+        console.error("Error al subir video:", error);
+      }
+    }
+    // Resetea el input para permitir subir el mismo archivo otra vez
+    e.target.value = "";
   };
 
   return (
@@ -71,10 +121,10 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
 
         {/*grid de fotos */}
         {cargando ? (
-          // situacion 1 - Catgando...
+          // situacion 1 - Cargando...
           <div className="row g-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="col-6 col-md-3">
+              <div key={i} className="col-6 col-md-3 col-lg-2">
                 <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                   <div className="placeholder-glow w-100 h-100">
                     <span className="placeholder w-100 h-100 rounded"></span>
@@ -84,17 +134,16 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
             ))}
           </div>
         ) : (
-          //<p className="text-muted small">Sin imagenes disponibles</p> // situacion 3
           <div>
             <div className="row g-2">
               {imagenesExistentes.map((img) => (
-                <div key={img.id} className="col-6 col-md-3">
+                <div key={img.id} className="col-6 col-md-3 col-lg-2">
                   <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                     <img
-                      src={`${process.env.REACT_APP_API_URL.replace("/api", "")}/uploads/vehiculos/${vehiculoId}/imagenes/${img.url}`}
+                      src={img.url}
                       className="w-100 h-100 position-absolute top-0 start-0"
                       style={{ objectFit: "cover" }}
-                      alt={`Imagen ${img.orden + 1}`}
+                      alt={`Imagen ${img.marca} ${img.modelo}`}
                     />
 
                     {/* Portada */}
@@ -115,13 +164,18 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
                       {!img.esPortada && (
-                        <button className="btn btn-sm btn-light w-100">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-light w-100"
+                          onClick={() => handlePortada(vehiculoId, img.id)}
+                        >
                           Portada
                         </button>
                       )}
                       <button
+                        type="button"
                         className="btn btn-sm btn-danger w-100"
-                        onClick={() => handleEliminarImg(img.id)}
+                        onClick={() => handleEliminarImg(vehiculoId, img.id)}
                       >
                         Eliminar
                       </button>
@@ -131,7 +185,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
               ))}
 
               {/* Botón agregar*/}
-              <div className="col-6 col-md-3">
+              <div className="col-6 col-md-3 col-lg-2">
                 <div
                   className="ratio ratio-1x1 border rounded"
                   style={{ cursor: "pointer", borderStyle: "dashed" }}
@@ -152,7 +206,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                 </h6>
                 <div className="row g-2">
                   {imagenesNuevas.map((archivo, i) => (
-                    <div key={i} className="col-6 col-md-3">
+                    <div key={i} className="col-6 col-md-3 col-lg-2">
                       <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                         <img
                           src={URL.createObjectURL(archivo)}
@@ -187,10 +241,71 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
       </div>
 
       {/* Sección videos */}
-      <div>
+      <div className="mt-5">
         <h5>Videos</h5>
         {vehiculoId ? (
-          <div>{/*contenido de videos */}</div>
+          <div className="mt-5">
+            <h5>Videos</h5>
+            {vehiculoId ? (
+              <div>
+                {/* Sección videos */}
+                <input
+                  type="file"
+                  ref={inputVideoRef}
+                  className="d-none"
+                  multiple
+                  accept="video/*"
+                  onChange={handleSeleccionarVideo}
+                />
+
+                <div className="row g-2">
+                  {videosExistentes.map((vid) => (
+                    <div key={vid.id} className="col-12 col-md-6 col-lg-4">
+                      <div className="position-relative rounded overflow-hidden">
+                        <video
+                          src={vid.url}
+                          className="w-100 rounded"
+                          style={{ maxHeight: "180px", objectFit: "cover" }}
+                          controls
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
+                          style={{
+                            width: "22px",
+                            height: "22px",
+                            borderRadius: "50%",
+                          }}
+                          onClick={() => handleEliminarVideo(vid.id)}
+                        >
+                          <FaTimes size={10} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Botón agregar */}
+                  <div className="col-12 col-md-6 col-lg-4">
+                    <div
+                      className="border rounded d-flex align-items-center justify-content-center"
+                      style={{
+                        height: "180px",
+                        cursor: "pointer",
+                        borderStyle: "dashed",
+                      }}
+                      onClick={() => inputVideoRef.current.click()}
+                    >
+                      <FaPlus size={28} className="text-muted" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-muted small">
+                Guarda el vehículo primero para poder subir videos
+              </p>
+            )}
+          </div>
         ) : (
           <p className="text-muted small">
             Guarda el vehículo primero para poder subir videos
