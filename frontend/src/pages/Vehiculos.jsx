@@ -3,6 +3,7 @@ import { getVehiculosEnVenta } from "../api/vehiculoApi";
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
+import "../styles/vehiculos.css"
 // Iconos
 import { FaFilter } from "react-icons/fa";
 

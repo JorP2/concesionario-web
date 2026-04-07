@@ -114,7 +114,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
             </div>
           )}
 
-          <Link className="btn-ver" to={`/vehiculos/${vehiculo.id}`}>
+          <Link className="btn-ver bg-primary" to={`/vehiculos/${vehiculo.id}`}>
             Ver modelo →
           </Link>
         </div>
