@@ -5,6 +5,9 @@ import { login } from "../api/usuarioApi";
 // Icono
 import { FaUserCircle } from "react-icons/fa";
 
+// Styles
+import "../styles/login.css";
+
 function Login() {
   // Constantes para el estado del formulario
   const [username, setUsername] = React.useState("");
@@ -30,60 +33,51 @@ function Login() {
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleLogin}
-        className="mt-5 w-50 mx-auto p-4 border rounded shadow"
-      >
-        <h2 className="mb-4 text-center">Iniciar Sesión</h2>
-
-        <div className="text-center mb-4">
-          <FaUserCircle size={100} color="black" />
+    <div className="login-container">
+      <form onSubmit={handleLogin} className="login-card">
+        <div className="login-header">
+          <FaUserCircle size={70} />
+          <h2>Iniciar sesión</h2>
+          <p>Accede a tu panel de administración</p>
         </div>
+
+        {/* USERNAME */}
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
           <input
             type="text"
             className="form-control"
-            id="username"
-            placeholder="Nombre de usuario"
+            placeholder="Usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
-        <div id="emailHelp" className="form-text">
-          No compartiremos tu email con terceros
-        </div>
-
+        {/* PASSWORD */}
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
           <input
             type="password"
             className="form-control"
-            id="password"
+            placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <div className="mb-3 form-check">
+        {/* RECORDAR */}
+        <div className="form-check mb-3">
           <input type="checkbox" className="form-check-input" id="remember" />
-          <label className="form-check-label" htmlFor="remember">
-            Recordarme
-          </label>
+          <label className="form-check-label">Recordarme</label>
         </div>
 
-        <button type="submit" className="btn btn-primary w-100 fw-bold">
-          Iniciar Sesión
+        {/* ERROR */}
+        {error && <p className="text-danger small">{error}</p>}
+
+        {/* BOTÓN */}
+        <button type="submit" className="btn btn-success w-100 fw-bold">
+          Entrar
         </button>
-        {error && <p className="text-danger mt-2">{error}</p>}
       </form>
-    </>
+    </div>
   );
 }
 

@@ -223,7 +223,7 @@ export const cambiarVisibilidad = async (id, visible) => {
 export const aplicarOferta = async (id, descuento) => {
   try {
     const response = await fetch(`${API_URL}/${id}/oferta?descuento=${descuento}`, {
-      method: "PATCH"
+      method: "POST"
     });
 
     if (!response.ok) {
