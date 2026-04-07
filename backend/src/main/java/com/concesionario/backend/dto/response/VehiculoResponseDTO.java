@@ -4,6 +4,7 @@ import java.util.List;
 
 
 public class VehiculoResponseDTO {
+	
     private Long id;
     private String marca;
     private String modelo;
@@ -24,8 +25,9 @@ public class VehiculoResponseDTO {
     private Double precioOferta;
     private String fechaFinOferta;
     private String estadoVenta;
+    private String imagenPortada;  
     private List<String> imagenes;
-
+    
     public VehiculoResponseDTO() {}
 
 
@@ -69,8 +71,11 @@ public class VehiculoResponseDTO {
     public void setFechaFinOferta(String fechaFinOferta) { this.fechaFinOferta = fechaFinOferta; }
     public String getEstadoVenta() { return estadoVenta; }
     public void setEstadoVenta(String estadoVenta) { this.estadoVenta = estadoVenta; }
-    public List<String> getImagenes() { return imagenes; }
-    public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }
+    public String getImagenPortada() {return imagenPortada;}
+	public void setImagenPortada(String imagenPortada) {this.imagenPortada = imagenPortada;}
 
+
+	public List<String> getImagenes() { return imagenes; }
+    public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }
 
 }

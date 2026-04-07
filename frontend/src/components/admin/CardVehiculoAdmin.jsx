@@ -1,7 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function CardVehiculoAdmin({ vehiculo }) {
+function CardVehiculoAdmin({ vehiculo, onEliminar }) {
+  // Funcion para manejar eliminar
+  const handleEliminar = () => {
+    onEliminar(vehiculo.id);
+  };
+
+  // Id para cada modal, evitamos duplicdos
+  const modalId = `eliminarModal-${vehiculo.id}`;
+
   return (
     <>
       <div className="card shadow-sm">
@@ -45,7 +53,7 @@ function CardVehiculoAdmin({ vehiculo }) {
               <button
                 className="btn btn-danger"
                 data-bs-toggle="modal"
-                data-bs-target="#eliminarModal"
+                data-bs-target={`#${modalId}`}
               >
                 Eliminar
               </button>
@@ -53,15 +61,15 @@ function CardVehiculoAdmin({ vehiculo }) {
               {/* Modal de confirmación */}
               <div
                 className="modal fade"
-                id="eliminarModal"
+                id={modalId}
                 tabIndex={-1}
-                aria-labelledby="eliminarModal"
+                aria-labelledby={modalId}
                 aria-hidden="true"
               >
                 <div className="modal-dialog modal-dialog-centered">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h1 className="modal-title fs-5" id="eliminarModal">
+                      <h1 className="modal-title fs-5" id={modalId}>
                         ¿Seguro desea eliminar este vehículo?
                       </h1>
                       <button
@@ -80,7 +88,14 @@ function CardVehiculoAdmin({ vehiculo }) {
                       >
                         Cancelar
                       </button>
-                      <button className="btn btn-danger">Eliminar</button>
+                      {/* Eliminar realmente */}
+                      <button
+                        className="btn btn-danger"
+                        data-bs-dismiss="modal"
+                        onClick={handleEliminar}
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </div>
                 </div>

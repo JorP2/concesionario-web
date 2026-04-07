@@ -133,13 +133,13 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
               {/* Botón agregar*/}
               <div className="col-6 col-md-3">
                 <div
-                  className="ratio ratio-1x1 border rounded d-flex align-items-center justify-content-center"
+                  className="ratio ratio-1x1 border rounded"
                   style={{ cursor: "pointer", borderStyle: "dashed" }}
                   onClick={() => inputImagenRef.current.click()}
                 >
-                  <span className="fs-2 text-muted">
+                  <div className="d-flex align-items-center justify-content-center w-100 h-100">
                     <FaPlus size={28} className="text-muted" />
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>

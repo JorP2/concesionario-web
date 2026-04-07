@@ -4,10 +4,14 @@ import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
 
+// Valores iniciales para los filtros
+const FILTROS_INICIALES = { busqueda: "", marca: "", anio: "", precio: "" };
+
 function Vehiculos() {
   const [vehiculos, setVehiculos] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
+  const [filtros, setFiltros] = React.useState(FILTROS_INICIALES);
 
   const loadVehiculos = async () => {
     try {
@@ -25,7 +29,7 @@ function Vehiculos() {
     loadVehiculos();
   }, []);
 
-  // 🔥 estados claros (mucho mejor UX)
+  // 🔹 Estados UX (tu parte)
   if (loading) {
     return (
       <div className="container mt-4">
@@ -50,28 +54,60 @@ function Vehiculos() {
     );
   }
 
+  // 🔹 Filtros (parte de desarrollo)
+  const handleFiltroChange = (campo, valor) => {
+    setFiltros((prev) => ({ ...prev, [campo]: valor }));
+  };
+
+  const handleReset = () => setFiltros(FILTROS_INICIALES);
+
+  const marcas = [...new Set(vehiculos.map((v) => v.marca))].sort();
+  const anios = [...new Set(vehiculos.map((v) => v.anio))].sort(
+    (a, b) => b - a
+  );
+
+  const vehiculosFiltrados = vehiculos.filter((v) => {
+    const textoMatch =
+      v.marca.toLowerCase().includes(filtros.busqueda.toLowerCase()) ||
+      v.modelo.toLowerCase().includes(filtros.busqueda.toLowerCase());
+    const marcaMatch = filtros.marca ? v.marca === filtros.marca : true;
+    const anioMatch = filtros.anio ? String(v.anio) === filtros.anio : true;
+    const precioMatch = filtros.precio
+      ? v.precio <= Number(filtros.precio)
+      : true;
+
+    return textoMatch && marcaMatch && anioMatch && precioMatch;
+  });
+
   return (
     <div className="container mt-4">
+      <FiltroVehiculo
+        filtros={filtros}
+        onChange={handleFiltroChange}
+        onReset={handleReset}
+        marcas={marcas}
+        anios={anios}
+      />
 
-      {/* Filtro */}
-      <FiltroVehiculo />
-
-      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <p className="text-muted mt-1 mb-0">
-          Vehículos disponibles ({vehiculos.length})
+          Vehículos disponibles ({vehiculosFiltrados.length})
         </p>
       </div>
 
-      {/* Grid */}
       <div className="row g-3">
-        {vehiculos.map((vehiculo) => (
-          <div key={vehiculo.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-            <CardVehiculoGPT2 vehiculo={vehiculo} />
-          </div>
-        ))}
+        {vehiculosFiltrados.length > 0 ? (
+          vehiculosFiltrados.map((vehiculo) => (
+            <div key={vehiculo.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+              <CardVehiculoGPT2 vehiculo={vehiculo} />
+            </div>
+          ))
+        ) : (
+          <p className="text-center">
+            Lo sentimos, no hay vehículos con esas características.
+          </p>
+        )}
       </div>
-
     </div>
   );
 }
