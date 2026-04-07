@@ -5,6 +5,8 @@ import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
 // Iconos
 import { FaFilter } from "react-icons/fa";
+// Estilo
+import "../styles/vehiculos.css";
 
 // Valores iniciales para los filtros
 const FILTROS_INICIALES = {
@@ -76,7 +78,7 @@ function Vehiculos() {
 
   const marcas = [...new Set(vehiculos.map((v) => v.marca))].sort();
   const anios = [...new Set(vehiculos.map((v) => v.anio))].sort(
-    (a, b) => b - a
+    (a, b) => b - a,
   );
   const colores = [
     ...new Set(vehiculos.map((v) => v.colorExterior).filter(Boolean)),
@@ -127,7 +129,6 @@ function Vehiculos() {
 
   return (
     <div className="container mt-4">
-
       {/* Barra móvil */}
       <div className="filtro-telefono-bar">
         <button
@@ -146,7 +147,6 @@ function Vehiculos() {
       </div>
 
       <div className="vehiculos-layout">
-
         {/* SIDEBAR */}
         <aside
           className={`vehiculos-sidebar${filtroAbierto ? " abierto" : ""}`}
@@ -195,7 +195,6 @@ function Vehiculos() {
             </p>
           )}
         </div>
-
       </div>
     </div>
   );
