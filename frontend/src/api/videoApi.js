@@ -34,9 +34,9 @@ export const addVideo = async (vehiculoId, archivo) => {
 
 // DELETE 
 // eliminar video
-export const eliminarVideo = async (videoId) => {
+export const eliminarVideo = async (vehiculoId, videoId) => {
     try {
-        const response = await fetch(`${BASE_URL}/videos/${videoId}`, {
+        const response = await fetch(`${BASE_URL}/${vehiculoId}/videos/${videoId}`, {
             method: "DELETE",
         });
         if (!response.ok) throw new Error("Error al eliminar el video");

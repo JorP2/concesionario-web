@@ -1,6 +1,6 @@
 import React from "react";
 // API
-import { getVehiculosEnVenta } from "../api/vehiculoApi";
+import { getVehiculosEnVenta, getVehiculosVendidos } from "../api/vehiculoApi";
 // Componentes
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
@@ -29,6 +29,9 @@ function Vehiculos() {
   const [error, setError] = React.useState(false);
   const [filtros, setFiltros] = React.useState(FILTROS_INICIALES);
   const [filtroAbierto, setFiltroAbierto] = React.useState(false);
+  const [pestana, setPestana] = React.useState("en_venta");
+  const [vehiculosVendidos, setVehiculosVendidos] = React.useState([]);
+  const [loadingVendidos, setLoadingVendidos] = React.useState(false);
 
   const loadVehiculos = async () => {
     try {
@@ -105,83 +108,142 @@ function Vehiculos() {
 
   return (
     <div>
-      {loading && <SkeletonVehiculo />}
+      {/* ── PESTAÑAS ── */}
+      <div className="vehiculos-tabs">
+        <button
+          className={`tab-btn ${pestana === "en_venta" ? "activo" : ""}`}
+          onClick={() => setPestana("en_venta")}
+        >
+          En venta
+        </button>
+        <button
+          className={`tab-btn ${pestana === "vendidos" ? "activo" : ""}`}
+          onClick={() => {
+            setPestana("vendidos");
+            if (vehiculosVendidos.length === 0) {
+              setLoadingVendidos(true);
+              getVehiculosVendidos()
+                .then(setVehiculosVendidos)
+                .catch(console.error)
+                .finally(() => setLoadingVendidos(false));
+            }
+          }}
+        >
+          Vendidos
+        </button>
+      </div>
 
-      {!loading && error && (
-        <p className="text-center mt-4">Error cargando vehículos...</p>
-      )}
-
-      {!loading && !error && vehiculos.length === 0 && (
-        <p className="text-center mt-4">No hay vehículos disponibles...</p>
-      )}
-
-      {!loading && !error && vehiculos.length > 0 && (
+      {/* ── PESTAÑA: EN VENTA ── */}
+      {pestana === "en_venta" && (
         <>
-          {/* Barra sticky móvil */}
-          <div className="filtro-telefono-bar">
-            <button
-              className="filtro-telefono-btn"
-              onClick={() => setFiltroAbierto((v) => !v)}
-            >
-              <i className="bi bi-sliders me-2" />
-              <FaFilter size={20} />
-              {Object.values(filtros).some(Boolean) && (
-                <span className="filtro-telefono-badge" />
-              )}
-            </button>
-            <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-              {vehiculosFiltrados.length} resultados
-            </span>
-          </div>
+          {loading && <SkeletonVehiculo />}
 
-          {/* Layout principal */}
-          <div className="vehiculos-layout">
-            <aside
-              className={`vehiculos-sidebar${filtroAbierto ? " abierto" : ""}`}
-            >
-              <div className="filtro-drawer-header">
-                <span>Filtro General</span>
-                <button onClick={() => setFiltroAbierto(false)}>✕</button>
-              </div>
-              <FiltroVehiculo
-                filtros={filtros}
-                onChange={handleFiltroChange}
-                onReset={handleReset}
-                marcas={marcas}
-                anios={anios}
-                colores={colores}
-                kmMax={kmMax}
-              />
-            </aside>
+          {!loading && error && (
+            <p className="text-center mt-4">Error cargando vehículos...</p>
+          )}
 
-            {filtroAbierto && (
-              <div
-                className="filtro-overlay"
-                onClick={() => setFiltroAbierto(false)}
-              />
-            )}
+          {!loading && !error && vehiculos.length === 0 && (
+            <p className="text-center mt-4">No hay vehículos disponibles...</p>
+          )}
 
-            <div className="vehiculos-content">
-              <h2 className="vehiculos-titulo d-none d-md-block">
-                COCHES
-                <span className="fs-6 text-muted ms-2">
-                  ({vehiculosFiltrados.length} resultados)
+          {!loading && !error && vehiculos.length > 0 && (
+            <>
+              {/* Barra sticky móvil */}
+              <div className="filtro-telefono-bar">
+                <button
+                  className="filtro-telefono-btn"
+                  onClick={() => setFiltroAbierto((v) => !v)}
+                >
+                  <i className="bi bi-sliders me-2" />
+                  <FaFilter size={20} />
+                  {Object.values(filtros).some(Boolean) && (
+                    <span className="filtro-telefono-badge" />
+                  )}
+                </button>
+                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
+                  {vehiculosFiltrados.length} resultados
                 </span>
-              </h2>
-              {vehiculosFiltrados.length > 0 ? (
-                <div className="vehiculos-grid">
-                  {vehiculosFiltrados.map((vehiculo) => (
-                    <CardVehiculoGPT2 key={vehiculo.id} vehiculo={vehiculo} />
-                  ))}
+              </div>
+
+              {/* Layout principal */}
+              <div className="vehiculos-layout">
+                <aside
+                  className={`vehiculos-sidebar${filtroAbierto ? " abierto" : ""}`}
+                >
+                  <div className="filtro-drawer-header">
+                    <span>Filtro General</span>
+                    <button onClick={() => setFiltroAbierto(false)}>✕</button>
+                  </div>
+                  <FiltroVehiculo
+                    filtros={filtros}
+                    onChange={handleFiltroChange}
+                    onReset={handleReset}
+                    marcas={marcas}
+                    anios={anios}
+                    colores={colores}
+                    kmMax={kmMax}
+                  />
+                </aside>
+
+                {filtroAbierto && (
+                  <div
+                    className="filtro-overlay"
+                    onClick={() => setFiltroAbierto(false)}
+                  />
+                )}
+
+                <div className="vehiculos-content">
+                  <h2 className="vehiculos-titulo d-none d-md-block">
+                    COCHES
+                    <span className="fs-6 text-muted ms-2">
+                      ({vehiculosFiltrados.length} resultados)
+                    </span>
+                  </h2>
+                  {vehiculosFiltrados.length > 0 ? (
+                    <div className="vehiculos-grid">
+                      {vehiculosFiltrados.map((vehiculo) => (
+                        <CardVehiculoGPT2
+                          key={vehiculo.id}
+                          vehiculo={vehiculo}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="ms-3">
+                      Lo sentimos, no hay vehículos con esas características
+                      aún.
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <p className="ms-3">
-                  Lo sentimos, no hay vehículos con esas características aún.
-                </p>
-              )}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </>
+      )}
+
+      {/* ── PESTAÑA: VENDIDOS ── */}
+      {pestana === "vendidos" && (
+        <div className="vehiculos-layout">
+          <div className="vehiculos-content">
+            <h2 className="vehiculos-titulo d-none d-md-block">
+              VENDIDOS
+              <span className="fs-6 text-muted ms-2">
+                ({vehiculosVendidos.length} vehículos)
+              </span>
+            </h2>
+            {loadingVendidos && <SkeletonVehiculo />}
+            {!loadingVendidos && vehiculosVendidos.length === 0 && (
+              <p className="ms-3">No hay vehículos vendidos aún.</p>
+            )}
+            {!loadingVendidos && vehiculosVendidos.length > 0 && (
+              <div className="vehiculos-grid">
+                {vehiculosVendidos.map((v) => (
+                  <CardVehiculoGPT2 key={v.id} vehiculo={v} vendido />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

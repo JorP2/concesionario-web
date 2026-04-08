@@ -1,6 +1,4 @@
 import React from "react";
-// Style
-import "../styles/vehiculoCard.css";
 // Iconos
 import {
   FaSearchPlus,
@@ -13,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
+import sinImagen from "../assets/sin-imagen.svg";
 // style
 import "../styles/vehiculoCard.css";
 
@@ -36,10 +35,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
         {/* ── IMAGEN ── */}
         <div className="vehiculo-img" onClick={() => setShowGallery(true)}>
           <img
-            src={
-              vehiculo.imagenPortada ||
-              `https://picsum.photos/400/225?random=${vehiculo.id}`
-            }
+            src={vehiculo.imagenPortada || sinImagen}
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
           />
 
@@ -153,36 +149,69 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                 className="btn-close m-2 ms-auto"
                 onClick={() => setShowGallery(false)}
               />
-              <div id={`carousel-${vehiculo.id}`} className="carousel slide">
-                <div className="carousel-inner">
-                  {[0, 1, 2].map((offset) => (
-                    <div
-                      key={offset}
-                      className={`carousel-item ${offset === 0 ? "active" : ""}`}
-                    >
-                      <img
-                        src={`https://picsum.photos/800/450?random=${vehiculo.id + offset}`}
-                        className="d-block w-100"
-                        alt=""
-                      />
-                    </div>
-                  ))}
+
+              {/* Sin imágenes */}
+              {(!vehiculo.imagenes || vehiculo.imagenes.length === 0) && (
+                <img
+                  src={sinImagen}
+                  className="d-block w-100"
+                  alt="Sin imágenes"
+                />
+              )}
+
+              {/* Con imágenes */}
+              {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
+                <div id={`carousel-${vehiculo.id}`} className="carousel slide">
+                  <div className="carousel-inner">
+                    {vehiculo.imagenes.map((url, index) => (
+                      <div
+                        key={index}
+                        className={`carousel-item ${index === 0 ? "active" : ""}`}
+                      >
+                        <img
+                          src={url}
+                          className="d-block w-100"
+                          alt={`${vehiculo.marca} ${vehiculo.modelo} - foto ${index + 1}`}
+                          style={{ maxHeight: "500px", objectFit: "cover" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Controles solo si hay más de 1 imagen */}
+                  {vehiculo.imagenes.length > 1 && (
+                    <>
+                      <button
+                        className="carousel-control-prev"
+                        data-bs-target={`#carousel-${vehiculo.id}`}
+                        data-bs-slide="prev"
+                      >
+                        <span className="carousel-control-prev-icon" />
+                      </button>
+                      <button
+                        className="carousel-control-next"
+                        data-bs-target={`#carousel-${vehiculo.id}`}
+                        data-bs-slide="next"
+                      >
+                        <span className="carousel-control-next-icon" />
+                      </button>
+
+                      {/* Indicadores */}
+                      <div className="carousel-indicators">
+                        {vehiculo.imagenes.map((_, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            data-bs-target={`#carousel-${vehiculo.id}`}
+                            data-bs-slide-to={index}
+                            className={index === 0 ? "active" : ""}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-                <button
-                  className="carousel-control-prev"
-                  data-bs-target={`#carousel-${vehiculo.id}`}
-                  data-bs-slide="prev"
-                >
-                  <span className="carousel-control-prev-icon" />
-                </button>
-                <button
-                  className="carousel-control-next"
-                  data-bs-target={`#carousel-${vehiculo.id}`}
-                  data-bs-slide="next"
-                >
-                  <span className="carousel-control-next-icon" />
-                </button>
-              </div>
+              )}
             </div>
           </div>
         </div>

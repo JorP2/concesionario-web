@@ -49,8 +49,8 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
 
       await eliminarImagen(vehiculoId, imagenId);
 
-      setImagenesExistentes(
-        imagenesExistentes.filter((img) => img.id !== imagenId),
+      setImagenesExistentes((prev) =>
+        prev.filter((img) => img.id !== imagenId),
       );
     } catch (error) {
       console.error("Error al eliminar la imagen:", error);
@@ -81,9 +81,9 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
   };
 
   // Funciones VIDEOS
-  const handleEliminarVideo = async (videoId) => {
+  const handleEliminarVideo = async (vehiculoId, videoId) => {
     try {
-      await eliminarVideo(videoId);
+      await eliminarVideo(vehiculoId, videoId);
       setVideosExistentes((prev) => prev.filter((v) => v.id !== videoId));
     } catch (error) {
       console.error("Error al eliminar el video:", error);
@@ -143,7 +143,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                       src={img.url}
                       className="w-100 h-100 position-absolute top-0 start-0"
                       style={{ objectFit: "cover" }}
-                      alt={`Imagen ${img.marca} ${img.modelo}`}
+                      alt={`Imagen ${img.id}`}
                     />
 
                     {/* Portada */}
@@ -241,77 +241,64 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
       </div>
 
       {/* Sección videos */}
-      <div className="mt-5">
-        <h5>Videos</h5>
-        {vehiculoId ? (
-          <div className="mt-5">
-            <h5>Videos</h5>
-            {vehiculoId ? (
-              <div>
-                {/* Sección videos */}
-                <input
-                  type="file"
-                  ref={inputVideoRef}
-                  className="d-none"
-                  multiple
-                  accept="video/*"
-                  onChange={handleSeleccionarVideo}
-                />
-
-                <div className="row g-2">
-                  {videosExistentes.map((vid) => (
-                    <div key={vid.id} className="col-12 col-md-6 col-lg-4">
-                      <div className="position-relative rounded overflow-hidden">
-                        <video
-                          src={vid.url}
-                          className="w-100 rounded"
-                          style={{ maxHeight: "180px", objectFit: "cover" }}
-                          controls
-                        />
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: "22px",
-                            height: "22px",
-                            borderRadius: "50%",
-                          }}
-                          onClick={() => handleEliminarVideo(vid.id)}
-                        >
-                          <FaTimes size={10} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Botón agregar */}
-                  <div className="col-12 col-md-6 col-lg-4">
-                    <div
-                      className="border rounded d-flex align-items-center justify-content-center"
-                      style={{
-                        height: "180px",
-                        cursor: "pointer",
-                        borderStyle: "dashed",
-                      }}
-                      onClick={() => inputVideoRef.current.click()}
-                    >
-                      <FaPlus size={28} className="text-muted" />
-                    </div>
-                  </div>
+      {vehiculoId ? (
+        <div className="mt-4">
+          <h5>Videos</h5>
+          <input
+            type="file"
+            ref={inputVideoRef}
+            className="d-none"
+            multiple
+            accept="video/*"
+            onChange={handleSeleccionarVideo}
+          />
+          <div className="row g-2">
+            {videosExistentes.map((vid) => (
+              <div key={vid.id} className="col-12 col-md-6 col-lg-4">
+                <div className="position-relative rounded overflow-hidden">
+                  <video
+                    src={vid.url}
+                    className="w-100 rounded"
+                    style={{ maxHeight: "180px", objectFit: "cover" }}
+                    controls
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
+                    style={{
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "50%",
+                    }}
+                    onClick={() => handleEliminarVideo(vehiculoId, vid.id)}
+                  >
+                    <FaTimes size={10} />
+                  </button>
                 </div>
               </div>
-            ) : (
-              <p className="text-muted small">
-                Guarda el vehículo primero para poder subir videos
-              </p>
-            )}
+            ))}
+
+            {/* Botón agregar */}
+            <div className="col-12 col-md-6 col-lg-4">
+              <div
+                className="border rounded d-flex align-items-center justify-content-center"
+                style={{
+                  height: "180px",
+                  cursor: "pointer",
+                  borderStyle: "dashed",
+                }}
+                onClick={() => inputVideoRef.current.click()}
+              >
+                <FaPlus size={28} className="text-muted" />
+              </div>
+            </div>
           </div>
-        ) : (
-          <p className="text-muted small">
-            Guarda el vehículo primero para poder subir videos
-          </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <p className="text-muted small">
+          Guarda el vehículo primero para poder subir videos
+        </p>
+      )}
     </div>
   );
 }
