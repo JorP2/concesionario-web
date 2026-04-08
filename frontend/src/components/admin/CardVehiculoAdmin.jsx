@@ -1,16 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// Styles
 import "../../styles/admin/vehiculoCardAdmin.css";
+import sinImagen from "../../assets/sin-imagen.svg";
 
 function CardVehiculoAdmin({ vehiculo, onEliminar }) {
-  // Funcion para manejar eliminar
+  const [mostrarModal, setMostrarModal] = React.useState(false);
+
   const handleEliminar = () => {
     onEliminar(vehiculo.id);
+    setMostrarModal(false);
   };
-
-  // Id para cada modal, evitamos duplicdos
-  const modalId = `eliminarModal-${vehiculo.id}`;
 
   return (
     <>
@@ -24,11 +23,11 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
             {vehiculo.enOferta && vehiculo.precioOferta && (
               <div className="oferta-ribbon-admin">OFERTA</div>
             )}
+            {vehiculo.estadoVenta === "vendido" && (
+              <div className="vendido-ribbon-admin">VENDIDO</div>
+            )}
             <img
-              src={
-                vehiculo.imagenPortada ||
-                `https://picsum.photos/300/200?random=${vehiculo.id}`
-              }
+              src={vehiculo.imagenPortada || sinImagen}
               className="img-admin"
               alt={`${vehiculo.marca} ${vehiculo.modelo}`}
             />
@@ -40,7 +39,6 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
               <h5 className="card-title">
                 {vehiculo.marca} {vehiculo.modelo}
               </h5>
-
               <div className="row g-1 mt-1">
                 <div className="col-6">
                   <p className="card-text mb-1">
@@ -107,61 +105,56 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
               >
                 Editar
               </Link>
-
               <button
                 className="btn btn-danger"
-                data-bs-toggle="modal"
-                data-bs-target={`#${modalId}`}
+                onClick={() => setMostrarModal(true)}
               >
                 Eliminar
               </button>
-
-              {/* Modal de confirmación */}
-              <div
-                className="modal fade"
-                id={modalId}
-                tabIndex={-1}
-                aria-labelledby={modalId}
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-dialog-centered">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h1 className="modal-title fs-5" id={modalId}>
-                        ¿Seguro desea eliminar este vehículo?
-                      </h1>
-                      <button
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      Esta acción no se puede deshacer.
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Cancelar
-                      </button>
-                      {/* Eliminar realmente */}
-                      <button
-                        className="btn btn-danger"
-                        data-bs-dismiss="modal"
-                        onClick={handleEliminar}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ── MODAL — fuera del card, controlado por React ── */}
+      {mostrarModal && (
+        <div
+          className="modal fade show d-block"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+          onClick={() => setMostrarModal(false)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  ¿Seguro desea eliminar este vehículo?
+                </h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setMostrarModal(false)}
+                />
+              </div>
+              <div className="modal-body">
+                Esta acción no se puede deshacer.
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setMostrarModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button className="btn btn-danger" onClick={handleEliminar}>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
