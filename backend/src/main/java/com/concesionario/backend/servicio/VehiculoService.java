@@ -66,6 +66,20 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
+    public Vehiculo aplicarOfertaPrecioFijo(Long id, Double nuevoPrecioOferta) {
+        Vehiculo vehiculo = obtenerPorId(id);
+        
+        if (nuevoPrecioOferta <= 0 || nuevoPrecioOferta >= vehiculo.getPrecio()) {
+            throw new RuntimeException("El precio de oferta debe ser menor al precio original");
+        }
+        
+        vehiculo.setPrecioOferta(nuevoPrecioOferta);  // ← Aquí pone el precio que él quiera
+        vehiculo.setEnOferta(true);
+        vehiculo.setFechaFinOferta(DateUtils.ahora().plusDays(30));
+        
+        return vehiculoRepository.save(vehiculo);
+    }
+    
     // QUITAR OFERTA
     public Vehiculo quitarOferta(Long id) {
         Vehiculo vehiculo = obtenerPorId(id);

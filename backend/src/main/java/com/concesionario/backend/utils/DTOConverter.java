@@ -78,6 +78,7 @@ public class DTOConverter {
         dto.setPegatina(vehiculo.getPegatina());
         dto.setDescripcion(vehiculo.getDescripcion());
         dto.setExtras(vehiculo.getExtras());
+        dto.setVisible(vehiculo.getVisible());
         dto.setEnOferta(vehiculo.getEnOferta());
         dto.setPrecioOferta(vehiculo.getPrecioOferta());
         dto.setFechaFinOferta(DateUtils.formatearParaJSON(vehiculo.getFechaFinOferta()));

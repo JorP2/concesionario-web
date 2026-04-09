@@ -21,6 +21,7 @@ public class VehiculoResponseDTO {
     private String pegatina;
     private String descripcion;
     private String extras;
+    private Boolean visible; 
     private Boolean enOferta;
     private Double precioOferta;
     private String fechaFinOferta;
@@ -73,7 +74,8 @@ public class VehiculoResponseDTO {
     public void setEstadoVenta(String estadoVenta) { this.estadoVenta = estadoVenta; }
     public String getImagenPortada() {return imagenPortada;}
 	public void setImagenPortada(String imagenPortada) {this.imagenPortada = imagenPortada;}
-
+	public Boolean getVisible() { return visible; }
+    public void setVisible(Boolean visible) { this.visible = visible; }
 
 	public List<String> getImagenes() { return imagenes; }
     public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }

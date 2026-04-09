@@ -155,6 +155,15 @@ public class VehiculoController {
         List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
         return ResponseEntity.ok(dtoConverter.toVehiculoResponseDTO(vehiculo, imagenes));
     }
+    
+    @PostMapping("/{id}/oferta-precio")
+    public ResponseEntity<VehiculoResponseDTO> aplicarOfertaPrecioFijo(
+            @PathVariable Long id,
+            @RequestParam Double precioOferta) {
+        Vehiculo vehiculo = vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta);
+        List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
+        return ResponseEntity.ok(dtoConverter.toVehiculoResponseDTO(vehiculo, imagenes));
+    }
 
     @DeleteMapping("/{id}/oferta")
     public ResponseEntity<VehiculoResponseDTO> quitarOferta(@PathVariable Long id) {
