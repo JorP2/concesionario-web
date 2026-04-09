@@ -10,9 +10,9 @@ import {
   getVehiculoById,
   updateVehiculo,
   deleteOferta,
-  aplicarOferta,
   cambiarVisibilidad,
   updateEstadoVehiculo,
+  aplicarOfertaPrecioFijo,
 } from "../api/vehiculoApi";
 import { addImagenes } from "../api/imagenApi";
 
@@ -122,13 +122,9 @@ function VehiculoFormulario() {
 
       // ── Gestionar oferta ──────────────────────────
       if (vehiculo.enOferta && vehiculo.precioOferta) {
-        const descuento = Math.round(
-          ((vehiculo.precio - vehiculo.precioOferta) / vehiculo.precio) * 100,
-        );
-        await aplicarOferta(vehiculoId, descuento);
+        await aplicarOfertaPrecioFijo(vehiculoId, vehiculo.precioOferta);
       } else if (!vehiculo.enOferta) {
-        // Por si acaso queda oferta residual al crear sin oferta
-        await deleteOferta(vehiculoId).catch(() => {}); // silenciar si no había oferta
+        await deleteOferta(vehiculoId).catch(() => {});
       }
       // ─────────────────────────────────────────────
 

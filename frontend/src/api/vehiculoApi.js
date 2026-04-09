@@ -220,7 +220,7 @@ export const cambiarVisibilidad = async (id, visible) => {
 };
 
 // ADMIN: aplicarOferta()
-export const aplicarOferta = async (id, descuento) => {
+/*export const aplicarOferta = async (id, descuento) => {
   try {
     const response = await fetch(`${API_URL}/${id}/oferta?descuento=${descuento}`, {
       method: "POST"
@@ -234,6 +234,23 @@ export const aplicarOferta = async (id, descuento) => {
     
   } catch (error) {
     console.error("Error en aplicarOferta:", error);
+    throw error;
+  }
+};*/
+
+// ADMIN: aplicarOfertaPrecioFijo 
+export const aplicarOfertaPrecioFijo = async (id, precioOferta) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/${id}/oferta-precio?precioOferta=${precioOferta}`, // ← corregido
+      { method: "POST" }
+    );
+    if (!response.ok) {
+      throw new Error("Error al aplicar la oferta de precio fijo al vehículo");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error en aplicarOfertaPrecioFijo:", error);
     throw error;
   }
 };
