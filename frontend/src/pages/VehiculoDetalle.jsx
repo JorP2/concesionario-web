@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../styles/VehiculoDetalle.css";
+import "../styles/vehiculoDetalle.css";
 import {
   FaGasPump,
   FaCogs,

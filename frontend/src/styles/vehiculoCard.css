@@ -124,6 +124,10 @@
 .vehiculo-price-block {
   text-align: right;
   flex-shrink: 0;
+  min-height: 44px; /* reserva espacio para las 2 líneas siempre */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .price-label {

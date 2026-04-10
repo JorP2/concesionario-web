@@ -66,6 +66,21 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
+    public Vehiculo aplicarOfertaPrecioFijo(Long id, Double nuevoPrecioOferta) {
+        Vehiculo vehiculo = obtenerPorId(id);
+        
+        if (nuevoPrecioOferta <= 0 || nuevoPrecioOferta >= vehiculo.getPrecio()) {
+            throw new RuntimeException("El precio de oferta debe ser mayor a 0 y menor al precio original (" 
+                + vehiculo.getPrecio() + ")");
+        }
+        
+        vehiculo.setPrecioOferta(nuevoPrecioOferta);  // ← Aquí pone el precio que él quiera
+        vehiculo.setEnOferta(true);
+        vehiculo.setFechaFinOferta(DateUtils.ahora().plusDays(30));
+        
+        return vehiculoRepository.save(vehiculo);
+    }
+    
     // QUITAR OFERTA
     public Vehiculo quitarOferta(Long id) {
         Vehiculo vehiculo = obtenerPorId(id);
@@ -85,9 +100,10 @@ public class VehiculoService {
 
     //CAMBIAR ESTADO
     public Vehiculo cambiarEstadoVenta(Long id, String estado) {
-        if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("proximo")) {
-            throw new RuntimeException("Estado no válido");
-        }
+    	if (!estado.equals("en_venta") && !estado.equals("vendido") 
+    		    && !estado.equals("proximo") && !estado.equals("reservado")) {
+    		    throw new RuntimeException("Estado no válido");
+    		}
         Vehiculo vehiculo = obtenerPorId(id);
         vehiculo.setEstadoVenta(estado);
         return vehiculoRepository.save(vehiculo);

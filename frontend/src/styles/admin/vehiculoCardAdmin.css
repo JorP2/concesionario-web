@@ -16,11 +16,28 @@
   box-shadow: 0 8px 18px rgba(0,0,0,0.1);
 }
 
+/* ── RIBBONS ── */
 .oferta-ribbon-admin {
   position: absolute;
   top: 14px;
   left: -22px;
   background: #dc3545;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 32px;
+  transform: rotate(-45deg);
+  z-index: 3;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.vendido-ribbon-admin {
+  position: absolute;
+  top: 14px;
+  left: -22px;
+  background: #6c757d;
   color: white;
   font-size: 10px;
   font-weight: 700;
