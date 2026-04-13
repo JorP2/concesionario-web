@@ -38,11 +38,9 @@ function VehiculoDetalle() {
   }
 
   return (
-    <div className="container-fluid px-4 px-md-5">
+    <div className="container-fluid px-3 px-md-5 py-3">
       {/* HERO */}
-      <div className="position-relative mb-4">
-
-        {/* Imagen */}
+      <div className="position-relative mb-4 rounded-4 overflow-hidden shadow">
         <div className="ratio ratio-21x9">
           <img
             src={vehiculo.imagenPortada}
@@ -51,12 +49,17 @@ function VehiculoDetalle() {
           />
         </div>
 
-        {/* Overlay oscuro */}
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+        {/* Overlay degradado */}
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%)",
+          }}
+        />
 
         {/* Texto (título + descripción) */}
         <div className="position-absolute top-0 start-0 p-4 text-white">
-
           {/* Título */}
           <h2 className="fw-bold fs-4 m-0">
             {vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}
@@ -72,29 +75,28 @@ function VehiculoDetalle() {
       </div>
 
     {/* PRECIO */}
-    <div className="bg-white shadow-sm rounded-2 p-3 mb-4">
-      <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <small className="text-muted">
-          Garantía de hasta 12 meses - Posibilidad de financiación
-        </small>
-        
-        {vehiculo.precioOferta ? (
-          <div className="d-flex align-items-center gap-3">
-            <span className="text-decoration-line-through text-muted fs-5">
-              {vehiculo.precio}€
-            </span>
+      <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <small className="text-muted">
+            ✔ Garantía 12 meses · ✔ Financiación disponible
+          </small>
 
-            <span className="fw-bold text-primary fs-3">
-              {vehiculo.precioOferta}€
-            </span>
-          </div>
-        ) : (
-          <span className="fw-bold text-primary fs-3">
-            {vehiculo.precio}€
-          </span>
-        )}
+          {vehiculo.precioOferta ? (
+            <div className="text-end">
+              <div className="text-decoration-line-through text-muted">
+                {vehiculo.precio}€
+              </div>
+              <div className="fw-bold fs-3 text-primary">
+                {vehiculo.precioOferta}€
+              </div>
+            </div>
+          ) : (
+            <div className="fw-bold fs-3 text-primary">
+              {vehiculo.precio}€
+            </div>
+          )}
+        </div>
       </div>
-    </div>
 
       {/* Mini-cards con iconos */}
       <div className="d-flex text-center my-3" style={{ gap: 0 }}>
@@ -122,7 +124,7 @@ function VehiculoDetalle() {
           </div>
         </div>
 
-        <div className="card bg-dark text-light flex-fill rounded-0">
+        <div className="card bg-dark text-light flex-fill rounded-0 border-start border-end">
           <div className="card-body d-flex flex-column align-items-center">
             <FaTachometerAlt size={40} className="mb-1" />
             <p className="mb-1">Kilómetros</p>

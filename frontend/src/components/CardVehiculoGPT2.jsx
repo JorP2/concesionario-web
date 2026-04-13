@@ -65,10 +65,10 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
               {vehiculo.enOferta && vehiculo.precioOferta ? (
                 <>
                   <span className="precio-tachado">
-                    €{Number(vehiculo.precio).toLocaleString("es-ES")}
+                    €{Number(vehiculo.precio).toLocaleString("es-ES")}€
                   </span>
                   <span className="precio precio-oferta">
-                    €{Number(vehiculo.precioOferta).toLocaleString("es-ES")}
+                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")}€
                   </span>
                 </>
               ) : (
@@ -80,7 +80,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                     &nbsp;
                   </span>
                   <span className="precio">
-                    €{Number(vehiculo.precio).toLocaleString("es-ES")}
+                    {Number(vehiculo.precio).toLocaleString("es-ES")}€
                   </span>
                 </>
               )}
