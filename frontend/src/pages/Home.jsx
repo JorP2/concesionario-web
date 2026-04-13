@@ -1,5 +1,5 @@
 import { MdCheck, MdEuroSymbol, MdLocationOn } from "react-icons/md";
-import "../styles/Home.css";
+import "../styles/home.css";
 
 function Home() {
   return (
