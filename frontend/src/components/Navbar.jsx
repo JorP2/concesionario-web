@@ -190,27 +190,25 @@ export const Navbar = () => {
               </li>
             </ul>
 
-            {/* Sección usuario en móvil — solo visible cuando el collapse está abierto */}
-            <div className="d-lg-none border-top border-secondary mt-2 pt-2">
+            {/* Sección usuario en móvil */}
+            <div className="d-lg-none mobile-user-section">
               {usuario ? (
                 <>
-                  <div className="px-3 py-2">
-                    <p className="mb-0 fw-semibold text-white">
-                      {usuario.nombre ?? "Usuario"}
-                    </p>
-                    <small className="text-secondary">
-                      {usuario.email ?? ""}
-                    </small>
+                  <div className="mobile-user-info">
+                    <FaUserCircle size={20} />
+                    <div>
+                      <p className="mb-0 fw-semibold">
+                        {usuario.nombre ?? "Usuario"}
+                      </p>
+                      <small>{usuario.email ?? ""}</small>
+                    </div>
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-link text-danger text-decoration-none px-3 py-2 d-block"
-                  >
+                  <button onClick={handleLogout} className="mobile-logout-btn">
                     Cerrar sesión
                   </button>
                 </>
               ) : (
-                <NavLink to="/login" className="nav-link px-3 py-2">
+                <NavLink to="/login" className="mobile-login-btn">
                   Iniciar sesión
                 </NavLink>
               )}
