@@ -221,7 +221,7 @@ function Vehiculos() {
 
                 <div className="vehiculos-content">
                   <h2 className="vehiculos-titulo d-none d-md-block">
-                    COCHES
+                    Disponibles
                     <span className="fs-6 text-muted ms-2">
                       ({vehiculosFiltrados.length} resultados)
                     </span>

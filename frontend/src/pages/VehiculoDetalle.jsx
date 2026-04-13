@@ -71,37 +71,33 @@ function VehiculoDetalle() {
         </div>
       </div>
 
-      {/* PRECIO */}
-      <div className="bg-white shadow-sm rounded-2 p-3 mb-4">
+    {/* PRECIO */}
+    <div className="bg-white shadow-sm rounded-2 p-3 mb-4">
+      <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <small className="text-muted">
+          Garantía de hasta 12 meses - Posibilidad de financiación
+        </small>
+        
         {vehiculo.precioOferta ? (
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-            <small className="text-muted">
-              Garantía de hasta 12 meses - Posibilidad de financiación
-            </small>
-
-            <div className="d-flex align-items-center gap-3">
-              <span className="text-decoration-line-through text-muted fs-5">
-                {vehiculo.precio}€
-              </span>
-
-              <span className="fw-bold text-primary fs-3">
-                {vehiculo.precioOferta}€
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center text-md-end">
-            <span className="fw-bold text-primary fs-3">
+          <div className="d-flex align-items-center gap-3">
+            <span className="text-decoration-line-through text-muted fs-5">
               {vehiculo.precio}€
             </span>
-          </div>
-        )}
 
+            <span className="fw-bold text-primary fs-3">
+              {vehiculo.precioOferta}€
+            </span>
+          </div>
+        ) : (
+          <span className="fw-bold text-primary fs-3">
+            {vehiculo.precio}€
+          </span>
+        )}
       </div>
+    </div>
 
       {/* Mini-cards con iconos */}
       <div className="d-flex text-center my-3" style={{ gap: 0 }}>
-
         <div
           className="card bg-dark text-light flex-fill"
           style={{
@@ -151,17 +147,88 @@ function VehiculoDetalle() {
             <h3 className="card-title">{vehiculo.cambio}</h3>
           </div>
         </div>
-
       </div>
 
-      {/* Título sección */}
+      {/* SLIDER */}
+      {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
+        vehiculo.imagenes.length > 1 ? (
+          <div
+            id="vehiculoCarousel"
+            className="carousel slide mb-4"
+            data-bs-ride="carousel"
+          >
+            {/* Indicadores */}
+            <div className="carousel-indicators">
+              {vehiculo.imagenes.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  data-bs-target="#vehiculoCarousel"
+                  data-bs-slide-to={i}
+                  className={i === 0 ? "active" : ""}
+                ></button>
+              ))}
+            </div>
+
+            {/* Imágenes */}
+            <div className="carousel-inner rounded-3 overflow-hidden">
+              {vehiculo.imagenes.map((img, i) => (
+                <div
+                  key={i}
+                  className={`carousel-item ${i === 0 ? "active" : ""}`}
+                >
+                  <img
+                    src={img}
+                    alt={`${vehiculo.marca} ${vehiculo.modelo} imagen ${i + 1}`}
+                    className="d-block w-100"
+                    style={{
+                      height: "400px",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Controles */}
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#vehiculoCarousel"
+              data-bs-slide="prev"
+            >
+              <span className="bg-dark rounded-circle d-flex align-items-center justify-content-center p-2">
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+              </span>
+            </button>
+
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#vehiculoCarousel"
+              data-bs-slide="next"
+            >
+              <span className="bg-dark rounded-circle d-flex align-items-center justify-content-center p-2">
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+              </span>
+            </button>
+          </div>
+        ) : (
+          <img
+            src={vehiculo.imagenes[0]}
+            alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+            className="w-100 rounded mb-4"
+            style={{ height: "400px", objectFit: "cover" }}
+          />
+        )
+      )}
+
+      {/* Stats */}
       <h2 className="text-center my-5 fw-bold fs-4">
         Conoce más sobre este vehículo
       </h2>
 
-      {/* Stats */}
       <div className="stats-container my-4">
-
         <div className="stats-row flex-row">
           <div className="stat-circle">
             <p>Puertas</p>
@@ -190,13 +257,11 @@ function VehiculoDetalle() {
             <h5>{vehiculo.interior}</h5>
           </div>
         </div>
-
       </div>
 
       {/* Extras */}
       <div>
         <h3>Extras:</h3>
-
         {vehiculo.extras && (
           <div className="mt-2 d-flex flex-wrap gap-2">
             {vehiculo.extras.split(",").map((extra, idx) => (
@@ -207,7 +272,6 @@ function VehiculoDetalle() {
           </div>
         )}
       </div>
-
     </div>
   );
 }
