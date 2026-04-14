@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 // Icons
-import {
-  FaEnvelope,
-  FaEuroSign,
-  FaPhone,
-  FaUserCircle,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 // styles
 import "../styles/navbar.css";
 
@@ -109,23 +103,10 @@ export const Navbar = () => {
         />
       )}
 
-      {/* TOPBAR (AQUÍ) */}
-      <div className="topbar">
-        <div className="container">
-          <div className="topbar-content">
-            <span>
-              <FaWhatsapp /> 651 86 82 30
-            </span>
-            <span>
-              <FaEuroSign /> Mejor precio
-            </span>
-            <span>
-              <FaPhone /> 925 39 31 86
-            </span>
-            <span>
-              <FaEnvelope /> nohalesautomoviles@gmail.com
-            </span>
-          </div>
+      <div className="topbar bg-primary text-white py-2">
+        <div className="container d-flex justify-content-center">
+          <span>Nohales Automóviles</span>
+          <span>Talleres García</span>
         </div>
       </div>
 

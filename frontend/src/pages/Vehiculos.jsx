@@ -5,6 +5,7 @@ import { getVehiculosEnVenta, getVehiculosVendidos } from "../api/vehiculoApi";
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
+import "../styles/vehiculos.css"
 // Iconos
 import { FaFilter } from "react-icons/fa";
 // Estilo
@@ -220,7 +221,7 @@ function Vehiculos() {
 
                 <div className="vehiculos-content">
                   <h2 className="vehiculos-titulo d-none d-md-block">
-                    COCHES
+                    Disponibles
                     <span className="fs-6 text-muted ms-2">
                       ({vehiculosFiltrados.length} resultados)
                     </span>

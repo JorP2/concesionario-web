@@ -5,7 +5,6 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.25s ease;
-  cursor: pointer;
   width: 100%;
   border: 1px solid #eee;
   animation: fadeIn 0.5s ease;
@@ -20,6 +19,7 @@
 .vehiculo-img {
   position: relative;
   height: 200px;
+  cursor: pointer;
   overflow: hidden;
 }
 
@@ -183,7 +183,7 @@
   display: block;
   width: 100%;
   text-align: center;
-  background: #198754;
+  background: #096dac;
   color: white;
   padding: 10px;
   border-radius: 8px;
@@ -194,8 +194,9 @@
 }
 
 .btn-ver:hover {
-  background: #157347;
-  transform: translateY(-1px);
+  background: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(13, 110, 253, 0.25);
 }
 
 /* ── RIBBON OFERTA ── */
@@ -242,7 +243,7 @@
 }
 
 .precio-oferta {
-  color: #dc3545 !important;
+  color: #198754;
 }
 
 /* ── ANIMACIONES ── */
