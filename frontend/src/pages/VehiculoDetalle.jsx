@@ -1,11 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../styles/VehiculoDetalle.css";
-import {
-  FaGasPump,
-  FaCogs,
-  FaTachometerAlt
-} from "react-icons/fa";
+import "../styles/vehiculoDetalle.css";
+import { FaGasPump, FaCogs, FaTachometerAlt } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
 import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 
@@ -74,7 +70,7 @@ function VehiculoDetalle() {
         </div>
       </div>
 
-    {/* PRECIO */}
+      {/* PRECIO */}
       <div className="card border-0 shadow-sm rounded-4 mb-4">
         <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
           <small className="text-muted">
@@ -91,9 +87,7 @@ function VehiculoDetalle() {
               </div>
             </div>
           ) : (
-            <div className="fw-bold fs-3 text-primary">
-              {vehiculo.precio}€
-            </div>
+            <div className="fw-bold fs-3 text-primary">{vehiculo.precio}€</div>
           )}
         </div>
       </div>
@@ -152,8 +146,9 @@ function VehiculoDetalle() {
       </div>
 
       {/* SLIDER */}
-      {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
-        vehiculo.imagenes.length > 1 ? (
+      {vehiculo.imagenes &&
+        vehiculo.imagenes.length > 0 &&
+        (vehiculo.imagenes.length > 1 ? (
           <div
             id="vehiculoCarousel"
             className="carousel slide mb-4"
@@ -200,7 +195,10 @@ function VehiculoDetalle() {
               data-bs-slide="prev"
             >
               <span className="bg-dark rounded-circle d-flex align-items-center justify-content-center p-2">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span
+                  className="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
               </span>
             </button>
 
@@ -211,7 +209,10 @@ function VehiculoDetalle() {
               data-bs-slide="next"
             >
               <span className="bg-dark rounded-circle d-flex align-items-center justify-content-center p-2">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span
+                  className="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
               </span>
             </button>
           </div>
@@ -222,8 +223,7 @@ function VehiculoDetalle() {
             className="w-100 rounded mb-4"
             style={{ height: "400px", objectFit: "cover" }}
           />
-        )
-      )}
+        ))}
 
       {/* Stats */}
       <h2 className="text-center my-5 fw-bold fs-4">

@@ -201,6 +201,8 @@ function VehiculoFormulario() {
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
+                    min={1900}
+                    max={new Date().getFullYear()}
                   />
                 </div>
                 <div className="col-6">
@@ -211,6 +213,8 @@ function VehiculoFormulario() {
                     name="precio"
                     value={vehiculo.precio}
                     onChange={handleChange}
+                    min={0}
+                    max={999999999}
                   />
                 </div>
 
@@ -223,6 +227,8 @@ function VehiculoFormulario() {
                     name="kilometros"
                     value={vehiculo.kilometros}
                     onChange={handleChange}
+                    min={0}
+                    max={999999}
                   />
                 </div>
                 <div className="col-6">
@@ -289,6 +295,8 @@ function VehiculoFormulario() {
                     name="puertas"
                     value={vehiculo.puertas}
                     onChange={handleChange}
+                    min={1}
+                    max={9}
                   />
                 </div>
                 <div className="col-6">
@@ -299,6 +307,8 @@ function VehiculoFormulario() {
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
+                    min={1}
+                    max={20}
                   />
                 </div>
 
