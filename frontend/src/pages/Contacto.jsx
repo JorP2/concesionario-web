@@ -1,6 +1,6 @@
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
-import "../styles/Contacto.css";
+import "../styles/contacto.css";
 
 function Contacto() {
   return (
