@@ -26,10 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        System.out.println("🔐 Contraseña ingresada (debe coincidir con 1234)");
-        System.out.println("🔐 Hash en BD: " + usuario.getPassword());
-        System.out.println("✅ ¿Coincide? " + passwordEncoder.matches("1234", usuario.getPassword()));
-
         String role = usuario.getEsSuperUsuario() ? "ADMIN" : "USER";
 
         return new User(usuario.getUsername(), usuario.getPassword(),
