@@ -2,6 +2,8 @@ package com.concesionario.backend.servicio;
 
 import java.io.IOException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import com.concesionario.backend.utils.FileUtils;
 @Transactional
 public class VideoService {
 
+    private static final Logger log = LoggerFactory.getLogger(VideoService.class);
+
     @Autowired
     private VideoRepository videoRepository;
 
@@ -26,57 +30,102 @@ public class VideoService {
     @Autowired
     private UploadConfig uploadConfig;
 
-
-    // SUBIR VIDEO
+    // ========== SUBIR VIDEO ==========
 
     public Video subirVideo(Long vehiculoId, MultipartFile archivo) throws IOException {
+        log.info("Subiendo video para vehículo ID: {}", vehiculoId);
+        
+        validarQueEsVideo(archivo);
+        Vehiculo vehiculo = obtenerVehiculo(vehiculoId);
+        String carpeta = crearCarpetaVideos(vehiculoId);
+        String uid = guardarArchivo(archivo, carpeta);
+        int nuevoOrden = calcularNuevoOrden(vehiculoId);
+        
+        Video video = crearEntidadVideo(vehiculo, uid, nuevoOrden);
+        
+        Video resultado = videoRepository.save(video);
+        log.info("Video subido con ID: {} para vehículo ID: {}", resultado.getId(), vehiculoId);
+        return resultado;
+    }
 
-    	 if (!FileUtils.esVideo(archivo)) {
-             throw new RuntimeException("El archivo debe ser un video (MP4, MPEG, MOV)");
-         }
-    	 
-    	 Vehiculo vehiculo = vehiculoRepository.findById(vehiculoId)
-                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
-
-         // Crear carpeta: uploads/vehiculos/1/videos/
-         String carpetaVehiculo = uploadConfig.getRuta() + vehiculoId + "/videos/";
-         FileUtils.crearCarpeta(carpetaVehiculo);
-
-         // GUARDAR ARCHIVO (genera nombre único y lo guarda)
-         String uid = FileUtils.guardarArchivo(archivo, carpetaVehiculo);
-
-         // Calcular orden
-         Integer ultimoOrden = videoRepository.findMaxOrdenByVehiculoId(vehiculoId);
-         int nuevoOrden = (ultimoOrden == null) ? 1 : ultimoOrden + 1;
-
-         // Crear entidad Video
-         Video video = new Video();
-         video.setVehiculo(vehiculo);
-         video.setUid(uid);
-         video.setOrden(nuevoOrden);
-
-         return videoRepository.save(video);
-     }
-    
-
-    // OBTENER VIDEOS
+    // ========== OBTENER VIDEOS ==========
 
     public List<Video> obtenerVideosPorVehiculo(Long vehiculoId) {
+        log.info("Obteniendo videos del vehículo ID: {}", vehiculoId);
         return videoRepository.findByVehiculoIdOrderByOrdenAsc(vehiculoId);
     }
 
-    // ELIMINAR VIDEO
+    // ========== ELIMINAR VIDEO ==========
 
     public void eliminarVideo(Long id) {
-        Video video = videoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Video no encontrado"));
+        log.info("Eliminando video ID: {}", id);
+        
+        Video video = obtenerVideo(id);
+        eliminarArchivoFisico(video);
+        videoRepository.deleteById(id);
+        
+        log.info("Video ID: {} eliminado", id);
+    }
 
+    // ========== MÉTODOS PRIVADOS ==========
+
+    private void validarQueEsVideo(MultipartFile archivo) {
+        if (!FileUtils.esVideo(archivo)) {
+            log.warn("Archivo no válido: no es un video");
+            throw new RuntimeException("El archivo debe ser un video (MP4, MPEG, MOV)");
+        }
+    }
+
+    private Vehiculo obtenerVehiculo(Long vehiculoId) {
+        return vehiculoRepository.findById(vehiculoId)
+                .orElseThrow(() -> {
+                    log.warn("Vehículo no encontrado con ID: {}", vehiculoId);
+                    return new RuntimeException("Vehículo no encontrado");
+                });
+    }
+
+    private String crearCarpetaVideos(Long vehiculoId) {
+        String carpeta = uploadConfig.getRuta() + vehiculoId + "/videos/";
+        FileUtils.crearCarpeta(carpeta);
+        log.debug("Carpeta creada: {}", carpeta);
+        return carpeta;
+    }
+
+    private String guardarArchivo(MultipartFile archivo, String carpeta) throws IOException {
+        String uid = FileUtils.guardarArchivo(archivo, carpeta);
+        log.debug("Archivo guardado con UID: {}", uid);
+        return uid;
+    }
+
+    private int calcularNuevoOrden(Long vehiculoId) {
+        Integer ultimoOrden = videoRepository.findMaxOrdenByVehiculoId(vehiculoId);
+        int nuevoOrden = (ultimoOrden == null) ? 1 : ultimoOrden + 1;
+        log.debug("Nuevo orden calculado: {}", nuevoOrden);
+        return nuevoOrden;
+    }
+
+    private Video crearEntidadVideo(Vehiculo vehiculo, String uid, int orden) {
+        Video video = new Video();
+        video.setVehiculo(vehiculo);
+        video.setUid(uid);
+        video.setOrden(orden);
+        return video;
+    }
+
+    private Video obtenerVideo(Long id) {
+        return videoRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Video no encontrado con ID: {}", id);
+                    return new RuntimeException("Video no encontrado");
+                });
+    }
+
+    private void eliminarArchivoFisico(Video video) {
         String rutaArchivo = uploadConfig.getRuta() +
                             video.getVehiculo().getId() +
                             "/videos/" +
                             video.getUid();
         FileUtils.eliminarArchivo(rutaArchivo);
-
-        videoRepository.deleteById(id);
+        log.debug("Archivo físico eliminado: {}", rutaArchivo);
     }
 }
