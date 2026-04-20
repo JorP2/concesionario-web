@@ -432,6 +432,9 @@ function VehiculoFormulario() {
                         name="fechaFinOferta"
                         value={vehiculo.fechaFinOferta}
                         onChange={handleChange}
+                        min={new Date(Date.now() + 60000)
+                          .toISOString()
+                          .slice(0, 16)} // mínimo: ahora + 1 min
                       />
                     </div>
                   </>
