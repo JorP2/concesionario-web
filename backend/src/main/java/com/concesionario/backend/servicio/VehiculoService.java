@@ -20,7 +20,7 @@ import com.concesionario.backend.utils.DateUtils;
 @Transactional
 public class VehiculoService {
 
-	 private static final Logger log = LoggerFactory.getLogger(VehiculoService.class); 
+	 private static final Logger log = LoggerFactory.getLogger(VehiculoService.class);
 	 
 	 
 	@Autowired
