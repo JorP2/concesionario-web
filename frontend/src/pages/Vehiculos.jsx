@@ -1,11 +1,15 @@
 import React from "react";
 // API
-import { getVehiculosEnVenta, getVehiculosVendidos } from "../api/vehiculoApi";
+import {
+  getVehiculosEnVenta,
+  getVehiculosVendidos,
+  serchVehiculos,
+} from "../api/vehiculoApi";
 // Componentes
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
 import FiltroVehiculo from "../components/FiltroVehiculo";
-import "../styles/vehiculos.css"
+import "../styles/vehiculos.css";
 // Iconos
 import { FaFilter } from "react-icons/fa";
 // Estilo
@@ -33,25 +37,40 @@ function Vehiculos() {
   const [pestana, setPestana] = React.useState("en_venta");
   const [vehiculosVendidos, setVehiculosVendidos] = React.useState([]);
   const [loadingVendidos, setLoadingVendidos] = React.useState(false);
+  const [loadingInicial, setLoadingInicial] = React.useState(true);
 
-  const loadVehiculos = async () => {
+  const loadVehiculos = React.useCallback(async (filtrosActuales = filtros) => {
+    setLoading(true);
     try {
-      const data = await getVehiculosEnVenta();
+      const usarBusqueda = filtrosActuales.marca || filtrosActuales.precio;
+      const data = usarBusqueda
+        ? await serchVehiculos(
+            filtrosActuales.marca || null,
+            null,
+            filtrosActuales.precio ? Number(filtrosActuales.precio) : null,
+          )
+        : await getVehiculosEnVenta();
       setVehiculos(data);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
       setError(true);
     } finally {
       setLoading(false);
+      setLoadingInicial(false);
     }
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     loadVehiculos();
-  }, []);
+  }, [loadVehiculos]);
 
-  // 🔹 UX estados (TU PARTE - mantenida)
-  if (loading) {
+  React.useEffect(() => {
+    if (pestana !== "en_venta") return;
+    loadVehiculos(filtros);
+  }, [filtros.marca, filtros.precio]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // UX estados
+  if (loadingInicial) {
     return (
       <div className="container mt-4">
         <SkeletonVehiculo />
@@ -67,15 +86,7 @@ function Vehiculos() {
     );
   }
 
-  if (vehiculos.length === 0) {
-    return (
-      <div className="container mt-4 text-center">
-        <p>No hay vehículos disponibles...</p>
-      </div>
-    );
-  }
-
-  // 🔹 Filtros (DESARROLLO)
+  // Filtros
   const handleFiltroChange = (campo, valor) => {
     setFiltros((prev) => ({ ...prev, [campo]: valor }));
   };
@@ -226,8 +237,21 @@ function Vehiculos() {
                       ({vehiculosFiltrados.length} resultados)
                     </span>
                   </h2>
+
+                  {/* Overlay de recarga — solo aparece en refiltrados */}
+                  {loading && (
+                    <div className="vehiculos-recargando">
+                      <div
+                        className="spinner-border text-success"
+                        role="status"
+                      />
+                    </div>
+                  )}
+
                   {vehiculosFiltrados.length > 0 ? (
-                    <div className="vehiculos-grid">
+                    <div
+                      className={`vehiculos-grid${loading ? " vehiculos-grid--cargando" : ""}`}
+                    >
                       {vehiculosFiltrados.map((vehiculo) => (
                         <CardVehiculoGPT2
                           key={vehiculo.id}
@@ -236,10 +260,12 @@ function Vehiculos() {
                       ))}
                     </div>
                   ) : (
-                    <p className="ms-3">
-                      Lo sentimos, no hay vehículos con esas características
-                      aún.
-                    </p>
+                    !loading && (
+                      <p className="ms-3">
+                        Lo sentimos, no hay vehículos con esas características
+                        aún.
+                      </p>
+                    )
                   )}
                 </div>
               </div>

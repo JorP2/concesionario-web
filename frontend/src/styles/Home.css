@@ -85,26 +85,3 @@
   border-top: 1px solid #dee2e6;
 }
 
-/* WhatsApp flotante */
-.whatsapp-fab {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 9999;
-  background: #25d366;
-  color: white;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-decoration: none;
-}
-.whatsapp-fab:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 22px rgba(37, 211, 102, 0.6);
-  color: white;
-}

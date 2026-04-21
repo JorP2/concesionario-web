@@ -13,6 +13,7 @@ import Nosotros from "./pages/Nosotros";
 import Administrador from "./pages/Administrador";
 import VehiculoDetalle from "./pages/VehiculoDetalle";
 import VehiculoFormulario from "./pages/VehiculoFormulario";
+import WhatsappFab from "./components/WhatsappFab";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
         </Routes>
       </main>
+      <WhatsappFab />
       <Footer />
     </div>
 

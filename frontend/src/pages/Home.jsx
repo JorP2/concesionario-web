@@ -1,5 +1,5 @@
 import { MdEuroSymbol, MdLocationOn } from "react-icons/md";
-import { FaWhatsapp, FaShieldAlt } from "react-icons/fa";
+import { FaShieldAlt } from "react-icons/fa";
 import "../styles/home.css";
 import { Link } from "react-router-dom";
 
@@ -238,17 +238,6 @@ function Home() {
           </div>
         </div>
       </div>
-
-      {/* ── WHATSAPP FLOTANTE ────────────────────────────── */}
-      <a
-        href="https://wa.me/34651868230"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="whatsapp-fab"
-        title="Escríbenos por WhatsApp"
-      >
-        <FaWhatsapp size={28} />
-      </a>
     </div>
   );
 }
