@@ -230,6 +230,7 @@ function GestionUsuarios() {
                       <button
                         className={`btn btn-sm ${u.activo ? "btn-outline-warning" : "btn-outline-success"}`}
                         onClick={() => handleToggleActivo(u)}
+                        disabled={u.esSuperUsuario}
                       >
                         {u.activo ? "Desactivar" : "Activar"}
                       </button>
@@ -242,6 +243,7 @@ function GestionUsuarios() {
                       <button
                         className="btn btn-sm btn-outline-danger"
                         onClick={() => handleEliminar(u.id)}
+                        disabled={u.esSuperUsuario}
                       >
                         Eliminar
                       </button>
@@ -287,6 +289,7 @@ function GestionUsuarios() {
                   <input
                     className="form-control"
                     value={form.username}
+                    disabled={!!usuarioEditando}
                     onChange={(e) =>
                       setForm((p) => ({ ...p, username: e.target.value }))
                     }
