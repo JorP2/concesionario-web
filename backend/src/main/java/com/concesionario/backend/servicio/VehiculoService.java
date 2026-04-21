@@ -207,7 +207,7 @@ public class VehiculoService {
     public Vehiculo cambiarEstadoVenta(Long id, String estado) {
         log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
         
-        if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("proximo")) {
+        if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("reservado")) {
             log.warn("Estado inválido: {} para vehículo ID: {}", estado, id);
             throw new RuntimeException("Estado no válido");
         }
@@ -225,9 +225,6 @@ public class VehiculoService {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("en_venta");
     }
 
-    public List<Vehiculo> obtenerProximos() {
-        return vehiculoRepository.findByVisibleTrueAndEstadoVenta("proximo");
-    }
 
     public List<Vehiculo> obtenerVendidos() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("vendido");

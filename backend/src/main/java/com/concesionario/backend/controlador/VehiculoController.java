@@ -40,16 +40,7 @@ public class VehiculoController {
                 .toList();
     }
 
-    @GetMapping("/public/proximos")
-    public List<VehiculoResponseDTO> listarProximos() {
-        List<Vehiculo> vehiculos = vehiculoService.obtenerProximos();
-        return vehiculos.stream()
-                .map(v -> {
-                    List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(v.getId());
-                    return dtoConverter.toVehiculoResponseDTO(v, imagenes);
-                })
-                .toList();
-    }
+   
 
     @GetMapping("/public/vendidos")
     public List<VehiculoResponseDTO> listarVendidos() {
