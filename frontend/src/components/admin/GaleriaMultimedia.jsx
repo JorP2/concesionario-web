@@ -4,6 +4,7 @@ import {
   cambiarPortada,
   eliminarImagen,
   getImagenesByVehiculoId,
+  reordenarImagenes,
 } from "../../api/imagenApi";
 import {
   addVideo,
@@ -74,6 +75,31 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
     }
   };
 
+  // Función ordenar imágenes mover a la izquierda
+  const handleMoverIzquierda = async (index) => {
+    if (index === 0) return;
+
+    // Crea la copia del array e intercambia la imagen con la anterior
+    const nuevasImagenes = [...imagenesExistentes];
+    [nuevasImagenes[index - 1], nuevasImagenes[index]] = [
+      nuevasImagenes[index],
+      nuevasImagenes[index - 1],
+    ];
+
+    // Actualiza el estado local
+    setImagenesExistentes(nuevasImagenes);
+
+    // Manda al backend solo los IDs en el uevo orden
+    const idsOrdenados = nuevasImagenes.map((img) => img.id);
+    try {
+      await reordenarImagenes(vehiculoId, idsOrdenados);
+    } catch (error) {
+      console.error("Error al reordenar las imágenes:", error);
+      // Si falla revertimos
+      setImagenesExistentes(imagenesExistentes);
+    }
+  };
+
   // Funcion cuando el usuario selecciona archivos
   const handleSeleccionarImagenes = (e) => {
     const archivos = Array.from(e.target.files);
@@ -136,7 +162,7 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
         ) : (
           <div>
             <div className="row g-2">
-              {imagenesExistentes.map((img) => (
+              {imagenesExistentes.map((img, index) => (
                 <div key={img.id} className="col-6 col-md-3 col-lg-2">
                   <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
                     <img
@@ -163,6 +189,15 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-secondary w-100"
+                          onClick={() => handleMoverIzquierda(index)}
+                        >
+                          ← Mover
+                        </button>
+                      )}
                       {!img.esPortada && (
                         <button
                           type="button"

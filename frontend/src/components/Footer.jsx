@@ -1,5 +1,12 @@
-import { MdEmail, MdPhone, MdLocationOn, MdHome, MdAccessTime } from "react-icons/md";
+import {
+  MdEmail,
+  MdPhone,
+  MdLocationOn,
+  MdHome,
+  MdAccessTime,
+} from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
+import "../styles/footer.css";
 
 function Footer() {
   return (
@@ -8,9 +15,7 @@ function Footer() {
       style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
     >
       <div className="container">
-
         <div className="row g-4 text-center text-md-start align-items-start">
-
           {/* LOGO */}
           <div className="col-12 col-md-3 text-center">
             <img
@@ -71,12 +76,10 @@ function Footer() {
               +34 925 39 31 86
             </p>
           </div>
-
         </div>
 
         {/* REDES SOCIALES */}
         <div className="d-flex justify-content-center gap-4 mt-4 pt-3 border-top border-secondary text-white-50">
-
           <a
             href="https://www.facebook.com/nohalesauto#"
             target="_blank"
@@ -94,14 +97,12 @@ function Footer() {
           >
             <FaInstagram />
           </a>
-
         </div>
 
         {/* COPYRIGHT */}
         <div className="text-center mt-4 pt-3 border-top border-secondary small text-white-50">
           © 2026 Nohales Automóviles. Todos los derechos reservados.
         </div>
-
       </div>
     </footer>
   );

@@ -49,6 +49,49 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* ── PRECIO ── */
+.precio-wrapper {
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.precio-original {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.precio-oferta {
+  color: #dc3545;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.precio-normal {
+  font-size: 14px;
+}
+
+.contador-oferta {
+  font-size: 11px;
+  color: #fd7e14;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.contador-oferta.expirada {
+  color: #aaa;
+}
+
+.oferta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* ── ANIMACIONES ── */
 @keyframes fadeIn {
   from {

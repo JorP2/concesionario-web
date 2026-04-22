@@ -1,48 +1,30 @@
+import { authFetch } from "../utils/authFetch";
+
 const BASE_URL = process.env.REACT_APP_API_URL + "/vehiculos";
 
-// GET 
-// obtener videos por vehículo
 export const getVideosByVehiculoId = async (vehiculoId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${vehiculoId}/videos`);
-        if (!response.ok) throw new Error("Error al obtener los videos");
-        return await response.json();
-    } catch (error) {
-        console.error("Error en getVideosByVehiculoId:", error);
-        throw error;
-    }
+  const response = await authFetch(`${BASE_URL}/${vehiculoId}/videos`);
+  if (!response.ok) throw new Error("Error al obtener los videos");
+  return await response.json();
 };
 
-// POST 
-// subir un video (de a uno)
 export const addVideo = async (vehiculoId, archivo) => {
-    try {
-        const formData = new FormData();
-        formData.append("video", archivo);
-
-        const response = await fetch(`${BASE_URL}/${vehiculoId}/videos`, {
-            method: "POST",
-            body: formData,
-        });
-        if (!response.ok) throw new Error("Error al subir el video");
-        return await response.json();
-    } catch (error) {
-        console.error("Error en addVideo:", error);
-        throw error;
-    }
+  const formData = new FormData();
+  formData.append("video", archivo);
+  // Sin Content-Type — igual que en imágenes, el browser lo pone solo
+  const response = await authFetch(`${BASE_URL}/${vehiculoId}/videos`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!response.ok) throw new Error("Error al subir el video");
+  return await response.json();
 };
 
-// DELETE 
-// eliminar video
 export const eliminarVideo = async (vehiculoId, videoId) => {
-    try {
-        const response = await fetch(`${BASE_URL}/${vehiculoId}/videos/${videoId}`, {
-            method: "DELETE",
-        });
-        if (!response.ok) throw new Error("Error al eliminar el video");
-        // 204 No Content, no se parsea JSON
-    } catch (error) {
-        console.error("Error en eliminarVideo:", error);
-        throw error;
-    }
+  const response = await authFetch(
+    `${BASE_URL}/${vehiculoId}/videos/${videoId}`,
+    { method: "DELETE" }
+  );
+  if (!response.ok) throw new Error("Error al eliminar el video");
+  // 204 No Content, no se parsea JSON
 };

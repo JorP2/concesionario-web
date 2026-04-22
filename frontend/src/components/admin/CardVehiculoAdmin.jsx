@@ -2,14 +2,53 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/admin/vehiculoCardAdmin.css";
 import sinImagen from "../../assets/sin-imagen.svg";
+import { deleteOferta } from "../../api/vehiculoApi";
+import { FaClock } from "react-icons/fa";
 
 function CardVehiculoAdmin({ vehiculo, onEliminar }) {
   const [mostrarModal, setMostrarModal] = React.useState(false);
+  const [tiempoRestante, setTiempoRestante] = React.useState("");
 
+  // Manejo eliminar
   const handleEliminar = () => {
     onEliminar(vehiculo.id);
     setMostrarModal(false);
   };
+
+  // Manejo tiempo restante oferta
+  React.useEffect(() => {
+    if (!vehiculo.fechaFinOferta || !vehiculo.enOferta) return;
+
+    const calcular = () => {
+      const ahora = new Date();
+      const fin = new Date(vehiculo.fechaFinOferta);
+      const diff = fin - ahora;
+
+      if (diff <= 0) {
+        setTiempoRestante("Expirada");
+        deleteOferta(vehiculo.id).catch((err) => {
+          console.error("Error al eliminar oferta expirada: ", err);
+        });
+        return;
+      }
+
+      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const horas = Math.floor(
+        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
+      const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (dias > 0) setTiempoRestante(`${dias}d ${horas}h ${minutos}m`);
+      else if (horas > 0)
+        setTiempoRestante(`${horas}h ${minutos}m ${segundos}s`);
+      else setTiempoRestante(`${minutos}m ${segundos}s`);
+    };
+
+    calcular();
+    const timer = setInterval(calcular, 1000);
+    return () => clearInterval(timer);
+  }, [vehiculo.fechaFinOferta, vehiculo.enOferta, vehiculo.id]);
 
   return (
     <>
@@ -61,31 +100,42 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
                   </p>
                 </div>
                 <div className="col-6">
-                  {vehiculo.enOferta && vehiculo.precioOferta ? (
-                    <>
-                      <p className="card-text mb-0">
-                        <strong>Precio:</strong>{" "}
-                        <span
-                          style={{
-                            textDecoration: "line-through",
-                            color: "#aaa",
-                          }}
-                        >
+                  <p className="card-text mb-1">
+                    <strong>Precio:</strong>
+                  </p>
+                  <div className="precio-wrapper">
+                    {vehiculo.enOferta && vehiculo.precioOferta ? (
+                      <>
+                        <span className="precio-original">
                           €{vehiculo.precio}
                         </span>
-                      </p>
-                      <p
-                        className="card-text mb-1"
-                        style={{ color: "#dc3545", fontWeight: 600 }}
-                      >
-                        Oferta: €{vehiculo.precioOferta}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="card-text mb-1">
-                      <strong>Precio:</strong> €{vehiculo.precio}
-                    </p>
-                  )}
+                        <div className="oferta-row">
+                          <span className="precio-oferta">
+                            Oferta: €{vehiculo.precioOferta}
+                          </span>
+                          {tiempoRestante && (
+                            <span
+                              className={`contador-oferta${tiempoRestante === "Expirada" ? " expirada" : ""}`}
+                            >
+                              <FaClock size={10} />
+                              {tiempoRestante}
+                            </span>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span
+                          style={{ visibility: "hidden", fontSize: "14px" }}
+                        >
+                          €0
+                        </span>
+                        <span className="precio-normal">
+                          €{vehiculo.precio}
+                        </span>
+                      </>
+                    )}
+                  </div>
                 </div>
                 <div className="col-6">
                   <p className="card-text mb-1">

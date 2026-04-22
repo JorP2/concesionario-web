@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.concesionario.backend.config.UploadConfig;
 import com.concesionario.backend.dominio.Imagen;
 import com.concesionario.backend.dominio.Vehiculo;
@@ -207,12 +206,12 @@ public class VehiculoService {
     //CAMBIAR ESTADO
     public Vehiculo cambiarEstadoVenta(Long id, String estado) {
 
-        log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
-        if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("proximo")) {
+    	log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
+        
+        if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("reservado")) {
             log.warn("Estado inválido: {} para vehículo ID: {}", estado, id);
             throw new RuntimeException("Estado no válido");
         }
-       
         Vehiculo vehiculo = obtenerPorId(id);
         vehiculo.setEstadoVenta(estado);
         
@@ -226,9 +225,6 @@ public class VehiculoService {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("en_venta");
     }
 
-    public List<Vehiculo> obtenerProximos() {
-        return vehiculoRepository.findByVisibleTrueAndEstadoVenta("proximo");
-    }
 
     public List<Vehiculo> obtenerVendidos() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("vendido");
