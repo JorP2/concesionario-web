@@ -33,12 +33,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configure(http))
             .authorizeHttpRequests(auth -> auth
-            	    .requestMatchers("/api/auth/login").permitAll()
-            	    .requestMatchers("/api/auth/refresh").permitAll()   // ← AGREGAR
-            	    .requestMatchers("/api/auth/logout").permitAll()
-                .requestMatchers("/api/vehiculos/public/**").permitAll()
-                .requestMatchers("/api/vehiculos/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/usuarios/**").permitAll()
+                    .requestMatchers("/api/vehiculos/**").permitAll()
+                    .requestMatchers("/uploads/**").permitAll()
+                    .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

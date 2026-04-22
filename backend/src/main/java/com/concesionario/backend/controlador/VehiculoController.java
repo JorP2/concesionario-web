@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -161,11 +160,10 @@ public class VehiculoController {
     public ResponseEntity<VehiculoResponseDTO> aplicarOfertaPrecioFijo(
             @PathVariable Long id,
             @RequestParam Double precioOferta,
-            @RequestParam String fechaFin) {  
-        
-        LocalDateTime fechaFinOferta = LocalDateTime.parse(fechaFin);
-        
-        Vehiculo vehiculo = vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta, fechaFinOferta);
+            @RequestParam(required = false) String fechaFin) {
+        Vehiculo vehiculo = fechaFin == null || fechaFin.isBlank()
+                ? vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta)
+                : vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta, java.time.LocalDateTime.parse(fechaFin));
         List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
         return ResponseEntity.ok(dtoConverter.toVehiculoResponseDTO(vehiculo, imagenes));
     }

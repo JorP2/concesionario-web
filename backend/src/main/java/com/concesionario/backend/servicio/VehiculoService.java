@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.concesionario.backend.config.UploadConfig;
 import com.concesionario.backend.dominio.Imagen;
 import com.concesionario.backend.dominio.Vehiculo;
@@ -150,6 +149,10 @@ public class VehiculoService {
         vehiculo.setFechaFinOferta(DateUtils.ahora().plusDays(30));
 
         return vehiculoRepository.save(vehiculo);
+    }
+
+    public Vehiculo aplicarOfertaPrecioFijo(Long id, Double nuevoPrecioOferta) {
+        return aplicarOfertaPrecioFijo(id, nuevoPrecioOferta, DateUtils.ahora().plusDays(30));
     }
 
     public Vehiculo aplicarOfertaPrecioFijo(Long id, Double nuevoPrecioOferta, LocalDateTime fechaFinOferta) {
