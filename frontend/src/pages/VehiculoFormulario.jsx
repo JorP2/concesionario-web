@@ -103,6 +103,16 @@ function VehiculoFormulario() {
     e.preventDefault();
 
     try {
+      if (
+        vehiculo.enOferta &&
+        (!vehiculo.precioOferta || !vehiculo.fechaFinOferta)
+      ) {
+        alert(
+          "Si el vehículo está en oferta, debes indicar precio y fecha fin.",
+        );
+        return;
+      }
+
       let vehiculoId;
 
       if (esEdicion) {
@@ -121,11 +131,20 @@ function VehiculoFormulario() {
       await updateEstadoVehiculo(vehiculoId, vehiculo.estadoVenta);
 
       // ── Gestionar oferta ──────────────────────────
-      if (vehiculo.enOferta && vehiculo.precioOferta) {
-        await aplicarOfertaPrecioFijo(vehiculoId, vehiculo.precioOferta);
+      if (
+        vehiculo.enOferta &&
+        vehiculo.precioOferta &&
+        vehiculo.fechaFinOferta
+      ) {
+        await aplicarOfertaPrecioFijo(
+          vehiculoId,
+          vehiculo.precioOferta,
+          vehiculo.fechaFinOferta,
+        );
       } else if (!vehiculo.enOferta) {
         await deleteOferta(vehiculoId).catch(() => {});
       }
+
       // ─────────────────────────────────────────────
 
       if (imagenesNuevas.length > 0) {

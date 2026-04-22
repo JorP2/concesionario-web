@@ -3,13 +3,17 @@ import { deleteVehiculo, getVehiculos } from "../api/vehiculoApi";
 import VehiculosLista from "../components/admin/VehiculosLista";
 import GestionUsuarios from "../components/admin/GestionUsuarios";
 import { Link } from "react-router-dom";
+import { getSesion } from "../utils/auth";
 import "../styles/admin/administrador.css";
 
 function Administrador() {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const [pestana, setPestana] = React.useState("vehiculos");
+  // Nuevo formato: { accessToken, refreshToken, username, role }
+  const sesion = getSesion();
 
-  // Vehículos
+  // esSuperUsuario ahora se comprueba por el role
+  const esSuperUsuario = sesion?.role === "ADMIN";
+
+  const [pestana, setPestana] = React.useState("vehiculos");
   const [vehiculos, setVehiculos] = React.useState([]);
   const [busqueda, setBusqueda] = React.useState("");
   const [loading, setLoading] = React.useState(true);
@@ -30,7 +34,7 @@ function Administrador() {
     cargar();
   }, []);
 
-  if (!usuario) {
+  if (!sesion) {
     return (
       <div className="container mt-5">
         No estás autorizado para ver esta página. Por favor, inicia sesión.
@@ -59,7 +63,8 @@ function Administrador() {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h1 className="mb-0">Panel de Administración</h1>
-          <small className="text-muted">Bienvenido, {usuario.nombre}</small>
+          {/* username en vez de nombre */}
+          <small className="text-muted">Bienvenido, {sesion.username}</small>
         </div>
         {pestana === "vehiculos" && (
           <div className="d-flex align-items-center gap-3">
@@ -81,7 +86,8 @@ function Administrador() {
         >
           Vehículos
         </button>
-        {usuario.esSuperUsuario && (
+        {/* Pestaña usuarios solo para superusuario */}
+        {esSuperUsuario && (
           <button
             className={`tab-btn ${pestana === "usuarios" ? "activo" : ""}`}
             onClick={() => setPestana("usuarios")}
@@ -117,7 +123,7 @@ function Administrador() {
       )}
 
       {/* PESTAÑA USUARIOS */}
-      {pestana === "usuarios" && usuario.esSuperUsuario && <GestionUsuarios />}
+      {pestana === "usuarios" && esSuperUsuario && <GestionUsuarios />}
     </div>
   );
 }

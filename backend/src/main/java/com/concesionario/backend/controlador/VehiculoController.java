@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -39,16 +40,7 @@ public class VehiculoController {
                 .toList();
     }
 
-    @GetMapping("/public/proximos")
-    public List<VehiculoResponseDTO> listarProximos() {
-        List<Vehiculo> vehiculos = vehiculoService.obtenerProximos();
-        return vehiculos.stream()
-                .map(v -> {
-                    List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(v.getId());
-                    return dtoConverter.toVehiculoResponseDTO(v, imagenes);
-                })
-                .toList();
-    }
+   
 
     @GetMapping("/public/vendidos")
     public List<VehiculoResponseDTO> listarVendidos() {
@@ -159,8 +151,12 @@ public class VehiculoController {
     @PostMapping("/{id}/oferta-precio")
     public ResponseEntity<VehiculoResponseDTO> aplicarOfertaPrecioFijo(
             @PathVariable Long id,
-            @RequestParam Double precioOferta) {
-        Vehiculo vehiculo = vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta);
+            @RequestParam Double precioOferta,
+            @RequestParam String fechaFin) {  
+        
+        LocalDateTime fechaFinOferta = LocalDateTime.parse(fechaFin);
+        
+        Vehiculo vehiculo = vehiculoService.aplicarOfertaPrecioFijo(id, precioOferta, fechaFinOferta);
         List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
         return ResponseEntity.ok(dtoConverter.toVehiculoResponseDTO(vehiculo, imagenes));
     }
