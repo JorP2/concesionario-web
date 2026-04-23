@@ -38,6 +38,13 @@ public class SecurityConfig {
                     .requestMatchers("/api/vehiculos/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll()
                     .anyRequest().permitAll()
+            	    .requestMatchers("/api/auth/login").permitAll()
+            	    .requestMatchers("/api/auth/refresh").permitAll()   
+            	    .requestMatchers("/api/auth/logout").permitAll()
+            	    .requestMatchers("/uploads/**").permitAll()  
+                .requestMatchers("/api/vehiculos/public/**").permitAll()
+                .requestMatchers("/api/vehiculos/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

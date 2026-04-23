@@ -92,7 +92,7 @@ public class ImagenService {
         log.info("Cambiando foto principal del vehículo ID: {} a imagen ID: {}", vehiculoId, imagenId);
         
         quitarPortadaATodas(vehiculoId);
-        establecerPortada(imagenId);
+        establecerPortada(imagenId, vehiculoId);  
         
         log.info("Foto principal cambiada para vehículo ID: {}", vehiculoId);
     }
@@ -184,11 +184,17 @@ public class ImagenService {
         log.debug("Portada quitada a todas las imágenes del vehículo ID: {}", vehiculoId);
     }
 
-    private void establecerPortada(Long imagenId) {
+    private void establecerPortada(Long imagenId, Long vehiculoId) {
         Imagen nuevaPortada = obtenerImagen(imagenId);
+  
+        
+        if (!nuevaPortada.getVehiculo().getId().equals(vehiculoId)) {
+            log.warn("Intento de establecer portada: imagen {} no pertenece al vehículo {}", imagenId, vehiculoId);
+            throw new RuntimeException("La imagen no pertenece a este vehículo");
+        }
+        
         nuevaPortada.setEsPortada(true);
         imagenRepository.save(nuevaPortada);
-        log.debug("Imagen ID: {} establecida como portada", imagenId);
     }
 
     private void eliminarArchivoFisico(Imagen imagen) {

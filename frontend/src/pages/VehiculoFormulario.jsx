@@ -103,6 +103,16 @@ function VehiculoFormulario() {
     e.preventDefault();
 
     try {
+      if (
+        vehiculo.enOferta &&
+        (!vehiculo.precioOferta || !vehiculo.fechaFinOferta)
+      ) {
+        alert(
+          "Si el vehículo está en oferta, debes indicar precio y fecha fin.",
+        );
+        return;
+      }
+
       let vehiculoId;
 
       if (esEdicion) {
@@ -121,11 +131,20 @@ function VehiculoFormulario() {
       await updateEstadoVehiculo(vehiculoId, vehiculo.estadoVenta);
 
       // ── Gestionar oferta ──────────────────────────
-      if (vehiculo.enOferta && vehiculo.precioOferta) {
-        await aplicarOfertaPrecioFijo(vehiculoId, vehiculo.precioOferta);
+      if (
+        vehiculo.enOferta &&
+        vehiculo.precioOferta &&
+        vehiculo.fechaFinOferta
+      ) {
+        await aplicarOfertaPrecioFijo(
+          vehiculoId,
+          vehiculo.precioOferta,
+          vehiculo.fechaFinOferta,
+        );
       } else if (!vehiculo.enOferta) {
         await deleteOferta(vehiculoId).catch(() => {});
       }
+
       // ─────────────────────────────────────────────
 
       if (imagenesNuevas.length > 0) {
@@ -201,6 +220,8 @@ function VehiculoFormulario() {
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
+                    min={1900}
+                    max={new Date().getFullYear()}
                   />
                 </div>
                 <div className="col-6">
@@ -211,6 +232,8 @@ function VehiculoFormulario() {
                     name="precio"
                     value={vehiculo.precio}
                     onChange={handleChange}
+                    min={0}
+                    max={999999999}
                   />
                 </div>
 
@@ -223,6 +246,8 @@ function VehiculoFormulario() {
                     name="kilometros"
                     value={vehiculo.kilometros}
                     onChange={handleChange}
+                    min={0}
+                    max={999999}
                   />
                 </div>
                 <div className="col-6">
@@ -289,6 +314,8 @@ function VehiculoFormulario() {
                     name="puertas"
                     value={vehiculo.puertas}
                     onChange={handleChange}
+                    min={1}
+                    max={9}
                   />
                 </div>
                 <div className="col-6">
@@ -299,6 +326,8 @@ function VehiculoFormulario() {
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
+                    min={1}
+                    max={20}
                   />
                 </div>
 
@@ -422,6 +451,9 @@ function VehiculoFormulario() {
                         name="fechaFinOferta"
                         value={vehiculo.fechaFinOferta}
                         onChange={handleChange}
+                        min={new Date(Date.now() + 60000)
+                          .toISOString()
+                          .slice(0, 16)} // mínimo: ahora + 1 min
                       />
                     </div>
                   </>
