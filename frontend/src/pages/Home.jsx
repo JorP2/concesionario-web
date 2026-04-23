@@ -1,4 +1,4 @@
-import { MdCheck, MdEuroSymbol, MdLocationOn } from "react-icons/md";
+import { MdEuroSymbol, MdLocationOn } from "react-icons/md";
 import "../styles/home.css";
 import { FaShieldAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";

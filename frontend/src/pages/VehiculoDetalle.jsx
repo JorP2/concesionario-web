@@ -5,7 +5,6 @@ import {
   FaCogs,
   FaTachometerAlt
 } from "react-icons/fa";
-import "../styles/vehiculoDetalle.css";
 import { GiGearStick } from "react-icons/gi";
 import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 
