@@ -12,12 +12,9 @@ function Home() {
         style={{ backgroundImage: `url(/imagenHome.jpeg)` }}
       >
         <div className="hero-content container text-center">
-          <p className="hero-eyebrow">
-            Concesionario en Toledo · +25 años de experiencia
-          </p>
           <h1 className="display-3 fw-bold mb-3">Nohales Automóviles</h1>
           <p className="lead mb-4">
-            Vehículos revisados, garantía real y trato cercano.
+            Concesionario en Toledo · +25 años de experiencia
           </p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
             <Link to={`/vehiculos`} className="btn btn-primary btn-lg px-4">
@@ -74,7 +71,7 @@ function Home() {
                 <h5 className="fw-bold">Máxima garantía</h5>
                 <p className="text-muted">
                   12 meses de garantía en todos los vehículos. Taller propio con
-                  más de 35 años de experiencia — revisamos cada coche antes de
+                  más de 35 años de experiencia. Revisamos cada coche antes de
                   ponerlo a la venta.
                 </p>
               </div>
