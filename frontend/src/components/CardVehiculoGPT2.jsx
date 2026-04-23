@@ -1,5 +1,4 @@
 import React from "react";
-// Iconos
 import {
   FaSearchPlus,
   FaGasPump,
@@ -13,7 +12,6 @@ import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 import sinImagen from "../assets/sin-imagen.svg";
-// style
 import "../styles/vehiculoCard.css";
 
 const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
@@ -22,9 +20,8 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
   const getFuelIcon = (tipo) => {
     if (!tipo) return <FaGasPump size={12} />;
     const t = tipo.toLowerCase();
-    if (t.includes("eléctric") || t.includes("electri"))
-      return <MdElectricBolt size={13} />;
-    if (t.includes("híbrido") || t.includes("hibrido") || t.includes("phev"))
+    if (t.includes("electric")) return <MdElectricBolt size={13} />;
+    if (t.includes("hibrido") || t.includes("phev"))
       return <FaLeaf size={12} />;
     return <FaGasPump size={12} />;
   };
@@ -53,6 +50,10 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
         <div className="vehiculo-info">
           <div className="vehiculo-header">
             <div>
+              <div className="vehiculo-topline">
+                {vehiculo.anio && <span>{vehiculo.anio}</span>}
+                {vehiculo.pegatina && <span>DGT {vehiculo.pegatina}</span>}
+              </div>
               <h5>
                 {vehiculo.marca} {vehiculo.modelo}
               </h5>
@@ -65,10 +66,10 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
               {vehiculo.enOferta && vehiculo.precioOferta ? (
                 <>
                   <span className="precio-tachado">
-                    €{Number(vehiculo.precio).toLocaleString("es-ES")}€
+                    {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
                   </span>
                   <span className="precio precio-oferta">
-                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")}€
+                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")} EUR
                   </span>
                 </>
               ) : (
@@ -80,7 +81,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                     &nbsp;
                   </span>
                   <span className="precio">
-                    {Number(vehiculo.precio).toLocaleString("es-ES")}€
+                    {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
                   </span>
                 </>
               )}
@@ -114,15 +115,13 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
             )}
           </div>
 
-          {vehiculo.anio && (
-            <div className="vehiculo-anio">
-              <FaCalendarAlt size={12} />
-              <span>{vehiculo.anio}</span>
-            </div>
-          )}
+          <div className="vehiculo-anio">
+            <FaCalendarAlt size={12} />
+            <span>{vehiculo.anio || "Ano no indicado"}</span>
+          </div>
 
           <Link className="btn-ver bg-primary" to={`/vehiculos/${vehiculo.id}`}>
-            Ver modelo →
+            Ver modelo ->
           </Link>
         </div>
       </div>
@@ -143,16 +142,14 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                 onClick={() => setShowGallery(false)}
               />
 
-              {/* Sin imágenes */}
               {(!vehiculo.imagenes || vehiculo.imagenes.length === 0) && (
                 <img
                   src={sinImagen}
                   className="d-block w-100"
-                  alt="Sin imágenes"
+                  alt="Sin imagenes"
                 />
               )}
 
-              {/* Con imágenes */}
               {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
                 <div id={`carousel-${vehiculo.id}`} className="carousel slide">
                   <div className="carousel-inner">
@@ -171,7 +168,6 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                     ))}
                   </div>
 
-                  {/* Controles solo si hay más de 1 imagen */}
                   {vehiculo.imagenes.length > 1 && (
                     <>
                       <button
@@ -189,7 +185,6 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                         <span className="carousel-control-next-icon" />
                       </button>
 
-                      {/* Indicadores */}
                       <div className="carousel-indicators">
                         {vehiculo.imagenes.map((_, index) => (
                           <button

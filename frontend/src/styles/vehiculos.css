@@ -1,4 +1,80 @@
-/* ── Layout principal ── */
+.vehiculos-page {
+  background:
+    radial-gradient(circle at top right, rgba(25, 135, 84, 0.08), transparent 22%),
+    linear-gradient(180deg, #f7f9fc 0%, #eef4f9 100%);
+  min-height: 100vh;
+}
+
+.vehiculos-hero {
+  padding: 1.5rem 1rem 0;
+}
+
+.vehiculos-hero-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.8rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #0d1b2a 0%, #123453 55%, #198754 100%);
+  color: #fff;
+  box-shadow: 0 30px 60px rgba(13, 27, 42, 0.18);
+}
+
+.vehiculos-kicker {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vehiculos-hero-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+}
+
+.vehiculos-hero-top h1 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.vehiculos-hero-top p {
+  max-width: 640px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+}
+
+.vehiculos-hero-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.vehiculos-hero-stats div {
+  min-width: 132px;
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.vehiculos-hero-stats strong {
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.vehiculos-hero-stats span {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.88rem;
+}
+
 .vehiculos-layout {
   display: flex;
   gap: 1.5rem;
@@ -8,7 +84,6 @@
   margin: 0 auto;
 }
 
-/* ── Sidebar escritorio ── */
 .vehiculos-sidebar {
   width: 280px;
   flex-shrink: 0;
@@ -16,31 +91,55 @@
   top: 1rem;
 }
 
-/* ── Contenido ── */
+.vehiculos-sidebar .card {
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 36px rgba(15, 23, 42, 0.08) !important;
+}
+
 .vehiculos-content {
   flex: 1;
   min-width: 0;
   overflow: hidden;
+  position: relative;
 }
 
-/* ── Grid: auto-fill con mínimo fijo ── */
+.vehiculos-results-bar {
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.vehiculos-results-pills {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.vehiculos-results-pills span {
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(25, 135, 84, 0.14);
+  color: #305270;
+  font-size: 0.9rem;
+}
+
 .vehiculos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.2rem;
 }
 
-/* ── Barra sticky móvil (oculta en escritorio) ── */
 .filtro-telefono-bar {
   display: none;
 }
 
-/* ── Cabecera del drawer (oculta en escritorio) ── */
 .filtro-drawer-header {
   display: none;
 }
 
-/* ── Overlay oscuro ── */
 .filtro-overlay {
   display: none;
 }
@@ -48,34 +147,33 @@
 .vehiculos-tabs {
   display: flex;
   gap: 8px;
-  padding: 16px 16px 0;
-  border-bottom: 2px solid #eee;
-  margin-bottom: 16px;
+  padding: 1.25rem 0 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  margin-top: 1.4rem;
 }
 
 .tab-btn {
-  background: none;
+  background: transparent;
   border: none;
   padding: 10px 24px;
   font-size: 15px;
   font-weight: 600;
-  color: #888;
+  color: rgba(255, 255, 255, 0.64);
   cursor: pointer;
   border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
+  margin-bottom: -1px;
   transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
-  color: #333;
+  color: #fff;
 }
 
 .tab-btn.activo {
-  color: #198754;
-  border-bottom-color: #198754;
+  color: #fff;
+  border-bottom-color: #fff;
 }
 
-/* ── Overlay recarga filtros ── */
 .vehiculos-recargando {
   position: absolute;
   inset: 0;
@@ -93,16 +191,21 @@
   transition: opacity 0.2s ease;
 }
 
-/* Necesario para que el overlay se posicione bien */
-.vehiculos-content {
-  position: relative;
-}
-
-
-/* ── MÓVIL (< 768px) ── */
 @media (max-width: 767px) {
+  .vehiculos-hero {
+    padding: 1rem 0.75rem 0;
+  }
 
-  /* Barra sticky visible */
+  .vehiculos-hero-inner {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .vehiculos-hero-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .filtro-telefono-bar {
     display: flex;
     align-items: center;
@@ -127,7 +230,6 @@
     position: relative;
   }
 
-  /* Punto rojo si hay filtros activos */
   .filtro-telefono-badge {
     width: 8px;
     height: 8px;
@@ -138,13 +240,11 @@
     right: 4px;
   }
 
-  /* Layout sin sidebar */
   .vehiculos-layout {
     padding: 0.75rem;
     max-width: 100%;
   }
 
-  /* Sidebar como drawer lateral */
   .vehiculos-sidebar {
     position: fixed;
     top: 0;
@@ -164,7 +264,6 @@
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   }
 
-  /* Cabecera del drawer */
   .filtro-drawer-header {
     display: flex;
     justify-content: space-between;
@@ -183,7 +282,6 @@
     color: #666;
   }
 
-  /* Overlay visible */
   .filtro-overlay {
     display: block;
     position: fixed;
@@ -192,7 +290,6 @@
     z-index: 150;
   }
 
-  /* Grid 1 columna en móvil */
   .vehiculos-grid {
     grid-template-columns: 1fr;
   }
