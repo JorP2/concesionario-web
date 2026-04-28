@@ -1,6 +1,6 @@
 import { MdEuroSymbol, MdLocationOn } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
 import "../styles/home.css";
-import { FaShieldAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -18,7 +18,7 @@ function Home() {
           </p>
           <div className="mb-4">
           <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
-            ⭐ 4.9 / 5 en Google Reviews
+            <FaStar className="text-warning"/> 4.9 en Google Reviews
           </span>
         </div>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
@@ -71,43 +71,42 @@ function Home() {
             <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
-                  <FaShieldAlt size={32} className="text-primary" />
+                  <MdEuroSymbol size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Máxima garantía</h5>
+                <h5 className="fw-bold">Garantía y financiación</h5>
                 <p className="text-muted">
-                  12 meses de garantía en todos los vehículos. Taller propio con
-                  más de 35 años de experiencia. Revisamos cada coche antes de
-                  ponerlo a la venta.
+                  12 meses de garantía y financiación de hasta 96 meses. 
+                  Te ayudamos a conseguir las mejores condiciones para tu bolsillo.
                 </p>
               </div>
             </div>
           </div>
+
           <div className="col-md-4">
             <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
-                  <MdEuroSymbol size={32} className="text-primary" />
+                  <FaStar size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Financiación flexible</h5>
+                <h5 className="fw-bold">Confianza y fiabilidad</h5>
                 <p className="text-muted">
-                  Hasta 96 meses sin entrada, independientemente de la
-                  antigüedad del vehículo. Te ayudamos a conseguir las mejores
-                  condiciones para tu bolsillo.
+                  Más de 4.9 estrellas en Google Reviews avalan la satisfacción de nuestros clientes. 
+                  Ofrecemos vehículos revisados y total transparencia.
                 </p>
               </div>
             </div>
           </div>
+
           <div className="col-md-4">
             <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
                   <MdLocationOn size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Ubicación</h5>
+                <h5 className="fw-bold">Ubicación y servicio</h5>
                 <p className="text-muted">
-                  Concesionario en Burguillos de Toledo con más de 40 vehículos
-                  disponibles de todas las gamas y precios. También presentes en
-                  los principales portales online.
+                  Concesionario en Burguillos de Toledo con taller propio. 
+                  Entregamos en toda la Península y gestionamos envíos a las Islas.
                 </p>
               </div>
             </div>
