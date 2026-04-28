@@ -225,6 +225,11 @@
     transform: translateX(-50%);
     width: max-content;
   }
+  
+  #navbarMain.collapsing {
+    transition: none !important;
+    height: auto !important;
+  }
 
   .navbar-main-panel {
     width: auto;

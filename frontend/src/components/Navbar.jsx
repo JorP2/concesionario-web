@@ -12,6 +12,7 @@ export const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navbarCollapseRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   // Sincroniza el estado con los eventos reales de Bootstrap
   useEffect(() => {
@@ -34,8 +35,17 @@ export const Navbar = () => {
 
   // Cierra el menú al cambiar de ruta
   useEffect(() => {
+    // Ignora la primera ejecución (carga inicial)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     const collapseEl = navbarCollapseRef.current;
     if (!collapseEl) return;
+
+    // Solo cierra si realmente está abierto
+    if (!collapseEl.classList.contains("show")) return;
 
     const { Collapse } = require("bootstrap");
     const bsCollapse = Collapse.getInstance(collapseEl);
@@ -265,7 +275,10 @@ export const Navbar = () => {
                         <small>{sesion.role}</small>
                       </div>
                     </div>
-                    <button onClick={handleLogout} className="mobile-logout-btn">
+                    <button
+                      onClick={handleLogout}
+                      className="mobile-logout-btn"
+                    >
                       Cerrar sesión
                     </button>
                   </>
