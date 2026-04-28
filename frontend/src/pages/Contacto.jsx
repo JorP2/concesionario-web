@@ -1,8 +1,35 @@
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 import "../styles/contacto.css";
+import React from "react";
 
 function Contacto() {
+  const turnstileSiteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY;
+  const [captchaToken, setCaptchaToken] = React.useState("");
+  const [captchaError, setCaptchaError] = React.useState("");
+
+  React.useEffect(() => {
+    window.onTurnstileSuccess = (token) => {
+      setCaptchaToken(token);
+      setCaptchaError("");
+    };
+
+    return () => {
+      delete window.onTurnstileSuccess;
+    };
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (turnstileSiteKey && !captchaToken) {
+      setCaptchaError("Completa la verificacion anti-spam antes de enviar.");
+      return;
+    }
+
+    setCaptchaError("");
+  };
+
   return (
     <div className="contacto-page">
       <section
@@ -102,7 +129,7 @@ function Contacto() {
                 <p>Te responderemos lo antes posible.</p>
               </div>
 
-              <form className="contacto-form">
+              <form className="contacto-form" onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <input
                     type="text"
@@ -136,6 +163,21 @@ function Contacto() {
                     placeholder="En que podemos ayudarte?"
                   ></textarea>
                 </div>
+
+                {turnstileSiteKey && (
+                  <div className="mb-3">
+                    <div
+                      className="cf-turnstile"
+                      data-sitekey={turnstileSiteKey}
+                      data-callback="onTurnstileSuccess"
+                    />
+                    {captchaError && (
+                      <small className="text-danger d-block mt-2">
+                        {captchaError}
+                      </small>
+                    )}
+                  </div>
+                )}
 
                 <button type="submit" className="btn btn-primary contacto-submit">
                   Enviar mensaje

@@ -5,25 +5,43 @@ import React from "react";
 function Nosotros() {
   const reviews = [
     {
-      text: "Muy buenos profesionales...",
+      text: "Muy buenos profesionales y trato cercano en todo momento.",
       name: "Javier Garcia",
+      role: "Cliente verificado",
       link: "https://share.google/ficPdfbF2QA2WmW7x",
     },
     {
-      text: "Paulino es muy buen profesional...",
+      text: "Paulino es muy buen profesional. Compra clara y sin sorpresas.",
       name: "Antonio Pino",
+      role: "Cliente verificado",
       link: "https://share.google/c2Oa8QxjTlui5fyP1",
     },
+    {
+      text: "Trato cercano, todo muy claro desde el primer momento y coche en perfecto estado.",
+      name: "Laura Martin",
+      role: "Cliente verificada",
+      link: "https://www.google.com/maps",
+    },
+    {
+      text: "Nos ayudaron con la financiacion y resolvieron todas las dudas sin prisas.",
+      name: "Carlos Romero",
+      role: "Cliente verificado",
+      link: "https://www.google.com/maps",
+    },
+    {
+      text: "Concesionario serio, revisaron el vehiculo antes de entregarlo y cumplieron todo.",
+      name: "Sergio Diaz",
+      role: "Cliente verificado",
+      link: "https://www.google.com/maps",
+    },
+    {
+      text: "Muy buena experiencia de compra. Transparencia, rapidez y buena atencion postventa.",
+      name: "Marta Lopez",
+      role: "Cliente verificada",
+      link: "https://www.google.com/maps",
+    },
   ];
-  const [reviewActiva, setReviewActiva] = React.useState(0);
-
-  React.useEffect(() => {
-    if (reviews.length <= 1) return undefined;
-    const intervalo = setInterval(() => {
-      setReviewActiva((prev) => (prev + 1) % reviews.length);
-    }, 4500);
-    return () => clearInterval(intervalo);
-  }, [reviews.length]);
+  const reviewsLoop = [...reviews, ...reviews];
 
   return (
     <div className="nosotros-page">
@@ -113,14 +131,9 @@ function Nosotros() {
           </div>
 
           <div className="nosotros-reviews-carousel">
-            <div
-              className="nosotros-reviews-track"
-              style={{
-                transform: `translateX(-${reviewActiva * 100}%)`,
-              }}
-            >
-              {reviews.map((review, index) => (
-                <div key={index} className="nosotros-review-slide">
+            <div className="nosotros-reviews-track nosotros-reviews-track--auto">
+              {reviewsLoop.map((review, index) => (
+                <div key={`${review.name}-${index}`} className="nosotros-review-slide">
                   <a
                     href={review.link}
                     target="_blank"
@@ -128,6 +141,15 @@ function Nosotros() {
                     className="nosotros-review-link"
                   >
                     <div className="nosotros-review-card">
+                      <div className="nosotros-review-user">
+                        <div className="nosotros-review-avatar">
+                          {review.name.charAt(0)}
+                        </div>
+                        <div>
+                          <strong>{review.name}</strong>
+                          <span>{review.role}</span>
+                        </div>
+                      </div>
                       <div className="nosotros-review-stars mb-3">
                         {Array(5)
                           .fill()
@@ -137,7 +159,7 @@ function Nosotros() {
                       </div>
                       <p className="mb-4">{review.text}</p>
                       <div className="nosotros-review-footer">
-                        <strong>{review.name}</strong>
+                        <strong>5.0</strong>
                         <span>Ver en Google -&gt;</span>
                       </div>
                     </div>
@@ -145,18 +167,6 @@ function Nosotros() {
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="nosotros-review-dots mt-4">
-            {reviews.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={idx === reviewActiva ? "activo" : ""}
-                onClick={() => setReviewActiva(idx)}
-                aria-label={`Ir a opinion ${idx + 1}`}
-              />
-            ))}
           </div>
 
           <div className="text-center mt-5">
