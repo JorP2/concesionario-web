@@ -15,6 +15,7 @@ public class VehiculoRequestDTO {
     private String cambio;
     private String pegatina;
     private String descripcion;
+    private String comentarios;
     private String extras;
 
     // Getters y Setters
@@ -46,6 +47,8 @@ public class VehiculoRequestDTO {
     public void setPegatina(String pegatina) { this.pegatina = pegatina; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getComentarios() { return comentarios; }
+    public void setComentarios(String comentarios) { this.comentarios = comentarios; }
     public String getExtras() { return extras; }
     public void setExtras(String extras) { this.extras = extras; }
 }

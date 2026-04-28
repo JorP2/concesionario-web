@@ -1,6 +1,6 @@
 import { MdEuroSymbol, MdLocationOn } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
 import "../styles/home.css";
-import { FaShieldAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -21,6 +21,11 @@ function Home() {
               Coches seleccionados con criterio, financiacion flexible y un
               trato cercano para que elegir sea tan facil como conducirlo.
             </p>
+
+            {/* ← Esto es lo único nuevo que se añade */}
+            <span className="badge bg-light text-dark px-3 py-2 shadow-sm mb-3">
+              <FaStar className="text-warning me-1" /> 4.9 en Google Reviews
+            </span>
 
             <div className="home-hero-actions">
               <Link to="/vehiculos" className="btn btn-primary btn-lg px-4">
@@ -56,7 +61,7 @@ function Home() {
         <div className="container">
           <div className="home-strip-grid">
             <div>
-              <strong>+25 anos</strong>
+              <strong>+25 años</strong>
               <span>ayudando a elegir coche en Toledo</span>
             </div>
             <div>
@@ -86,7 +91,7 @@ function Home() {
             <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
-                  <FaShieldAlt size={32} className="text-primary" />
+                  <MdEuroSymbol size={32} className="text-primary" />
                 </div>
                 <h5 className="fw-bold">Maxima garantia</h5>
                 <p className="text-muted">
@@ -96,20 +101,23 @@ function Home() {
               </div>
             </div>
           </div>
+
           <div className="col-md-4">
             <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
-                  <MdEuroSymbol size={32} className="text-primary" />
+                  <FaStar size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Financiacion flexible</h5>
+                <h5 className="fw-bold">Confianza y fiabilidad</h5>
                 <p className="text-muted">
-                  Estudiamos opciones de financiacion de hasta 96 meses para que
-                  el proceso de compra no se frene por el presupuesto.
+                  Más de 4.9 estrellas en Google Reviews avalan la satisfacción
+                  de nuestros clientes. Ofrecemos vehículos revisados y total
+                  transparencia.
                 </p>
               </div>
             </div>
           </div>
+
           <div className="col-md-4">
             <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
@@ -145,7 +153,7 @@ function Home() {
                 <h2>Seleccionamos coches para durar</h2>
               </div>
               <p className="text-muted mb-3">
-                Llevamos mas de 25 anos en el sector de la compraventa de
+                Llevamos mas de 25 años en el sector de la compraventa de
                 automoviles y contamos con taller propio para revisar cada
                 unidad antes de ofrecerla.
               </p>
@@ -158,7 +166,10 @@ function Home() {
                 <span>Asesoramiento cercano</span>
                 <span>Stock variado y rotacion constante</span>
               </div>
-              <Link to="/nosotros" className="btn btn-outline-primary px-4 mt-4">
+              <Link
+                to="/nosotros"
+                className="btn btn-outline-primary px-4 mt-4"
+              >
                 Saber mas
               </Link>
             </div>
