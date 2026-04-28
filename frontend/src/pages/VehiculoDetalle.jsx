@@ -88,6 +88,32 @@ function VehiculoDetalle() {
           </div>
         )}
 
+        { /* GALERÍA VIDEOS */}
+        {vehiculo.videos && vehiculo.videos.length > 0 && (
+          <div className="mb-4">
+            <h5 className="fw-bold mb-3">Vídeos</h5>
+
+            <div className="row g-3">
+              {vehiculo.videos.map((video, i) => (
+                <div key={i} className="col-12 col-md-6">
+                  <div
+                  className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm"
+                  style={{ cursor: "pointer" }}
+                  >
+                    <video
+                      src={video}
+                      controls
+                      preload="metadata"
+                      controlsList="nodownload"
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
           {/* MINI CARDS */}
           <div className="row g-3">
             <div className="col-6 col-md-3">
@@ -200,7 +226,7 @@ function VehiculoDetalle() {
         {/* DERECHA */}
         <div className="col-lg-4">
           <div 
-            className="card shadow-sm rounded-4 position-sticky"
+            className="card shadow-sm rounded-4 position-sticky z-3"
             style={{ top: "20px" }}
           >
             <div className="card-body">
@@ -237,13 +263,23 @@ function VehiculoDetalle() {
                 href="/contacto/#contactos">
                 Contactar
               </a>
+            </div>
+          </div>
 
+          <div className="card shadow-sm rounded-4 my-4">
+            <div className="card-body">
+              <h5 className="fw-bold">
+                Comentarios del anunciante
+              </h5>
+              <span>
+                {vehiculo.comentarios}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* IMAGEN GRANDE */}
+      {/* IMAGEN AMPLIADA */}
       {selectedImg && (
         <div
           className="modal show fade d-block"

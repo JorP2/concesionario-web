@@ -14,8 +14,13 @@ function Home() {
         <div className="hero-content container text-center">
           <h1 className="display-3 fw-bold mb-3">Nohales Automóviles</h1>
           <p className="lead mb-4">
-            Concesionario en Toledo · +25 años de experiencia
+            Vehículos de confianza · +25 años de experiencia
           </p>
+          <div className="mb-4">
+          <span className="badge bg-light text-dark px-3 py-2 shadow-sm">
+            ⭐ 4.9 / 5 en Google Reviews
+          </span>
+        </div>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
             <Link to={`/vehiculos`} className="btn btn-primary btn-lg px-4">
               Ver vehículos

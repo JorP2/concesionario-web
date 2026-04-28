@@ -72,9 +72,14 @@ public class Vehiculo {
     private String pegatina;
 
     @NotBlank(message = "La descripción no puede estar vacía")
+    @Size(min = 10, max = 200)
+    @Column(nullable = false, length = 200)
+    private String descripcion;
+    
+    @NotBlank(message = "Los comentarios no pueden estar vacios")
     @Size(min = 10, max = 1000)
     @Column(nullable = false, length = 1000)
-    private String descripcion;
+    private String comentarios;
 
     @Column(length = 500)
     private String extras;
@@ -145,6 +150,9 @@ public class Vehiculo {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    
+    public String getComentarios() { return comentarios; }
+    public void setComentarios(String comentarios) { this.comentarios = comentarios; }
 
     public String getExtras() { return extras; }
     public void setExtras(String extras) { this.extras = extras; }

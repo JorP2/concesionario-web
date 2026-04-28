@@ -31,7 +31,7 @@ function Login() {
         <div className="login-header">
           <FaUserCircle size={70} />
           <h2>Iniciar sesión</h2>
-          <p>Accede a tu panel de administración</p>
+          <p>¿Trabajas aquí? Accede como empleado</p>
         </div>
 
         <div className="mb-3">
@@ -53,11 +53,14 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-
+        
+        {/*
         <div className="form-check mb-3">
           <input type="checkbox" className="form-check-input" id="remember" />
           <label className="form-check-label">Recordarme</label>
-        </div>
+        </div> 
+        */}
+        
 
         {error && <p className="text-danger small">{error}</p>}
 

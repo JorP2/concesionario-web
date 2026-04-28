@@ -47,8 +47,6 @@ public class VehiculoService {
     @Transactional
     public void eliminar(Long id) {
         try {
-            Vehiculo vehiculo = obtenerPorId(id);
-            
             // Eliminar imágenes
             List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
             for (Imagen img : imagenes) {
@@ -298,6 +296,7 @@ public class VehiculoService {
         existente.setCambio(nuevo.getCambio());
         existente.setPegatina(nuevo.getPegatina());
         existente.setDescripcion(nuevo.getDescripcion());
+        existente.setComentarios(nuevo.getComentarios());
         existente.setExtras(nuevo.getExtras());
     }
 }

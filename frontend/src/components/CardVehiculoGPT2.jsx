@@ -67,7 +67,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                   <span className="precio-tachado">
                     €{Number(vehiculo.precio).toLocaleString("es-ES")}€
                   </span>
-                  <span className="precio precio-oferta">
+                  <span className="precio precio-oferta text-primary">
                     {Number(vehiculo.precioOferta).toLocaleString("es-ES")}€
                   </span>
                 </>
@@ -79,7 +79,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                   >
                     &nbsp;
                   </span>
-                  <span className="precio">
+                  <span className="precio text-primary">
                     {Number(vehiculo.precio).toLocaleString("es-ES")}€
                   </span>
                 </>

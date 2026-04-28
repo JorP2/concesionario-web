@@ -77,6 +77,7 @@ public class DTOConverter {
         dto.setCambio(vehiculo.getCambio());
         dto.setPegatina(vehiculo.getPegatina());
         dto.setDescripcion(vehiculo.getDescripcion());
+        dto.setComentarios(vehiculo.getComentarios());
         dto.setExtras(vehiculo.getExtras());
         dto.setVisible(vehiculo.getVisible());
         dto.setEnOferta(vehiculo.getEnOferta());
@@ -125,6 +126,7 @@ public class DTOConverter {
         vehiculo.setCambio(request.getCambio());
         vehiculo.setPegatina(request.getPegatina());
         vehiculo.setDescripcion(request.getDescripcion());
+        vehiculo.setComentarios(request.getComentarios());
         vehiculo.setExtras(request.getExtras());
         return vehiculo;
     }

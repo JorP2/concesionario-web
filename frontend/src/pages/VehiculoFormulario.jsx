@@ -39,6 +39,7 @@ function VehiculoFormulario() {
     cambio: "",
     pegatina: "",
     descripcion: "",
+    comentarios: "",
     extras: "",
     enOferta: false,
     precioOferta: "",
@@ -68,6 +69,7 @@ function VehiculoFormulario() {
             cambio: data.cambio ?? "",
             pegatina: data.pegatina ?? "",
             descripcion: data.descripcion ?? "",
+            comentarios: data.comentarios ?? "",
             extras: data.extras ?? "",
             enOferta: data.enOferta ?? false,
             precioOferta: data.precioOferta ?? "",
@@ -364,6 +366,18 @@ function VehiculoFormulario() {
                     name="descripcion"
                     rows={3}
                     value={vehiculo.descripcion}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {/* Comentarios del anunciante- ancho completo */}
+                <div className="col-12">
+                  <label className="form-label">Comentarios del anunciante</label>
+                  <textarea
+                    className="form-control"
+                    name="comentarios"
+                    rows={3}
+                    value={vehiculo.comentarios}
                     onChange={handleChange}
                   />
                 </div>
