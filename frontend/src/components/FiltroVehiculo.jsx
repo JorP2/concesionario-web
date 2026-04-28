@@ -22,6 +22,12 @@ function FiltroVehiculo({
   colores,
   kmMax,
 }) {
+  const precioMaximo = 50000;
+  const kmLimite = Math.max(kmMax || 0, 700000);
+  const precioActual =
+    filtros.precio === "" ? precioMaximo : Number(filtros.precio);
+  const kmActual = filtros.km === "" ? kmLimite : Number(filtros.km);
+
   const filtrosActivos =
     [
       filtros.marca,
@@ -33,7 +39,7 @@ function FiltroVehiculo({
       filtros.color,
     ].filter((v) => v !== "").length +
     (filtros.busqueda.trim() !== "" ? 1 : 0) +
-    (filtros.km && Number(filtros.km) < (kmMax || 200000) ? 1 : 0);
+    (filtros.km !== "" && Number(filtros.km) < kmLimite ? 1 : 0);
 
   return (
     <div className="card shadow-sm border-0 rounded-4 mb-4">
@@ -83,7 +89,7 @@ function FiltroVehiculo({
                 />
               </span>
             )}
-            {filtros.precio && (
+            {filtros.precio !== "" && (
               <span className="badge bg-light text-dark border">
                 Hasta €{Number(filtros.precio).toLocaleString("es-ES")}
                 <FaTimes
@@ -133,8 +139,8 @@ function FiltroVehiculo({
                 />
               </span>
             )}
-            {filtros.km &&
-              Number(filtros.km) < (kmMax || 200000) && (
+            {filtros.km !== "" &&
+              Number(filtros.km) < kmLimite && (
                 <span className="badge bg-light text-dark border">
                   Hasta{" "}
                   {Number(filtros.km).toLocaleString("es-ES")} km
@@ -269,25 +275,23 @@ function FiltroVehiculo({
               Precio máximo
               <span className="text-muted fw-normal ms-2 small">
                 €
-                {Number(
-                  filtros.precio || 50000
-                ).toLocaleString("es-ES")}
+                {precioActual.toLocaleString("es-ES")}
               </span>
             </label>
             <input
               type="range"
               min="0"
-              max="50000"
+              max={precioMaximo}
               step="1000"
               className="form-range"
-              value={filtros.precio || 50000}
+              value={precioActual}
               onChange={(e) =>
-                onChange("precio", e.target.value)
+                onChange("precio", Number(e.target.value))
               }
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>€0</span>
-              <span>{Number(filtros.precio || 50000).toLocaleString("es-ES")} €</span>
+              <span>{precioActual.toLocaleString("es-ES")} €</span>
             </div>
           </div>
 
@@ -296,27 +300,25 @@ function FiltroVehiculo({
             <label className="form-label fw-semibold">
               Kilómetros máximos
               <span className="text-muted fw-normal ms-2 small">
-                {Number(
-                  filtros.km || kmMax || 400000
-                ).toLocaleString("es-ES")}{" "}
+                {kmActual.toLocaleString("es-ES")}{" "}
                 km
               </span>
             </label>
             <input
               type="range"
               min="0"
-              max={kmMax || 400000}
+              max={kmLimite}
               step="5000"
               className="form-range"
-              value={filtros.km || kmMax || 400000}
+              value={kmActual}
               onChange={(e) =>
-                onChange("km", e.target.value)
+                onChange("km", Number(e.target.value))
               }
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>0 km</span>
               <span>
-                {Number(kmMax || 400000).toLocaleString("es-ES")} km
+                {kmLimite.toLocaleString("es-ES")} km
               </span>
             </div>
           </div>

@@ -2,7 +2,6 @@ import React from "react";
 import {
   getVehiculosEnVenta,
   getVehiculosVendidos,
-  serchVehiculos,
 } from "../api/vehiculoApi";
 import CardVehiculoGPT2 from "../components/CardVehiculoGPT2";
 import SkeletonVehiculo from "../components/SkeletonVehiculo.jsx";
@@ -33,17 +32,10 @@ function Vehiculos() {
   const [loadingVendidos, setLoadingVendidos] = React.useState(false);
   const [loadingInicial, setLoadingInicial] = React.useState(true);
 
-  const loadVehiculos = React.useCallback(async (filtrosActuales = filtros) => {
+  const loadVehiculos = React.useCallback(async () => {
     setLoading(true);
     try {
-      const usarBusqueda = filtrosActuales.marca || filtrosActuales.precio;
-      const data = usarBusqueda
-        ? await serchVehiculos(
-            filtrosActuales.marca || null,
-            null,
-            filtrosActuales.precio ? Number(filtrosActuales.precio) : null,
-          )
-        : await getVehiculosEnVenta();
+      const data = await getVehiculosEnVenta();
       setVehiculos(data);
     } catch (loadError) {
       console.error("Error al cargar los vehiculos:", loadError);
@@ -57,11 +49,6 @@ function Vehiculos() {
   React.useEffect(() => {
     loadVehiculos();
   }, [loadVehiculos]);
-
-  React.useEffect(() => {
-    if (pestana !== "en_venta") return;
-    loadVehiculos(filtros);
-  }, [filtros.marca, filtros.precio]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loadingInicial) {
     return (
@@ -106,7 +93,7 @@ function Vehiculos() {
 
     const marcaMatch = filtros.marca ? v.marca === filtros.marca : true;
     const anioMatch = filtros.anio ? String(v.anio) === filtros.anio : true;
-    const precioMatch = filtros.precio
+    const precioMatch = filtros.precio !== ""
       ? v.precio <= Number(filtros.precio)
       : true;
     const combustibleMatch = filtros.combustible
@@ -115,7 +102,8 @@ function Vehiculos() {
     const transmisionMatch = filtros.transmision
       ? v.cambio?.toLowerCase().includes(filtros.transmision.toLowerCase())
       : true;
-    const kmMatch = filtros.km ? v.kilometros <= Number(filtros.km) : true;
+    const kmMatch =
+      filtros.km !== "" ? v.kilometros <= Number(filtros.km) : true;
     const pegatinaMatch = filtros.pegatina
       ? v.pegatina?.toLowerCase() === filtros.pegatina.toLowerCase()
       : true;

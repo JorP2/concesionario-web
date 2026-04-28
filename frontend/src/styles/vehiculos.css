@@ -194,6 +194,7 @@
 @media (max-width: 767px) {
   .vehiculos-hero {
     padding: 1rem 0.75rem 0;
+    margin-bottom: 10px;
   }
 
   .vehiculos-hero-inner {
