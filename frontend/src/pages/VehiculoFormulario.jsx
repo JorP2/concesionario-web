@@ -22,6 +22,9 @@ function VehiculoFormulario() {
   const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
   const [imagenesNuevas, setImagenesNuevas] = React.useState([]); // Estado para las nuevas imágenes a subir
   const navigate = useNavigate();
+  const formRef = React.useRef(null);
+  const [intentoEnvio, setIntentoEnvio] = React.useState(false);
+  const [errorFormulario, setErrorFormulario] = React.useState("");
 
   // Función para manejar el estado del formulario
   const [vehiculo, setVehiculo] = React.useState({
@@ -98,11 +101,21 @@ function VehiculoFormulario() {
     }
 
     setVehiculo({ ...vehiculo, [name]: newValue });
+    if (intentoEnvio) setErrorFormulario("");
   };
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIntentoEnvio(true);
+    setErrorFormulario("");
+
+    if (!formRef.current?.checkValidity()) {
+      setErrorFormulario(
+        "Revisa los campos obligatorios. Hay datos sin completar o invalidos.",
+      );
+      return;
+    }
 
     try {
       if (
@@ -173,7 +186,7 @@ function VehiculoFormulario() {
           {id ? "Editar Vehículo" : "Agregar Vehículo"}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit} noValidate>
           <div className="row g-4">
             {/* Columna izquierda — galería (solo edición) */}
             {esEdicion && (
@@ -191,26 +204,45 @@ function VehiculoFormulario() {
               className={`col-12 ${esEdicion ? "col-lg-6" : "col-lg-8 mx-auto"}`}
             >
               <div className="row g-3">
+                {errorFormulario && (
+                  <div className="col-12">
+                    <div className="alert alert-danger py-2 mb-0" role="alert">
+                      {errorFormulario}
+                    </div>
+                  </div>
+                )}
                 {/* Fila: Marca + Modelo */}
                 <div className="col-6">
                   <label className="form-label">Marca</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.marca ? "is-invalid" : ""
+                    }`}
                     name="marca"
                     value={vehiculo.marca}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    La marca es obligatoria.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Modelo</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.modelo ? "is-invalid" : ""
+                    }`}
                     name="modelo"
                     value={vehiculo.modelo}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El modelo es obligatorio.
+                  </div>
                 </div>
 
                 {/* Fila: Año + Precio */}
@@ -218,25 +250,37 @@ function VehiculoFormulario() {
                   <label className="form-label">Año</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.anio ? "is-invalid" : ""
+                    }`}
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
                     min={1900}
                     max={new Date().getFullYear()}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    Indica un año valido.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Precio</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.precio ? "is-invalid" : ""
+                    }`}
                     name="precio"
                     value={vehiculo.precio}
                     onChange={handleChange}
                     min={0}
                     max={999999999}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El precio es obligatorio.
+                  </div>
                 </div>
 
                 {/* Fila: Kilómetros + Combustible */}
@@ -244,23 +288,35 @@ function VehiculoFormulario() {
                   <label className="form-label">Kilómetros</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.kilometros ? "is-invalid" : ""
+                    }`}
                     name="kilometros"
                     value={vehiculo.kilometros}
                     onChange={handleChange}
                     min={0}
                     max={999999}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    Los kilómetros son obligatorios.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Combustible</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.combustible ? "is-invalid" : ""
+                    }`}
                     name="combustible"
                     value={vehiculo.combustible}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El combustible es obligatorio.
+                  </div>
                 </div>
 
                 {/* Fila: Color exterior + Interior */}
@@ -268,21 +324,33 @@ function VehiculoFormulario() {
                   <label className="form-label">Color exterior</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.colorExterior ? "is-invalid" : ""
+                    }`}
                     name="colorExterior"
                     value={vehiculo.colorExterior}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El color exterior es obligatorio.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Interior</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.interior ? "is-invalid" : ""
+                    }`}
                     name="interior"
                     value={vehiculo.interior}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El interior es obligatorio.
+                  </div>
                 </div>
 
                 {/* Fila: Motor + Cambio */}
@@ -290,21 +358,33 @@ function VehiculoFormulario() {
                   <label className="form-label">Motor</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.motor ? "is-invalid" : ""
+                    }`}
                     name="motor"
                     value={vehiculo.motor}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El motor es obligatorio.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Cambio</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.cambio ? "is-invalid" : ""
+                    }`}
                     name="cambio"
                     value={vehiculo.cambio}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    El tipo de cambio es obligatorio.
+                  </div>
                 </div>
 
                 {/* Fila: Puertas + Asientos */}
@@ -312,25 +392,37 @@ function VehiculoFormulario() {
                   <label className="form-label">Puertas</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.puertas ? "is-invalid" : ""
+                    }`}
                     name="puertas"
                     value={vehiculo.puertas}
                     onChange={handleChange}
                     min={1}
                     max={9}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    Indica el número de puertas.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Asientos</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.asientos ? "is-invalid" : ""
+                    }`}
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
                     min={1}
                     max={20}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    Indica el número de asientos.
+                  </div>
                 </div>
 
                 {/* Fila: Pegatina + Estado venta */}
@@ -338,11 +430,17 @@ function VehiculoFormulario() {
                   <label className="form-label">Pegatina</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.pegatina ? "is-invalid" : ""
+                    }`}
                     name="pegatina"
                     value={vehiculo.pegatina}
                     onChange={handleChange}
+                    required
                   />
+                  <div className="invalid-feedback">
+                    La pegatina es obligatoria.
+                  </div>
                 </div>
                 <div className="col-6">
                   <label className="form-label">Estado de venta</label>
@@ -362,12 +460,19 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Descripción</label>
                   <textarea
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.descripcion ? "is-invalid" : ""
+                    }`}
                     name="descripcion"
                     rows={3}
                     value={vehiculo.descripcion}
                     onChange={handleChange}
+                    required
+                    minLength={10}
                   />
+                  <div className="invalid-feedback">
+                    La descripción es obligatoria (mínimo 10 caracteres).
+                  </div>
                 </div>
 
                 {/* Comentarios del anunciante- ancho completo */}
@@ -376,12 +481,19 @@ function VehiculoFormulario() {
                     Comentarios del anunciante
                   </label>
                   <textarea
-                    className="form-control"
+                    className={`form-control ${
+                      intentoEnvio && !vehiculo.comentarios ? "is-invalid" : ""
+                    }`}
                     name="comentarios"
                     rows={3}
                     value={vehiculo.comentarios}
                     onChange={handleChange}
+                    required
+                    minLength={10}
                   />
+                  <div className="invalid-feedback">
+                    Los comentarios del anunciante son obligatorios.
+                  </div>
                 </div>
 
                 {/* Extras — ancho completo */}
@@ -451,26 +563,46 @@ function VehiculoFormulario() {
                       </label>
                       <input
                         type="number"
-                        className="form-control"
+                        className={`form-control ${
+                          intentoEnvio &&
+                          vehiculo.enOferta &&
+                          !vehiculo.precioOferta
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         name="precioOferta"
                         value={vehiculo.precioOferta}
                         onChange={handleChange}
                         max={vehiculo.precio} // no puede ser mayor que el precio original
                         placeholder={`Máx. €${vehiculo.precio}`}
+                        required={vehiculo.enOferta}
                       />
+                      <div className="invalid-feedback">
+                        Si está en oferta, indica un precio de oferta.
+                      </div>
                     </div>
                     <div className="col-6">
                       <label className="form-label">Fecha fin oferta</label>
                       <input
                         type="datetime-local"
-                        className="form-control"
+                        className={`form-control ${
+                          intentoEnvio &&
+                          vehiculo.enOferta &&
+                          !vehiculo.fechaFinOferta
+                            ? "is-invalid"
+                            : ""
+                        }`}
                         name="fechaFinOferta"
                         value={vehiculo.fechaFinOferta}
                         onChange={handleChange}
                         min={new Date(Date.now() + 60000)
                           .toISOString()
                           .slice(0, 16)} // mínimo: ahora + 1 min
+                        required={vehiculo.enOferta}
                       />
+                      <div className="invalid-feedback">
+                        Si está en oferta, indica la fecha de fin.
+                      </div>
                     </div>
                   </>
                 )}

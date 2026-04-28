@@ -11,6 +11,9 @@ function Administrador() {
   const esSuperUsuario = sesion?.role === "ADMIN";
 
   const [pestana, setPestana] = React.useState("vehiculos");
+  const [subPestanaVehiculos, setSubPestanaVehiculos] = React.useState(
+    "en_stock",
+  );
   const [vehiculos, setVehiculos] = React.useState([]);
   const [busqueda, setBusqueda] = React.useState("");
   const [loading, setLoading] = React.useState(true);
@@ -43,6 +46,12 @@ function Administrador() {
     (v) =>
       v.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
       v.modelo.toLowerCase().includes(busqueda.toLowerCase()),
+  );
+  const vehiculosEnStockFiltrados = vehiculosFiltrados.filter(
+    (v) => v.estadoVenta !== "vendido",
+  );
+  const vehiculosVendidosFiltrados = vehiculosFiltrados.filter(
+    (v) => v.estadoVenta === "vendido",
   );
 
   const totalVehiculos = vehiculos.length;
@@ -77,7 +86,9 @@ function Administrador() {
           {pestana === "vehiculos" && (
             <div className="admin-hero-actions">
               <div className="admin-pill">
-                {vehiculosFiltrados.length} vehiculos en la lista
+                {subPestanaVehiculos === "vendidos"
+                  ? `${vehiculosVendidosFiltrados.length} vendidos en la lista`
+                  : `${vehiculosEnStockFiltrados.length} vehiculos en stock`}
               </div>
               <Link to="/administrador/vehiculo-form" className="btn btn-success">
                 + Anadir vehiculo
@@ -134,6 +145,20 @@ function Administrador() {
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
               </div>
+              <div className="vehiculos-tabs mb-4">
+                <button
+                  className={`tab-btn ${subPestanaVehiculos === "en_stock" ? "activo" : ""}`}
+                  onClick={() => setSubPestanaVehiculos("en_stock")}
+                >
+                  En stock ({vehiculosEnStockFiltrados.length})
+                </button>
+                <button
+                  className={`tab-btn ${subPestanaVehiculos === "vendidos" ? "activo" : ""}`}
+                  onClick={() => setSubPestanaVehiculos("vendidos")}
+                >
+                  Vendidos ({vehiculosVendidosFiltrados.length})
+                </button>
+              </div>
               {loading && (
                 <p className="text-center mt-4">Cargando vehiculos...</p>
               )}
@@ -144,7 +169,11 @@ function Administrador() {
               )}
               {!loading && !error && (
                 <VehiculosLista
-                  vehiculos={vehiculosFiltrados}
+                  vehiculos={
+                    subPestanaVehiculos === "vendidos"
+                      ? vehiculosVendidosFiltrados
+                      : vehiculosEnStockFiltrados
+                  }
                   onEliminar={handleEliminar}
                 />
               )}

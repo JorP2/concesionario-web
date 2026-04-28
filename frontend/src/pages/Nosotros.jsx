@@ -1,5 +1,6 @@
 import { FaStar } from "react-icons/fa";
 import "../styles/nosotros.css";
+import React from "react";
 
 function Nosotros() {
   const reviews = [
@@ -14,6 +15,15 @@ function Nosotros() {
       link: "https://share.google/c2Oa8QxjTlui5fyP1",
     },
   ];
+  const [reviewActiva, setReviewActiva] = React.useState(0);
+
+  React.useEffect(() => {
+    if (reviews.length <= 1) return undefined;
+    const intervalo = setInterval(() => {
+      setReviewActiva((prev) => (prev + 1) % reviews.length);
+    }, 4500);
+    return () => clearInterval(intervalo);
+  }, [reviews.length]);
 
   return (
     <div className="nosotros-page">
@@ -102,31 +112,50 @@ function Nosotros() {
             </p>
           </div>
 
-          <div className="row g-4">
-            {reviews.map((review, index) => (
-              <div key={index} className="col-12 col-md-6">
-                <a
-                  href={review.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nosotros-review-link"
-                >
-                  <div className="nosotros-review-card">
-                    <div className="text-warning mb-3">
-                      {Array(5)
-                        .fill()
-                        .map((_, starIndex) => (
-                          <FaStar key={starIndex} />
-                        ))}
+          <div className="nosotros-reviews-carousel">
+            <div
+              className="nosotros-reviews-track"
+              style={{
+                transform: `translateX(-${reviewActiva * 100}%)`,
+              }}
+            >
+              {reviews.map((review, index) => (
+                <div key={index} className="nosotros-review-slide">
+                  <a
+                    href={review.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nosotros-review-link"
+                  >
+                    <div className="nosotros-review-card">
+                      <div className="nosotros-review-stars mb-3">
+                        {Array(5)
+                          .fill()
+                          .map((_, starIndex) => (
+                            <FaStar key={starIndex} />
+                          ))}
+                      </div>
+                      <p className="mb-4">{review.text}</p>
+                      <div className="nosotros-review-footer">
+                        <strong>{review.name}</strong>
+                        <span>Ver en Google -&gt;</span>
+                      </div>
                     </div>
-                    <p className="mb-4">{review.text}</p>
-                    <div className="nosotros-review-footer">
-                      <strong>{review.name}</strong>
-                      <span>Ver en Google -></span>
-                    </div>
-                  </div>
-                </a>
-              </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="nosotros-review-dots mt-4">
+            {reviews.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className={idx === reviewActiva ? "activo" : ""}
+                onClick={() => setReviewActiva(idx)}
+                aria-label={`Ir a opinion ${idx + 1}`}
+              />
             ))}
           </div>
 

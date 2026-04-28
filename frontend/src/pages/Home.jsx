@@ -22,11 +22,6 @@ function Home() {
               trato cercano para que elegir sea tan facil como conducirlo.
             </p>
 
-            {/* ← Esto es lo único nuevo que se añade */}
-            <span className="badge bg-light text-dark px-3 py-2 shadow-sm mb-3">
-              <FaStar className="text-warning me-1" /> 4.9 en Google Reviews
-            </span>
-
             <div className="home-hero-actions">
               <Link to="/vehiculos" className="btn btn-primary btn-lg px-4">
                 Ver vehiculos
@@ -41,6 +36,15 @@ function Home() {
           </div>
 
           <div className="home-hero-panel">
+            <div className="home-google-rating">
+              <span className="home-google-rating-label">Google Reviews</span>
+              <div className="home-google-rating-score">
+                <FaStar />
+                <strong>4.9</strong>
+                <span>/5</span>
+              </div>
+              <p>Valoracion media de clientes verificados</p>
+            </div>
             <div className="home-hero-stat">
               <strong>+40</strong>
               <span>vehiculos en stock</span>

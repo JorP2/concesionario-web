@@ -62,30 +62,32 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
               )}
             </div>
 
-            <div className="vehiculo-price-block">
-              {vehiculo.enOferta && vehiculo.precioOferta ? (
-                <>
-                  <span className="precio-tachado">
-                    {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
-                  </span>
-                  <span className="precio precio-oferta">
-                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")} EUR
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span
-                    className="precio-tachado"
-                    style={{ visibility: "hidden" }}
-                  >
-                    &nbsp;
-                  </span>
-                  <span className="precio">
-                    {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
-                  </span>
-                </>
-              )}
-            </div>
+            {!vendido && (
+              <div className="vehiculo-price-block">
+                {vehiculo.enOferta && vehiculo.precioOferta ? (
+                  <>
+                    <span className="precio-tachado">
+                      {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
+                    </span>
+                    <span className="precio precio-oferta">
+                      {Number(vehiculo.precioOferta).toLocaleString("es-ES")} EUR
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      className="precio-tachado"
+                      style={{ visibility: "hidden" }}
+                    >
+                      &nbsp;
+                    </span>
+                    <span className="precio">
+                      {Number(vehiculo.precio).toLocaleString("es-ES")} EUR
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="vehiculo-specs">
