@@ -34,7 +34,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configure(http))
             .authorizeHttpRequests(auth -> auth
             	    .requestMatchers("/api/auth/login").permitAll()
-            	    .requestMatchers("/api/auth/refresh").permitAll()   
+            	    .requestMatchers("/api/auth/refresh").permitAll()  
             	    .requestMatchers("/api/auth/logout").permitAll()
             	    .requestMatchers("/uploads/**").permitAll()  
                 .requestMatchers("/api/vehiculos/public/**").permitAll()

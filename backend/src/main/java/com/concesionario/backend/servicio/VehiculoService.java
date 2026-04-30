@@ -13,6 +13,8 @@ import com.concesionario.backend.config.UploadConfig;
 import com.concesionario.backend.dominio.Imagen;
 import com.concesionario.backend.dominio.Vehiculo;
 import com.concesionario.backend.dominio.Video;
+import com.concesionario.backend.dominio.vehiculo.Coche;
+import com.concesionario.backend.dominio.vehiculo.Motocicleta;
 import com.concesionario.backend.repositorio.VehiculoRepository;
 import com.concesionario.backend.utils.DateUtils;
 
@@ -20,21 +22,21 @@ import com.concesionario.backend.utils.DateUtils;
 @Transactional
 public class VehiculoService {
 
-	 private static final Logger log = LoggerFactory.getLogger(VehiculoService.class); 
-	 
-	 
-	@Autowired
-	private ImagenService imagenService;
+    private static final Logger log = LoggerFactory.getLogger(VehiculoService.class);
 
-	@Autowired
-	private VideoService videoService;
+    @Autowired
+    private ImagenService imagenService;
 
-	@Autowired
-	private UploadConfig uploadConfig;
+    @Autowired
+    private VideoService videoService;
+
+    @Autowired
+    private UploadConfig uploadConfig;
+    
     @Autowired
     private VehiculoRepository vehiculoRepository;
 
-    // .- CRUD BASICO
+    // ========== CRUD BÁSICO ==========
 
     public List<Vehiculo> obtenerTodos() {
         return vehiculoRepository.findAll();
@@ -82,7 +84,6 @@ public class VehiculoService {
     private void eliminarCarpetas(Long id) {
         try {
             File carpetaVehiculo = new File(uploadConfig.getRuta() + id);
-            
             if (carpetaVehiculo.exists() && carpetaVehiculo.isDirectory()) {
                 eliminarDirectorio(carpetaVehiculo);
                 log.info("Carpeta del vehículo {} eliminada correctamente", id);
@@ -105,8 +106,8 @@ public class VehiculoService {
         }
         directorio.delete();
     }
-    
-    // CREAR
+
+    // ========== CREAR ==========
 
     public Vehiculo crearVehiculo(Vehiculo vehiculo) {
         log.info("Creando nuevo vehículo: {} {}", vehiculo.getMarca(), vehiculo.getModelo());
@@ -118,9 +119,9 @@ public class VehiculoService {
         log.info("Vehículo creado con ID: {}", resultado.getId());
         return resultado;
     }
-    
 
-    // ACTUALIZAR
+    // ========== ACTUALIZAR ==========
+
     public Vehiculo actualizarVehiculo(Long id, Vehiculo vehiculoActualizado) {
         log.info("Actualizando vehículo ID: {}", id);
         
@@ -132,8 +133,8 @@ public class VehiculoService {
         return resultado;
     }
 
-    // .- GESTIÓN DE OFERTAS
-    // APLICAR OFERTA
+    // ========== GESTIÓN DE OFERTAS ==========
+
     public Vehiculo aplicarOferta(Long id, Double descuento) {
         log.info("Aplicando oferta de {}% al vehículo ID: {}", descuento, id);
         
@@ -160,25 +161,21 @@ public class VehiculoService {
         if (nuevoPrecioOferta <= 0 || nuevoPrecioOferta >= vehiculo.getPrecio()) {
             throw new RuntimeException("El precio de oferta debe ser mayor a 0 y menor al precio original (" 
                 + vehiculo.getPrecio() + ")");
-
         }
         
-        // Validar que la fecha sea futura
         if (fechaFinOferta.isBefore(LocalDateTime.now())) {
             log.warn("Fecha de fin de oferta inválida: {} para vehículo ID: {}", fechaFinOferta, id);
             throw new RuntimeException("La fecha de fin debe ser posterior a hoy");
         }
         
-        vehiculo.setPrecioOferta(nuevoPrecioOferta); 
+        vehiculo.setPrecioOferta(nuevoPrecioOferta);
         vehiculo.setEnOferta(true);
-        vehiculo.setFechaFinOferta(fechaFinOferta);  // ← Usa la fecha que envía el frontend
+        vehiculo.setFechaFinOferta(fechaFinOferta);
         
         log.info("Oferta de precio fijo aplicada al vehículo ID: {}", id);
         return vehiculoRepository.save(vehiculo);
     }
-    
-    
-    // QUITAR OFERTA
+
     public Vehiculo quitarOferta(Long id) {
         log.info("Quitando oferta del vehículo ID: {}", id);
         
@@ -191,8 +188,8 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
-    // .- GESTION DE ESTADOS
-    // CAMBIAR VISIBILIDAD
+    // ========== GESTIÓN DE ESTADOS ==========
+
     public Vehiculo cambiarVisibilidad(Long id, Boolean visible) {
         log.info("Cambiando visibilidad del vehículo ID: {} a {}", id, visible);
         
@@ -204,10 +201,8 @@ public class VehiculoService {
         return resultado;
     }
 
-    //CAMBIAR ESTADO
     public Vehiculo cambiarEstadoVenta(Long id, String estado) {
-
-    	log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
+        log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
         
         if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("reservado")) {
             log.warn("Estado inválido: {} para vehículo ID: {}", estado, id);
@@ -221,12 +216,11 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
-    // .-CONSULTAS PUBLICAS
+    // ========== CONSULTAS PÚBLICAS ==========
 
     public List<Vehiculo> obtenerVehiculosEnVenta() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("en_venta");
     }
-
 
     public List<Vehiculo> obtenerVendidos() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("vendido");
@@ -236,7 +230,7 @@ public class VehiculoService {
         return vehiculoRepository.buscarAvanzado(marca, "en_venta", precioMin, precioMax);
     }
 
-    // .- ESTADÍSTICAS
+    // ========== ESTADÍSTICAS ==========
 
     public long contarVehiculos() {
         return vehiculoRepository.count();
@@ -250,11 +244,12 @@ public class VehiculoService {
         return vehiculoRepository.countByEstadoVenta("vendido");
     }
 
-    // METODOS PRIVADOS
+    // ========== MÉTODOS PRIVADOS ==========
 
     private void validarVehiculo(Vehiculo vehiculo) {
         int añoActual = LocalDateTime.now().getYear();
 
+        // Validaciones comunes
         if (vehiculo.getPrecio() < 0) {
             throw new RuntimeException("El precio no puede ser negativo");
         }
@@ -264,8 +259,21 @@ public class VehiculoService {
         if (vehiculo.getKilometros() < 0) {
             throw new RuntimeException("Los kilómetros no pueden ser negativos");
         }
-        if (vehiculo.getAsientos() < 1 || vehiculo.getAsientos() > 9) {
-            throw new RuntimeException("Número de asientos no válido");
+        
+        // ✅ Validaciones específicas según el tipo
+        if (vehiculo instanceof Coche) {
+            Coche coche = (Coche) vehiculo;
+            if (coche.getAsientos() == null || coche.getAsientos() < 1 || coche.getAsientos() > 9) {
+                throw new RuntimeException("Número de asientos no válido para coche");
+            }
+            if (coche.getPuertas() == null || coche.getPuertas() < 2 || coche.getPuertas() > 5) {
+                throw new RuntimeException("Número de puertas no válido para coche");
+            }
+        } else if (vehiculo instanceof Motocicleta) {
+            Motocicleta moto = (Motocicleta) vehiculo;
+            if (moto.getCilindrada() == null || moto.getCilindrada() <= 0) {
+                throw new RuntimeException("Cilindrada no válida para moto");
+            }
         }
     }
 
@@ -282,6 +290,7 @@ public class VehiculoService {
     }
 
     private void actualizarCampos(Vehiculo existente, Vehiculo nuevo) {
+        // ✅ Actualizar campos comunes (están en Vehiculo)
         existente.setMarca(nuevo.getMarca());
         existente.setModelo(nuevo.getModelo());
         existente.setPrecio(nuevo.getPrecio());
@@ -289,13 +298,32 @@ public class VehiculoService {
         existente.setKilometros(nuevo.getKilometros());
         existente.setCombustible(nuevo.getCombustible());
         existente.setColorExterior(nuevo.getColorExterior());
-        existente.setInterior(nuevo.getInterior());
-        existente.setAsientos(nuevo.getAsientos());
-        existente.setPuertas(nuevo.getPuertas());
-        existente.setMotor(nuevo.getMotor());
-        existente.setCambio(nuevo.getCambio());
-        existente.setPegatina(nuevo.getPegatina());
+   
         existente.setDescripcion(nuevo.getDescripcion());
         existente.setExtras(nuevo.getExtras());
+        
+   
+        if (existente instanceof Coche && nuevo instanceof Coche) {
+            Coche existenteCoche = (Coche) existente;
+            Coche nuevoCoche = (Coche) nuevo;
+            
+            existenteCoche.setInterior(nuevoCoche.getInterior());  // ✅ AÑADIR ESTO
+            existenteCoche.setAsientos(nuevoCoche.getAsientos());
+            existenteCoche.setPuertas(nuevoCoche.getPuertas());
+            existenteCoche.setMotor(nuevoCoche.getMotor());
+            existenteCoche.setCambio(nuevoCoche.getCambio());
+            existenteCoche.setPegatina(nuevoCoche.getPegatina());
+            
+        } else if (existente instanceof Motocicleta && nuevo instanceof Motocicleta) {
+            Motocicleta existenteMoto = (Motocicleta) existente;
+            Motocicleta nuevoMoto = (Motocicleta) nuevo;
+            
+            existenteMoto.setCilindrada(nuevoMoto.getCilindrada());
+            existenteMoto.setTipoMotor(nuevoMoto.getTipoMotor());
+            existenteMoto.setTieneSidecar(nuevoMoto.getTieneSidecar());
+            existenteMoto.setTieneBaul(nuevoMoto.getTieneBaul());
+        } else {
+            log.warn("No se pueden actualizar campos específicos: tipos incompatibles");
+        }
     }
 }
