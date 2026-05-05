@@ -70,7 +70,7 @@ function Contacto() {
                   <FaWhatsapp size={32} className="contacto-icon whatsapp" />
                   <h6>WhatsApp</h6>
                   <p>+34 651 86 82 30</p>
-                  <span>Enviar mensaje -></span>
+                  <span>Enviar mensaje -</span>
                 </div>
               </a>
             </div>
@@ -81,7 +81,7 @@ function Contacto() {
                   <MdPhone size={32} className="contacto-icon phone" />
                   <h6>Telefono</h6>
                   <p>+34 925 39 31 86</p>
-                  <span>Llamar ahora -></span>
+                  <span>Llamar ahora -</span>
                 </div>
               </a>
             </div>
@@ -95,7 +95,7 @@ function Contacto() {
                   <MdEmail size={32} className="contacto-icon email" />
                   <h6>Email</h6>
                   <p>nohalesautomoviles@gmail.com</p>
-                  <span>Enviar email -></span>
+                  <span>Enviar email -</span>
                 </div>
               </a>
             </div>
@@ -111,7 +111,7 @@ function Contacto() {
                   <MdLocationOn size={32} className="contacto-icon location" />
                   <h6>Ubicacion</h6>
                   <p>Burguillos de Toledo</p>
-                  <span>Como llegar -></span>
+                  <span>Como llegar -</span>
                 </div>
               </a>
             </div>
@@ -179,7 +179,10 @@ function Contacto() {
                   </div>
                 )}
 
-                <button type="submit" className="btn btn-primary contacto-submit">
+                <button
+                  type="submit"
+                  className="btn btn-primary contacto-submit"
+                >
                   Enviar mensaje
                 </button>
               </form>
