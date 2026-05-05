@@ -7,17 +7,20 @@ import {
 } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
 import { getVehiculoByIdPublic } from "../api/vehiculoApi";
+import { getVideosByVehiculoId } from "../api/videoApi";
 
 function VehiculoDetalle() {
   const { id } = useParams();
   const [vehiculo, setVehiculo] = useState(null);
   const [error, setError] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     getVehiculoByIdPublic(id)
       .then((data) => setVehiculo(data))
       .catch(() => setError(true));
+    getVideosByVehiculoId(id).then(setVideos);
   }, [id]);
 
   if (error) {
@@ -89,19 +92,17 @@ function VehiculoDetalle() {
         )}
 
         { /* GALERÍA VIDEOS */}
-        {vehiculo.videos && vehiculo.videos.length > 0 && (
+        {videos.length > 0 && (
           <div className="mb-4">
-            <h5 className="fw-bold mb-3">Vídeos</h5>
-
             <div className="row g-3">
-              {vehiculo.videos.map((video, i) => (
+              {videos.map((video, i) => (
                 <div key={i} className="col-12 col-md-6">
                   <div
                   className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm"
                   style={{ cursor: "pointer" }}
                   >
                     <video
-                      src={video}
+                      src={video.url}
                       controls
                       preload="metadata"
                       controlsList="nodownload"
@@ -237,11 +238,8 @@ function VehiculoDetalle() {
 
               {vehiculo.precioOferta ? (
                 <>
-                  <div className="text-decoration-line-through text-muted">
-                    {vehiculo.precio}€
-                  </div>
-                  <div className="display-6 fw-bold text-primary">
-                    {vehiculo.precioOferta}€
+                  <div>
+                    <span className="display-6 fw-bold text-primary">{vehiculo.precioOferta}€</span>
                   </div>
                 </>
               ) : (
@@ -266,7 +264,10 @@ function VehiculoDetalle() {
             </div>
           </div>
 
-          <div className="card shadow-sm rounded-4 my-4">
+          {/* COMENTARIOS ANUNCIANTE */}
+          <div className="card shadow-sm rounded-4 my-4 position-sticky"
+            style={{ top: "300px" }}
+          >
             <div className="card-body">
               <h5 className="fw-bold">
                 Comentarios del anunciante
