@@ -1,243 +1,248 @@
 import { MdEuroSymbol, MdLocationOn } from "react-icons/md";
-import { FaShieldAlt } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import "../styles/home.css";
 import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="home-page bg-light">
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <div
-        className="hero-section text-white d-flex align-items-center"
-        style={{ backgroundImage: `url(/imagenHome.jpeg)` }}
+    <div className="home-page">
+      <section
+        className="home-hero"
+        style={{ backgroundImage: "url(/imagenHome.jpeg)" }}
       >
-        <div className="hero-content container text-center">
-          <p className="hero-eyebrow">
-            Concesionario en Toledo · +25 años de experiencia
-          </p>
-          <h1 className="display-3 fw-bold mb-3">Nohales Automóviles</h1>
-          <p className="lead mb-4">
-            Vehículos revisados, garantía real y trato cercano.
-          </p>
-          <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to={`/vehiculos`} className="btn btn-primary btn-lg px-4">
-              Ver vehículos
-            </Link>
-            <Link
-              to={`/contacto`}
-              className="btn btn-outline-light btn-lg px-4"
-            >
-              Contactar
-            </Link>
+        <div className="home-hero-overlay" />
+        <div className="container home-hero-content">
+          <div className="home-hero-copy">
+            <span className="home-hero-kicker">
+              Toledo · Vehiculos revisados · Garantia real
+            </span>
+            <h1>Nohales Automoviles</h1>
+            <p>
+              Coches seleccionados con criterio, financiacion flexible y un
+              trato cercano para que elegir sea tan facil como conducirlo.
+            </p>
+
+            <div className="home-hero-actions">
+              <Link to="/vehiculos" className="btn btn-primary btn-lg px-4">
+                Ver vehiculos
+              </Link>
+              <Link
+                to="/contacto"
+                className="btn btn-outline-light btn-lg px-4"
+              >
+                Contactar
+              </Link>
+            </div>
+          </div>
+
+          <div className="home-hero-panel">
+            <div className="home-google-rating">
+              <span className="home-google-rating-label">Google Reviews</span>
+              <div className="home-google-rating-score">
+                <FaStar />
+                <strong>4.9</strong>
+                <span>/5</span>
+              </div>
+              <p>Valoracion media de clientes verificados</p>
+            </div>
+            <div className="home-hero-stat">
+              <strong>+40</strong>
+              <span>vehiculos en stock</span>
+            </div>
+            <div className="home-hero-stat">
+              <strong>96</strong>
+              <span>meses de financiacion</span>
+            </div>
+            <div className="home-hero-stat">
+              <strong>12</strong>
+              <span>meses de garantia</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── STATS RÁPIDOS ────────────────────────────────── */}
-      <div className="stats-bar bg-primary text-white py-3">
+      <section className="home-strip">
         <div className="container">
-          <div className="row text-center g-2">
-            <div className="col-6 col-md-3">
-              <div className="stat-number">+25</div>
-              <div className="stat-label">Años de experiencia</div>
+          <div className="home-strip-grid">
+            <div>
+              <strong>+25 años</strong>
+              <span>ayudando a elegir coche en Toledo</span>
             </div>
-            <div className="col-6 col-md-3">
-              <div className="stat-number">+40</div>
-              <div className="stat-label">Vehículos en stock</div>
+            <div>
+              <strong>Taller propio</strong>
+              <span>revision completa antes de cada entrega</span>
             </div>
-            <div className="col-6 col-md-3">
-              <div className="stat-number">96</div>
-              <div className="stat-label">Meses financiación</div>
-            </div>
-            <div className="col-6 col-md-3">
-              <div className="stat-number">12</div>
-              <div className="stat-label">Meses de garantía</div>
+            <div>
+              <strong>Seleccion continua</strong>
+              <span>stock renovado con frecuencia</span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── FEATURES ─────────────────────────────────────── */}
-      <div className="container my-5">
-        <h2 className="text-center fw-bold mb-2">¿Por qué elegirnos?</h2>
-        <p className="text-center text-muted mb-5">
-          Llevamos décadas ayudando a nuestros clientes a encontrar su coche
-          ideal.
-        </p>
+      <section className="home-section container">
+        <div className="home-section-heading">
+          <span>Ventajas</span>
+          <h2>Por que elegirnos</h2>
+          <p>
+            Queremos que la compra transmita tranquilidad desde el primer clic
+            hasta la entrega.
+          </p>
+        </div>
+
         <div className="row g-4">
           <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
-              <div className="card-body">
-                <div className="feature-icon-wrapper mb-3">
-                  <FaShieldAlt size={32} className="text-primary" />
-                </div>
-                <h5 className="fw-bold">Máxima garantía</h5>
-                <p className="text-muted">
-                  12 meses de garantía en todos los vehículos. Taller propio con
-                  más de 35 años de experiencia — revisamos cada coche antes de
-                  ponerlo a la venta.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
+            <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
                   <MdEuroSymbol size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Financiación flexible</h5>
+                <h5 className="fw-bold">Maxima garantia</h5>
                 <p className="text-muted">
-                  Hasta 96 meses sin entrada, independientemente de la
-                  antigüedad del vehículo. Te ayudamos a conseguir las mejores
-                  condiciones para tu bolsillo.
+                  Todos los coches se revisan antes de ponerse a la venta y se
+                  entregan con garantia real y soporte postventa.
                 </p>
               </div>
             </div>
           </div>
+
           <div className="col-md-4">
-            <div className="card feature-card h-100 text-center border-0 shadow-sm p-3">
+            <div className="card feature-card h-100 text-center border-0 p-4">
+              <div className="card-body">
+                <div className="feature-icon-wrapper mb-3">
+                  <FaStar size={32} className="text-primary" />
+                </div>
+                <h5 className="fw-bold">Confianza y fiabilidad</h5>
+                <p className="text-muted">
+                  Más de 4.9 estrellas en Google Reviews avalan la satisfacción
+                  de nuestros clientes. Ofrecemos vehículos revisados y total
+                  transparencia.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
                   <MdLocationOn size={32} className="text-primary" />
                 </div>
-                <h5 className="fw-bold">Ubicación</h5>
+                <h5 className="fw-bold">Ubicacion y trato cercano</h5>
                 <p className="text-muted">
-                  Concesionario en Burguillos de Toledo con más de 40 vehículos
-                  disponibles de todas las gamas y precios. También presentes en
-                  los principales portales online.
+                  Estamos en Burguillos de Toledo y atendemos cada operacion con
+                  un enfoque directo, transparente y personal.
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── CONÓCENOS ────────────────────────────────────── */}
-      <div className="conocenos-section py-5">
+      <section className="home-showcase">
         <div className="container">
           <div className="row align-items-center g-5">
             <div className="col-12 col-lg-6">
-              <img
-                src="/imagenHome3.jpeg"
-                alt="Nohales Automóviles"
-                className="img-fluid rounded-4 shadow-lg"
-                style={{
-                  objectFit: "cover",
-                  maxHeight: "420px",
-                  width: "100%",
-                }}
-              />
+              <div className="home-showcase-media">
+                <img
+                  src="/imagenHome3.jpeg"
+                  alt="Nohales Automoviles"
+                  className="img-fluid"
+                />
+              </div>
             </div>
             <div className="col-12 col-lg-6">
-              <p
-                className="text-primary fw-semibold mb-1 text-uppercase"
-                style={{ letterSpacing: "1px", fontSize: "13px" }}
-              >
-                Sobre nosotros
-              </p>
-              <h2 className="fw-bold mb-3">Conócenos</h2>
+              <div className="home-section-heading text-start mb-4">
+                <span>Sobre nosotros</span>
+                <h2>Seleccionamos coches para durar</h2>
+              </div>
               <p className="text-muted mb-3">
-                Llevamos más de 25 años en el sector de la compraventa de
-                automóviles, ofreciendo a nuestros clientes un servicio
-                personalizado y de máxima garantía. Contamos con taller propio
-                con más de 35 años de experiencia para que tu vehículo llegue en
-                las mejores condiciones.
+                Llevamos mas de 25 años en el sector de la compraventa de
+                automoviles y contamos con taller propio para revisar cada
+                unidad antes de ofrecerla.
               </p>
               <p className="text-muted mb-4">
-                Seleccionamos cada vehículo con revisión completa antes de
-                ponerlo a la venta. Queremos que conduzcas con total
-                tranquilidad.
+                No buscamos solo vender un coche. Buscamos que el cliente sienta
+                que ha comprado bien, con claridad y sin sobresaltos.
               </p>
-              <Link to={`/nosotros`} className="btn btn-outline-primary px-4">
-                Saber más
+              <div className="home-showcase-points">
+                <span>Revision mecanica previa</span>
+                <span>Asesoramiento cercano</span>
+                <span>Stock variado y rotacion constante</span>
+              </div>
+              <Link
+                to="/nosotros"
+                className="btn btn-outline-primary px-4 mt-4"
+              >
+                Saber mas
               </Link>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── DESTACADO ────────────────────────────────────── */}
-      <div className="container my-5">
-        <div className="card border-0 shadow-lg mb-4 overflow-hidden rounded-4 featured-card">
-          <img
-            src="/imagenHome3.jpeg"
-            className="card-img"
-            alt="Vehículo destacado"
-          />
-          <div className="card-img-overlay d-flex align-items-end overlay-dark">
-            <div className="text-white p-3">
-              <h2 className="fw-bold">Stock renovado semanalmente</h2>
-              <p className="mb-3">
-                Seleccionamos cada vehículo con revisión completa y garantía.
-              </p>
-              <Link to={`/vehiculos`} className="btn btn-primary px-4">
-                Ver catálogo
-              </Link>
-            </div>
+      <section className="home-featured container">
+        <div className="home-banner-card">
+          <img src="/imagenHome3.jpeg" alt="Stock renovado" />
+          <div className="home-banner-overlay" />
+          <div className="home-banner-copy">
+            <span>Stock destacado</span>
+            <h2>Vehiculos que entran con criterio, no por volumen</h2>
+            <p>
+              Renovamos el stock de forma continua para mantener una seleccion
+              atractiva y bien revisada.
+            </p>
+            <Link to="/vehiculos" className="btn btn-primary px-4">
+              Ver catalogo
+            </Link>
           </div>
         </div>
 
-        <div className="row g-3">
+        <div className="row g-4 mt-1">
           <div className="col-md-6">
-            <div className="card border-0 shadow-sm overflow-hidden rounded-4">
-              <img
-                src="/logoNohalesAutomoviles.png"
-                className="card-img"
-                alt="Contacto"
-                style={{ height: "200px", objectFit: "cover" }}
-              />
-              <div className="card-img-overlay d-flex align-items-end overlay-dark">
-                <div className="text-white">
-                  <h5 className="fw-bold mb-1">Múltiples formas de contacto</h5>
-                  <p className="mb-0 small">
-                    Mail, WhatsApp, teléfono o visítanos.
-                  </p>
-                </div>
+            <div className="home-mini-card">
+              <img src="/logoNohalesAutomoviles.png" alt="Contacto" />
+              <div className="home-mini-overlay" />
+              <div className="home-mini-copy">
+                <h5>Varias formas de contacto</h5>
+                <p>WhatsApp, telefono, email o visita presencial.</p>
               </div>
             </div>
           </div>
           <div className="col-md-6">
-            <div className="card border-0 shadow-sm overflow-hidden rounded-4">
-              <img
-                src="/imagenHome2.jpeg"
-                className="card-img"
-                alt="Confianza"
-                style={{ height: "200px", objectFit: "cover" }}
-              />
-              <div className="card-img-overlay d-flex align-items-end overlay-dark">
-                <div className="text-white">
-                  <h5 className="fw-bold mb-1">Concesionario de confianza</h5>
-                  <p className="mb-0 small">
-                    Los mejores vehículos de segunda mano.
-                  </p>
-                </div>
+            <div className="home-mini-card">
+              <img src="/imagenHome2.jpeg" alt="Confianza" />
+              <div className="home-mini-overlay" />
+              <div className="home-mini-copy">
+                <h5>Confianza que se nota</h5>
+                <p>Un concesionario pensado para transmitir seguridad.</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── CTA FINAL ────────────────────────────────────── */}
-      <div className="cta-section text-center py-5">
+      <section className="home-cta">
         <div className="container">
-          <h2 className="fw-bold mb-2">¿Buscas tu próximo coche?</h2>
-          <p className="text-muted mb-4">
-            Explora nuestro catálogo actualizado o contáctanos sin compromiso.
-          </p>
-          <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <Link to={`/vehiculos`} className="btn btn-primary btn-lg px-5">
-              Ver vehículos
-            </Link>
-            <Link
-              to={`/contacto`}
-              className="btn btn-outline-secondary btn-lg px-5"
-            >
-              Contactar
-            </Link>
+          <div className="home-cta-box">
+            <div>
+              <span>Da el siguiente paso</span>
+              <h2>Explora el catalogo o cuentanos que coche buscas</h2>
+            </div>
+            <div className="home-cta-actions">
+              <Link to="/vehiculos" className="btn btn-primary btn-lg px-5">
+                Ver vehiculos
+              </Link>
+              <Link
+                to="/contacto"
+                className="btn btn-outline-secondary btn-lg px-5"
+              >
+                Contactar
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

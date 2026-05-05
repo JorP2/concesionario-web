@@ -7,13 +7,13 @@ import { getSesion } from "../utils/auth";
 import "../styles/admin/administrador.css";
 
 function Administrador() {
-  // Nuevo formato: { accessToken, refreshToken, username, role }
   const sesion = getSesion();
-
-  // esSuperUsuario ahora se comprueba por el role
   const esSuperUsuario = sesion?.role === "ADMIN";
 
   const [pestana, setPestana] = React.useState("vehiculos");
+  const [subPestanaVehiculos, setSubPestanaVehiculos] = React.useState(
+    "en_stock",
+  );
   const [vehiculos, setVehiculos] = React.useState([]);
   const [busqueda, setBusqueda] = React.useState("");
   const [loading, setLoading] = React.useState(true);
@@ -37,7 +37,7 @@ function Administrador() {
   if (!sesion) {
     return (
       <div className="container mt-5">
-        No estás autorizado para ver esta página. Por favor, inicia sesión.
+        No estas autorizado para ver esta pagina. Por favor, inicia sesion.
       </div>
     );
   }
@@ -47,83 +47,142 @@ function Administrador() {
       v.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
       v.modelo.toLowerCase().includes(busqueda.toLowerCase()),
   );
+  const vehiculosEnStockFiltrados = vehiculosFiltrados.filter(
+    (v) => v.estadoVenta !== "vendido",
+  );
+  const vehiculosVendidosFiltrados = vehiculosFiltrados.filter(
+    (v) => v.estadoVenta === "vendido",
+  );
+
+  const totalVehiculos = vehiculos.length;
+  const vehiculosVisibles = vehiculos.filter((v) => v.visible).length;
+  const vehiculosEnOferta = vehiculos.filter((v) => v.enOferta).length;
+  const vehiculosVendidos = vehiculos.filter(
+    (v) => v.estadoVenta === "vendido",
+  ).length;
 
   const handleEliminar = async (vehiculoId) => {
     try {
       await deleteVehiculo(vehiculoId);
       setVehiculos((prev) => prev.filter((v) => v.id !== vehiculoId));
     } catch {
-      console.error("Error al eliminar el vehículo:");
+      console.error("Error al eliminar el vehiculo:");
     }
   };
 
   return (
-    <div className="container mt-5">
-      {/* HEADER */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h1 className="mb-0">Panel de Administración</h1>
-          {/* username en vez de nombre */}
-          <small className="text-muted">Bienvenido, {sesion.username}</small>
-        </div>
-        {pestana === "vehiculos" && (
-          <div className="d-flex align-items-center gap-3">
-            <span className="text-muted">
-              {vehiculosFiltrados.length} vehículos
-            </span>
-            <Link to="/administrador/vehiculo-form" className="btn btn-success">
-              + Añadir vehículo
-            </Link>
-          </div>
-        )}
-      </div>
-
-      {/* PESTAÑAS */}
-      <div className="vehiculos-tabs mb-4">
-        <button
-          className={`tab-btn ${pestana === "vehiculos" ? "activo" : ""}`}
-          onClick={() => setPestana("vehiculos")}
-        >
-          Vehículos
-        </button>
-        {/* Pestaña usuarios solo para superusuario */}
-        {esSuperUsuario && (
-          <button
-            className={`tab-btn ${pestana === "usuarios" ? "activo" : ""}`}
-            onClick={() => setPestana("usuarios")}
-          >
-            Usuarios
-          </button>
-        )}
-      </div>
-
-      {/* PESTAÑA VEHÍCULOS */}
-      {pestana === "vehiculos" && (
-        <>
-          <input
-            type="text"
-            className="form-control mb-4"
-            placeholder="Buscar vehículo..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-          />
-          {loading && <p className="text-center mt-4">Cargando vehículos...</p>}
-          {!loading && error && (
-            <p className="text-center mt-4 text-danger">
-              Error al cargar los vehículos.
+    <div className="admin-page">
+      <div className="container py-5">
+        <section className="admin-hero mb-4">
+          <div>
+            <span className="admin-kicker">Gestion interna</span>
+            <h1 className="mb-1">Panel de Administracion</h1>
+            <p className="admin-subtitle mb-1">
+              Controla el stock, las ofertas y los accesos desde un unico sitio.
             </p>
-          )}
-          {!loading && !error && (
-            <VehiculosLista
-              vehiculos={vehiculosFiltrados}
-              onEliminar={handleEliminar}
-            />
-          )}
-        </>
-      )}
+            <small className="text-muted">Bienvenido, {sesion.username}</small>
+          </div>
 
-      {/* PESTAÑA USUARIOS */}
-      {pestana === "usuarios" && esSuperUsuario && <GestionUsuarios />}
+          {pestana === "vehiculos" && (
+            <div className="admin-hero-actions">
+              <div className="admin-pill">
+                {subPestanaVehiculos === "vendidos"
+                  ? `${vehiculosVendidosFiltrados.length} vendidos en la lista`
+                  : `${vehiculosEnStockFiltrados.length} vehiculos en stock`}
+              </div>
+              <Link to="/administrador/vehiculo-form" className="btn btn-success">
+                + Anadir vehiculo
+              </Link>
+            </div>
+          )}
+        </section>
+
+        <section className="admin-summary-grid mb-4">
+          <article className="admin-summary-card">
+            <span className="admin-summary-label">Stock total</span>
+            <strong>{totalVehiculos}</strong>
+          </article>
+          <article className="admin-summary-card">
+            <span className="admin-summary-label">Publicados</span>
+            <strong>{vehiculosVisibles}</strong>
+          </article>
+          <article className="admin-summary-card">
+            <span className="admin-summary-label">En oferta</span>
+            <strong>{vehiculosEnOferta}</strong>
+          </article>
+          <article className="admin-summary-card">
+            <span className="admin-summary-label">Vendidos</span>
+            <strong>{vehiculosVendidos}</strong>
+          </article>
+        </section>
+
+        <section className="admin-panel">
+          <div className="vehiculos-tabs mb-4">
+            <button
+              className={`tab-btn ${pestana === "vehiculos" ? "activo" : ""}`}
+              onClick={() => setPestana("vehiculos")}
+            >
+              Vehiculos
+            </button>
+            {esSuperUsuario && (
+              <button
+                className={`tab-btn ${pestana === "usuarios" ? "activo" : ""}`}
+                onClick={() => setPestana("usuarios")}
+              >
+                Usuarios
+              </button>
+            )}
+          </div>
+
+          {pestana === "vehiculos" && (
+            <>
+              <div className="admin-toolbar mb-4">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Buscar vehiculo por marca o modelo..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                />
+              </div>
+              <div className="vehiculos-tabs mb-4">
+                <button
+                  className={`tab-btn ${subPestanaVehiculos === "en_stock" ? "activo" : ""}`}
+                  onClick={() => setSubPestanaVehiculos("en_stock")}
+                >
+                  En stock ({vehiculosEnStockFiltrados.length})
+                </button>
+                <button
+                  className={`tab-btn ${subPestanaVehiculos === "vendidos" ? "activo" : ""}`}
+                  onClick={() => setSubPestanaVehiculos("vendidos")}
+                >
+                  Vendidos ({vehiculosVendidosFiltrados.length})
+                </button>
+              </div>
+              {loading && (
+                <p className="text-center mt-4">Cargando vehiculos...</p>
+              )}
+              {!loading && error && (
+                <p className="text-center mt-4 text-danger">
+                  Error al cargar los vehiculos.
+                </p>
+              )}
+              {!loading && !error && (
+                <VehiculosLista
+                  vehiculos={
+                    subPestanaVehiculos === "vendidos"
+                      ? vehiculosVendidosFiltrados
+                      : vehiculosEnStockFiltrados
+                  }
+                  onEliminar={handleEliminar}
+                />
+              )}
+            </>
+          )}
+
+          {pestana === "usuarios" && esSuperUsuario && <GestionUsuarios />}
+        </section>
+      </div>
     </div>
   );
 }

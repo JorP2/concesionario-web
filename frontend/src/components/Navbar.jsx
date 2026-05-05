@@ -1,15 +1,57 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { getSesion, borrarSesion } from "../utils/auth";
 import { logoutApi } from "../api/authApi";
 import "../styles/navbar.css";
 
 export const Navbar = () => {
-  // Ahora leemos la sesión del nuevo formato { accessToken, refreshToken, username, role }
   const sesion = getSesion();
   const navigate = useNavigate();
+  const location = useLocation(); // ← añade esto
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navbarCollapseRef = useRef(null);
+  const isFirstRender = useRef(true);
+
+  // Sincroniza el estado con los eventos reales de Bootstrap
+  useEffect(() => {
+    const collapseEl = document.getElementById("navbarMain");
+    if (!collapseEl) return;
+
+    navbarCollapseRef.current = collapseEl;
+
+    const handleShow = () => setMobileMenuOpen(true);
+    const handleHidden = () => setMobileMenuOpen(false);
+
+    collapseEl.addEventListener("show.bs.collapse", handleShow);
+    collapseEl.addEventListener("hidden.bs.collapse", handleHidden);
+
+    return () => {
+      collapseEl.removeEventListener("show.bs.collapse", handleShow);
+      collapseEl.removeEventListener("hidden.bs.collapse", handleHidden);
+    };
+  }, []);
+
+  // Cierra el menú al cambiar de ruta
+  useEffect(() => {
+    // Ignora la primera ejecución (carga inicial)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const collapseEl = navbarCollapseRef.current;
+    if (!collapseEl) return;
+
+    // Solo cierra si realmente está abierto
+    if (!collapseEl.classList.contains("show")) return;
+
+    const { Collapse } = require("bootstrap");
+    const bsCollapse = Collapse.getInstance(collapseEl);
+    if (bsCollapse) bsCollapse.hide();
+    // No necesitamos comprobar mobileMenuOpen — si está cerrado, hide() no hace nada
+  }, [location.pathname]); // ← se dispara solo cuando cambia la ruta
 
   const handleLogout = async () => {
     try {
@@ -29,7 +71,7 @@ export const Navbar = () => {
   const UserDesktop = () => (
     <div className="ms-3 user-dropdown-wrapper d-none d-lg-block">
       <button
-        className="btn btn-link p-1 border-0"
+        className="btn btn-link p-1 border-0 user-avatar-btn"
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
         <FaUserCircle size={28} color="white" />
@@ -101,6 +143,28 @@ export const Navbar = () => {
     </div>
   );
 
+  const closeMenu = () => {
+    const collapseEl = navbarCollapseRef.current;
+    if (!collapseEl) return;
+    const { Collapse } = require("bootstrap");
+    const bsCollapse = Collapse.getOrCreateInstance(collapseEl);
+    bsCollapse.hide();
+  };
+
+  const toggleMenu = () => {
+    const collapseEl = navbarCollapseRef.current;
+    if (!collapseEl) return;
+    const { Collapse } = require("bootstrap");
+    const bsCollapse = Collapse.getOrCreateInstance(collapseEl);
+
+    if (mobileMenuOpen) {
+      bsCollapse.hide();
+      return;
+    }
+
+    bsCollapse.show();
+  };
+
   return (
     <>
       {dropdownOpen && (
@@ -111,90 +175,123 @@ export const Navbar = () => {
       )}
 
       <div className="topbar bg-primary text-white py-2">
-        <div className="container d-flex justify-content-center">
-          <span>Nohales Automóviles</span>
-          <span>Talleres García</span>
+        <div className="container topbar-content">
+          <span>Nohales Automoviles</span>
+          <span>Talleres Garcia</span>
         </div>
       </div>
 
       <nav
-        className="navbar navbar-expand-lg navbar-dark bg-dark shadow"
+        className="navbar navbar-expand-lg navbar-dark bg-dark shadow modern-navbar"
         style={{ overflow: "visible" }}
       >
-        <div className="container-fluid">
-          <NavLink to="/" className="navbar-brand">
+        <div className="container-fluid px-lg-4">
+          <NavLink to="/" className="navbar-brand brand-wrap">
             <img
               src="/logoNohalesAutomoviles.png"
               alt="Concesionario-Nohales"
-              width="140"
-              height="50"
+              width="210"
+              height="76"
+              className="brand-logo"
             />
           </NavLink>
 
           <button
-            className="navbar-toggler ms-auto"
+            className={`navbar-toggler ms-auto custom-toggler ${
+              mobileMenuOpen ? "is-open" : ""
+            }`}
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMain"
             aria-controls="navbarMain"
-            aria-expanded="false"
+            aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation"
+            onClick={toggleMenu}
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className="toggler-line"></span>
+            <span className="toggler-line"></span>
+            <span className="toggler-line"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarMain">
-            <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-5 fw-semibold">
-              <li className="nav-item">
-                <NavLink to="/" className="nav-link">
-                  Inicio
-                </NavLink>
-              </li>
-              {/* Muestra Administrador solo si hay sesión activa */}
-              {sesion && (
+            <div className="navbar-main-panel">
+              <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4 fw-semibold modern-nav-links">
                 <li className="nav-item">
-                  <NavLink to="/administrador" className="nav-link">
-                    Administrador
+                  <NavLink
+                    to="/"
+                    className="nav-link modern-nav-link"
+                    onClick={closeMenu}
+                  >
+                    Inicio
                   </NavLink>
                 </li>
-              )}
-              <li className="nav-item">
-                <NavLink to="/vehiculos" className="nav-link">
-                  Vehículos
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/nosotros" className="nav-link">
-                  Nosotros
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/contacto" className="nav-link">
-                  Contacto
-                </NavLink>
-              </li>
-            </ul>
+                {/* Muestra Administrador solo si hay sesión activa */}
+                {sesion && (
+                  <li className="nav-item">
+                    <NavLink
+                      to="/administrador"
+                      className="nav-link modern-nav-link"
+                      onClick={closeMenu}
+                    >
+                      Administrador
+                    </NavLink>
+                  </li>
+                )}
+                <li className="nav-item">
+                  <NavLink
+                    to="/vehiculos"
+                    className="nav-link modern-nav-link"
+                    onClick={closeMenu}
+                  >
+                    Vehículos
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    to="/nosotros"
+                    className="nav-link modern-nav-link"
+                    onClick={closeMenu}
+                  >
+                    Nosotros
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    to="/contacto"
+                    className="nav-link modern-nav-link"
+                    onClick={closeMenu}
+                  >
+                    Contacto
+                  </NavLink>
+                </li>
+              </ul>
 
-            {/* Móvil */}
-            <div className="d-lg-none mobile-user-section">
-              {sesion ? (
-                <>
-                  <div className="mobile-user-info">
-                    <FaUserCircle size={20} />
-                    <div>
-                      <p className="mb-0 fw-semibold">{sesion.username}</p>
-                      <small>{sesion.role}</small>
+              {/* Móvil */}
+              <div className="d-lg-none mobile-user-section">
+                {sesion ? (
+                  <>
+                    <div className="mobile-user-info">
+                      <FaUserCircle size={20} />
+                      <div>
+                        <p className="mb-0 fw-semibold">{sesion.username}</p>
+                        <small>{sesion.role}</small>
+                      </div>
                     </div>
-                  </div>
-                  <button onClick={handleLogout} className="mobile-logout-btn">
-                    Cerrar sesión
-                  </button>
-                </>
-              ) : (
-                <NavLink to="/login" className="mobile-login-btn">
-                  Iniciar sesión
-                </NavLink>
-              )}
+                    <button
+                      onClick={handleLogout}
+                      className="mobile-logout-btn"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <NavLink
+                    to="/login"
+                    className="mobile-login-btn"
+                    onClick={closeMenu}
+                  >
+                    Iniciar sesión
+                  </NavLink>
+                )}
+              </div>
             </div>
           </div>
 
