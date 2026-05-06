@@ -10,27 +10,20 @@ import java.util.List;
 @Repository
 public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
 
-
+    // ========== CONSULTAS BÁSICAS (polimórficas) ==========
     List<Vehiculo> findByMarcaIgnoreCase(String marca);
-
     List<Vehiculo> findByModeloIgnoreCase(String modelo);
-
-    List<Vehiculo> findByMarcaIgnoreCaseAndModeloIgnoreCase(String marca, String modelo);
-
     List<Vehiculo> findByAnio(Integer anio);
-
     List<Vehiculo> findByPrecioBetween(Double precioMin, Double precioMax);
-
     List<Vehiculo> findByCombustibleIgnoreCase(String combustible);
-
+    
+    // ========== CONSULTAS DE ESTADO ==========
     List<Vehiculo> findByVisibleTrue();
-
     List<Vehiculo> findByEstadoVenta(String estadoVenta);
-
     List<Vehiculo> findByVisibleTrueAndEstadoVenta(String estadoVenta);
-
     List<Vehiculo> findByEnOfertaTrue();
-
+    
+    // ========== BÚSQUEDA AVANZADA ==========
     @Query("SELECT v FROM Vehiculo v WHERE " +
            "(:marca IS NULL OR LOWER(v.marca) LIKE LOWER(CONCAT('%', :marca, '%'))) AND " +
            "(:estado IS NULL OR v.estadoVenta = :estado) AND " +
@@ -41,8 +34,13 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
             @Param("estado") String estado,
             @Param("precioMin") Double precioMin,
             @Param("precioMax") Double precioMax);
-
+    
+    // ========== ESTADÍSTICAS ==========
     long countByEstadoVenta(String estadoVenta);
-
     long countByVisibleTrue();
+    
+    // ========== NUEVAS CONSULTAS ÚTILES ==========
+    List<Vehiculo> findByAnioBetween(Integer anioMin, Integer anioMax);
+    List<Vehiculo> findByKilometrosLessThanEqual(Integer kilometros);
+    List<Vehiculo> findByPrecioLessThanEqual(Double precioMax);
 }

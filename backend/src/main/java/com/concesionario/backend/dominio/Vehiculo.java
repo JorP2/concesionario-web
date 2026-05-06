@@ -5,8 +5,9 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)  
 @Table(name = "vehiculo")
-public class Vehiculo {
+public abstract class Vehiculo {  //  CAMBIADO: public class → public abstract class
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,38 +39,13 @@ public class Vehiculo {
     private Integer kilometros;
 
     @NotBlank(message = "El combustible no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Combustible entre 3 y 30 caracteres")
+    @Size(min = 3, max = 30)
     private String combustible;
 
     @NotBlank(message = "El color exterior no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Color entre 3 y 30 caracteres")
+    @Size(min = 3, max = 30)
     private String colorExterior;
 
-    @NotBlank(message = "El interior no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Interior entre 3 y 30 caracteres")
-    private String interior;
-
-    @NotNull(message = "Los asientos no pueden ser nulos")
-    @Min(1) @Max(9)
-    @Column(nullable = false)
-    private Integer asientos;
-
-    @NotNull(message = "Las puertas no pueden ser nulas")
-    @Min(2) @Max(5)
-    @Column(nullable = false)
-    private Integer puertas;
-
-    @NotBlank(message = "El motor no puede estar vacío")
-    @Size(min = 2, max = 50, message = "Motor entre 2 y 50 caracteres")
-    private String motor;
-
-    @NotBlank(message = "El cambio no puede estar vacío")
-    @Size(min = 3, max = 50, message = "Cambio entre 3 y 50 caracteres")
-    private String cambio;
-
-    @NotBlank(message = "La pegatina no puede estar vacía")
-    @Size(min = 1, max = 10, message = "Pegatina 1-10 caracteres")
-    private String pegatina;
 
     @NotBlank(message = "La descripción no puede estar vacía")
     @Size(min = 10, max = 200)
@@ -99,13 +75,9 @@ public class Vehiculo {
     @Column(name = "estado_venta", length = 20)
     private String estadoVenta = "en_venta";
 
-
-    // Constructor vacío
-
     public Vehiculo() {}
 
-    // GETTERS Y SETTERS
-
+    // GETTERS Y SETTERS 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -130,23 +102,6 @@ public class Vehiculo {
     public String getColorExterior() { return colorExterior; }
     public void setColorExterior(String colorExterior) { this.colorExterior = colorExterior; }
 
-    public String getInterior() { return interior; }
-    public void setInterior(String interior) { this.interior = interior; }
-
-    public Integer getAsientos() { return asientos; }
-    public void setAsientos(Integer asientos) { this.asientos = asientos; }
-
-    public Integer getPuertas() { return puertas; }
-    public void setPuertas(Integer puertas) { this.puertas = puertas; }
-
-    public String getMotor() { return motor; }
-    public void setMotor(String motor) { this.motor = motor; }
-
-    public String getCambio() { return cambio; }
-    public void setCambio(String cambio) { this.cambio = cambio; }
-
-    public String getPegatina() { return pegatina; }
-    public void setPegatina(String pegatina) { this.pegatina = pegatina; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
