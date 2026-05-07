@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "motocicleta")
+@PrimaryKeyJoinColumn(name = "vehiculo_id")
 public abstract class Motocicleta extends Vehiculo {
 
     @NotNull(message = "La cilindrada no puede ser nula")
