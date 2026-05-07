@@ -1,19 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../../styles/admin/vehiculoCardAdmin.css";
-import sinImagen from "../../assets/sin-imagen.svg";
-import { deleteOferta } from "../../api/vehiculoApi";
 import { FaClock } from "react-icons/fa";
+import { deleteOferta } from "../../api/vehiculoApi";
+import sinImagen from "../../assets/sin-imagen.svg";
 
 function CardVehiculoAdmin({ vehiculo, onEliminar }) {
   const [mostrarModal, setMostrarModal] = React.useState(false);
   const [tiempoRestante, setTiempoRestante] = React.useState("");
-
-  // Manejo eliminar
-  const handleEliminar = () => {
-    onEliminar(vehiculo.id);
-    setMostrarModal(false);
-  };
 
   // Manejo tiempo restante oferta
   React.useEffect(() => {
@@ -33,32 +26,30 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
       }
 
       const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const horas = Math.floor(
-        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-      );
+      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
 
-      if (dias > 0) setTiempoRestante(`${dias}d ${horas}h ${minutos}m`);
-      else if (horas > 0)
-        setTiempoRestante(`${horas}h ${minutos}m ${segundos}s`);
-      else setTiempoRestante(`${minutos}m ${segundos}s`);
+      if (dias > 0) setTiempoRestante(`${dias}d ${horas}h`);
+      else if (horas > 0) setTiempoRestante(`${horas}h ${minutos}m`);
+      else setTiempoRestante(`${minutos}m`);
     };
 
     calcular();
-    const timer = setInterval(calcular, 1000);
+    const timer = setInterval(calcular, 60000);
     return () => clearInterval(timer);
   }, [vehiculo.fechaFinOferta, vehiculo.enOferta, vehiculo.id]);
+
+  const handleEliminar = () => {
+    onEliminar(vehiculo.id, vehiculo.tipo); // ← PASANDO EL TIPO
+    setMostrarModal(false);
+  };
 
   return (
     <>
       <div className="card shadow-sm vehiculo-admin-card">
         <div className="row g-0 align-items-center">
           {/* IMAGEN */}
-          <div
-            className="col-md-3"
-            style={{ position: "relative", overflow: "hidden" }}
-          >
+          <div className="col-md-3" style={{ position: "relative", overflow: "hidden" }}>
             {vehiculo.enOferta && vehiculo.precioOferta && (
               <div className="oferta-ribbon-admin">OFERTA</div>
             )}
@@ -101,46 +92,36 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
                 </div>
                 <div className="col-6">
                   <p className="card-text mb-1">
+                    <strong>Tipo:</strong> {vehiculo.tipo || "Turismo"}
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="card-text mb-1">
                     <strong>Precio:</strong>
                   </p>
                   <div className="precio-wrapper">
                     {vehiculo.enOferta && vehiculo.precioOferta ? (
                       <>
                         <span className="precio-original">
-                          €{vehiculo.precio}
+                          €{vehiculo.precio?.toLocaleString()}
                         </span>
                         <div className="oferta-row">
                           <span className="precio-oferta">
-                            Oferta: €{vehiculo.precioOferta}
+                            €{vehiculo.precioOferta?.toLocaleString()}
                           </span>
                           {tiempoRestante && (
-                            <span
-                              className={`contador-oferta${tiempoRestante === "Expirada" ? " expirada" : ""}`}
-                            >
-                              <FaClock size={10} />
-                              {tiempoRestante}
+                            <span className={`contador-oferta`}>
+                              <FaClock size={10} /> {tiempoRestante}
                             </span>
                           )}
                         </div>
                       </>
                     ) : (
-                      <>
-                        <span
-                          style={{ visibility: "hidden", fontSize: "14px" }}
-                        >
-                          €0
-                        </span>
-                        <span className="precio-normal">
-                          €{vehiculo.precio}
-                        </span>
-                      </>
+                      <span className="precio-normal">
+                        €{vehiculo.precio?.toLocaleString()}
+                      </span>
                     )}
                   </div>
-                </div>
-                <div className="col-6">
-                  <p className="card-text mb-1">
-                    <strong>Estado:</strong> {vehiculo.estadoVenta ?? "—"}
-                  </p>
                 </div>
               </div>
             </div>
@@ -166,7 +147,7 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
         </div>
       </div>
 
-      {/* ── MODAL — fuera del card, controlado por React ── */}
+      {/* MODAL */}
       {mostrarModal && (
         <div
           className="modal fade show d-block"
@@ -179,9 +160,7 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
           >
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  ¿Seguro desea eliminar este vehículo?
-                </h5>
+                <h5 className="modal-title">¿Seguro desea eliminar este vehículo?</h5>
                 <button
                   className="btn-close"
                   onClick={() => setMostrarModal(false)}

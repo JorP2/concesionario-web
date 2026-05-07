@@ -1,63 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-// Componentes
-import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
-// API
-import {
-  addVehiculo,
-  getVehiculoById,
-  updateVehiculo,
-  deleteOferta,
-  cambiarVisibilidad,
-  updateEstadoVehiculo,
-  aplicarOfertaPrecioFijo,
+import FormularioTurismo from "../components/formularios/FormularioTurismo";
+import FormularioFurgoneta from "../components/formularios/FormularioFurgoneta";
+import FormularioScooter from "../components/formularios/FormularioScooter";
+import { 
+  addVehiculo, 
+  updateVehiculo, 
+  getVehiculoById, 
+  aplicarOfertaPrecioFijo, 
+  deleteOferta, 
+  updateEstadoVehiculo, 
+  cambiarVisibilidad 
 } from "../api/vehiculoApi";
-import { addImagenes } from "../api/imagenApi";
 
 function VehiculoFormulario() {
-  // Obtener el ID del vehículo de la URL
   const { id } = useParams();
-  const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
-  const [imagenesNuevas, setImagenesNuevas] = React.useState([]); // Estado para las nuevas imágenes a subir
+  const esEdicion = Boolean(id);
   const navigate = useNavigate();
-  const formRef = React.useRef(null);
-  const [intentoEnvio, setIntentoEnvio] = React.useState(false);
-  const [errorFormulario, setErrorFormulario] = React.useState("");
-
-  // Función para manejar el estado del formulario
-  const [vehiculo, setVehiculo] = React.useState({
-    marca: "",
-    modelo: "",
-    anio: "",
-    precio: "",
-    kilometros: "",
-    combustible: "",
-    colorExterior: "",
-    interior: "",
-    asientos: "",
-    puertas: "",
-    motor: "",
-    cambio: "",
-    pegatina: "",
-    descripcion: "",
-    comentarios: "",
-    extras: "",
-    enOferta: false,
-    precioOferta: "",
-    fechaFinOferta: "",
-    visible: true,
-    estadoVenta: "en_venta",
+  const [tipo, setTipo] = useState("TURISMO");
+  const [comunes, setComunes] = useState({
+    marca: "", modelo: "", anio: "", precio: "", kilometros: "",
+    combustible: "", colorExterior: "", descripcion: "", extras: "",
+    visible: true, estadoVenta: "en_venta", enOferta: false, precioOferta: "", fechaFinOferta: ""
   });
+  const [especificos, setEspecificos] = useState({});
 
-  // Función para cargar los datos del vehículo si estamos editando
-  React.useEffect(() => {
+  useEffect(() => {
     if (esEdicion) {
       const cargarVehiculo = async () => {
         try {
           const data = await getVehiculoById(id);
-          setVehiculo({
+          
+          setComunes({
             marca: data.marca ?? "",
             modelo: data.modelo ?? "",
             anio: data.anio ?? "",
@@ -65,23 +40,51 @@ function VehiculoFormulario() {
             kilometros: data.kilometros ?? "",
             combustible: data.combustible ?? "",
             colorExterior: data.colorExterior ?? "",
-            interior: data.interior ?? "",
-            asientos: data.asientos ?? "",
-            puertas: data.puertas ?? "",
-            motor: data.motor ?? "",
-            cambio: data.cambio ?? "",
-            pegatina: data.pegatina ?? "",
             descripcion: data.descripcion ?? "",
-            comentarios: data.comentarios ?? "",
             extras: data.extras ?? "",
-            enOferta: data.enOferta ?? false,
-            precioOferta: data.precioOferta ?? "",
-            fechaFinOferta: data.fechaFinOferta
-              ? data.fechaFinOferta.slice(0, 16)
-              : "",
             visible: data.visible ?? true,
             estadoVenta: data.estadoVenta ?? "en_venta",
+            enOferta: data.enOferta ?? false,
+            precioOferta: data.precioOferta ?? "",
+            fechaFinOferta: data.fechaFinOferta ? data.fechaFinOferta.slice(0, 16) : "",
           });
+          
+          if (data.cilindrada !== undefined) {
+            setTipo("SCOOTER");
+            setEspecificos({
+              cilindrada: data.cilindrada,
+              tipoMotor: data.tipoMotor,
+              tieneSidecar: data.tieneSidecar,
+              tieneBaul: data.tieneBaul,
+              tieneMaletinBajoAsiento: data.tieneMaletinBajoAsiento,
+              autonomia: data.autonomia,
+            });
+          } else if (data.capacidadCarga !== undefined) {
+            setTipo("FURGONETA");
+            setEspecificos({
+              asientos: data.asientos,
+              puertas: data.puertas,
+              motor: data.motor,
+              cambio: data.cambio,
+              pegatina: data.pegatina,
+              interior: data.interior,
+              capacidadCarga: data.capacidadCarga,
+              numeroAsientos: data.numeroAsientos,
+              tienePuertaCorredera: data.tienePuertaCorredera,
+            });
+          } else {
+            setTipo("TURISMO");
+            setEspecificos({
+              asientos: data.asientos,
+              puertas: data.puertas,
+              motor: data.motor,
+              cambio: data.cambio,
+              pegatina: data.pegatina,
+              interior: data.interior,
+              tieneAireAcondicionado: data.tieneAireAcondicionado,
+              tieneNavegacion: data.tieneNavegacion,
+            });
+          }
         } catch (error) {
           console.error("Error al cargar el vehículo:", error);
         }
@@ -90,534 +93,140 @@ function VehiculoFormulario() {
     }
   }, [id, esEdicion]);
 
-  // Función para manejar cambios en los campos del formulario
-  const handleChange = (e) => {
+  const handleComunesChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-
-    // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
+    setComunes({ ...comunes, [name]: type === "checkbox" ? checked : value });
+    
     if (name === "enOferta" && !checked && esEdicion) {
       deleteOferta(id).catch(() => {});
     }
-
-    setVehiculo({ ...vehiculo, [name]: newValue });
-    if (intentoEnvio) setErrorFormulario("");
   };
 
-  // Función para manejar el envío del formulario
+  const handleEspecificosChange = (datos) => {
+    setEspecificos({ ...especificos, ...datos });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIntentoEnvio(true);
-    setErrorFormulario("");
-
-    if (!formRef.current?.checkValidity()) {
-      setErrorFormulario(
-        "Revisa los campos obligatorios. Hay datos sin completar o invalidos.",
-      );
-      return;
-    }
 
     try {
-      if (
-        vehiculo.enOferta &&
-        (!vehiculo.precioOferta || !vehiculo.fechaFinOferta)
-      ) {
-        alert(
-          "Si el vehículo está en oferta, debes indicar precio y fecha fin.",
-        );
+      if (comunes.enOferta && (!comunes.precioOferta || !comunes.fechaFinOferta)) {
+        alert("Si el vehículo está en oferta, debes indicar precio y fecha fin.");
         return;
       }
 
+      const datosCompletos = { ...comunes, ...especificos };
       let vehiculoId;
 
       if (esEdicion) {
-        await updateVehiculo(id, vehiculo);
+        await updateVehiculo(id, datosCompletos);
         vehiculoId = id;
       } else {
-        const data = await addVehiculo(vehiculo);
+        const data = await addVehiculo(datosCompletos);
         vehiculoId = data.id;
       }
 
-      // ── Visibilidad ──────────────────────────────
-      await cambiarVisibilidad(vehiculoId, vehiculo.visible);
-      // ─────────────────────────────────────────────
+      await cambiarVisibilidad(vehiculoId, comunes.visible);
+      await updateEstadoVehiculo(vehiculoId, comunes.estadoVenta);
 
-      // ── Estado venta ─────────────────────────────
-      await updateEstadoVehiculo(vehiculoId, vehiculo.estadoVenta);
-
-      // ── Gestionar oferta ──────────────────────────
-      if (
-        vehiculo.enOferta &&
-        vehiculo.precioOferta &&
-        vehiculo.fechaFinOferta
-      ) {
-        await aplicarOfertaPrecioFijo(
-          vehiculoId,
-          vehiculo.precioOferta,
-          vehiculo.fechaFinOferta,
-        );
-      } else if (!vehiculo.enOferta) {
+      if (comunes.enOferta && comunes.precioOferta && comunes.fechaFinOferta) {
+        await aplicarOfertaPrecioFijo(vehiculoId, comunes.precioOferta, comunes.fechaFinOferta);
+      } else if (!comunes.enOferta && esEdicion) {
         await deleteOferta(vehiculoId).catch(() => {});
-      }
-
-      // ─────────────────────────────────────────────
-
-      if (imagenesNuevas.length > 0) {
-        await addImagenes(vehiculoId, imagenesNuevas);
       }
 
       navigate("/administrador");
     } catch (error) {
-      console.error("Error al guardar el vehículo:", error);
+      console.error("Error al guardar:", error);
+      alert("Error al guardar el vehículo");
     }
   };
 
   return (
-    <>
-      <div className="containear-fluid px-4">
-        <button
-          className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-          onClick={() => navigate(-1)}
-          style={{ width: "45px", height: "45px", marginTop: "10px" }}
-        >
-          <FaArrowLeft />
-        </button>
-        <h2 className="text-center mb-4">
-          {id ? "Editar Vehículo" : "Agregar Vehículo"}
-        </h2>
+    <div className="container-fluid px-4">
+      <button className="btn btn-light btn-outline-secondary rounded-circle mb-3" onClick={() => navigate(-1)} style={{ width: "45px", height: "45px" }}>
+        <FaArrowLeft />
+      </button>
 
-        <form ref={formRef} onSubmit={handleSubmit} noValidate>
-          <div className="row g-4">
-            {/* Columna izquierda — galería (solo edición) */}
-            {esEdicion && (
-              <div className="col-12 col-lg-6">
-                <GaleriaMultimedia
-                  vehiculoId={id}
-                  imagenesNuevas={imagenesNuevas}
-                  setImagenesNuevas={setImagenesNuevas}
-                />
-              </div>
-            )}
+      <h2 className="text-center mb-4">{esEdicion ? "Editar Vehículo" : "Agregar Vehículo"}</h2>
 
-            {/* Columna derecha — campos */}
-            <div
-              className={`col-12 ${esEdicion ? "col-lg-6" : "col-lg-8 mx-auto"}`}
-            >
-              <div className="row g-3">
-                {errorFormulario && (
-                  <div className="col-12">
-                    <div className="alert alert-danger py-2 mb-0" role="alert">
-                      {errorFormulario}
-                    </div>
-                  </div>
-                )}
-                {/* Fila: Marca + Modelo */}
-                <div className="col-6">
-                  <label className="form-label">Marca</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.marca ? "is-invalid" : ""
-                    }`}
-                    name="marca"
-                    value={vehiculo.marca}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    La marca es obligatoria.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Modelo</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.modelo ? "is-invalid" : ""
-                    }`}
-                    name="modelo"
-                    value={vehiculo.modelo}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El modelo es obligatorio.
-                  </div>
-                </div>
+      <form onSubmit={handleSubmit}>
+        <div className="row g-3">
+          {!esEdicion && (
+            <div className="col-12">
+              <label className="form-label">Tipo de vehículo</label>
+              <select className="form-select" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                <option value="TURISMO">🚗 Turismo</option>
+                <option value="FURGONETA">🚐 Furgoneta</option>
+                <option value="SCOOTER">🛵 Scooter</option>
+              </select>
+            </div>
+          )}
 
-                {/* Fila: Año + Precio */}
-                <div className="col-6">
-                  <label className="form-label">Año</label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.anio ? "is-invalid" : ""
-                    }`}
-                    name="anio"
-                    value={vehiculo.anio}
-                    onChange={handleChange}
-                    min={1900}
-                    max={new Date().getFullYear()}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    Indica un año valido.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Precio</label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.precio ? "is-invalid" : ""
-                    }`}
-                    name="precio"
-                    value={vehiculo.precio}
-                    onChange={handleChange}
-                    min={0}
-                    max={999999999}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El precio es obligatorio.
-                  </div>
-                </div>
+          {esEdicion && (
+            <div className="col-12">
+              <label className="form-label">Tipo</label>
+              <input type="text" className="form-control" value={tipo} disabled />
+            </div>
+          )}
 
-                {/* Fila: Kilómetros + Combustible */}
-                <div className="col-6">
-                  <label className="form-label">Kilómetros</label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.kilometros ? "is-invalid" : ""
-                    }`}
-                    name="kilometros"
-                    value={vehiculo.kilometros}
-                    onChange={handleChange}
-                    min={0}
-                    max={999999}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    Los kilómetros son obligatorios.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Combustible</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.combustible ? "is-invalid" : ""
-                    }`}
-                    name="combustible"
-                    value={vehiculo.combustible}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El combustible es obligatorio.
-                  </div>
-                </div>
+          <div className="col-6"><input className="form-control" name="marca" placeholder="Marca" value={comunes.marca} onChange={handleComunesChange} required /></div>
+          <div className="col-6"><input className="form-control" name="modelo" placeholder="Modelo" value={comunes.modelo} onChange={handleComunesChange} required /></div>
+          <div className="col-4"><input className="form-control" name="anio" placeholder="Año" type="number" value={comunes.anio} onChange={handleComunesChange} required /></div>
+          <div className="col-4"><input className="form-control" name="precio" placeholder="Precio" type="number" value={comunes.precio} onChange={handleComunesChange} required /></div>
+          <div className="col-4"><input className="form-control" name="kilometros" placeholder="Kilómetros" type="number" value={comunes.kilometros} onChange={handleComunesChange} required /></div>
+          <div className="col-6"><input className="form-control" name="combustible" placeholder="Combustible" value={comunes.combustible} onChange={handleComunesChange} required /></div>
+          <div className="col-6"><input className="form-control" name="colorExterior" placeholder="Color exterior" value={comunes.colorExterior} onChange={handleComunesChange} required /></div>
+          <div className="col-12"><textarea className="form-control" name="descripcion" placeholder="Descripción" rows="3" value={comunes.descripcion} onChange={handleComunesChange} required /></div>
 
-                {/* Fila: Color exterior + Interior */}
-                <div className="col-6">
-                  <label className="form-label">Color exterior</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.colorExterior ? "is-invalid" : ""
-                    }`}
-                    name="colorExterior"
-                    value={vehiculo.colorExterior}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El color exterior es obligatorio.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Interior</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.interior ? "is-invalid" : ""
-                    }`}
-                    name="interior"
-                    value={vehiculo.interior}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El interior es obligatorio.
-                  </div>
-                </div>
+          {tipo === "TURISMO" && <FormularioTurismo valores={especificos} onChange={handleEspecificosChange} />}
+          {tipo === "FURGONETA" && <FormularioFurgoneta valores={especificos} onChange={handleEspecificosChange} />}
+          {tipo === "SCOOTER" && <FormularioScooter valores={especificos} onChange={handleEspecificosChange} />}
 
-                {/* Fila: Motor + Cambio */}
-                <div className="col-6">
-                  <label className="form-label">Motor</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.motor ? "is-invalid" : ""
-                    }`}
-                    name="motor"
-                    value={vehiculo.motor}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El motor es obligatorio.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Cambio</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.cambio ? "is-invalid" : ""
-                    }`}
-                    name="cambio"
-                    value={vehiculo.cambio}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    El tipo de cambio es obligatorio.
-                  </div>
-                </div>
+          <div className="col-12"><textarea className="form-control" name="extras" placeholder="Extras" rows="2" value={comunes.extras} onChange={handleComunesChange} /></div>
 
-                {/* Fila: Puertas + Asientos */}
-                <div className="col-6">
-                  <label className="form-label">Puertas</label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.puertas ? "is-invalid" : ""
-                    }`}
-                    name="puertas"
-                    value={vehiculo.puertas}
-                    onChange={handleChange}
-                    min={1}
-                    max={9}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    Indica el número de puertas.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Asientos</label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.asientos ? "is-invalid" : ""
-                    }`}
-                    name="asientos"
-                    value={vehiculo.asientos}
-                    onChange={handleChange}
-                    min={1}
-                    max={20}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    Indica el número de asientos.
-                  </div>
-                </div>
+          <div className="col-6">
+            <label className="form-label">Estado de venta</label>
+            <select className="form-select" name="estadoVenta" value={comunes.estadoVenta} onChange={handleComunesChange}>
+              <option value="en_venta">En venta</option>
+              <option value="vendido">Vendido</option>
+              <option value="reservado">Reservado</option>
+            </select>
+          </div>
 
-                {/* Fila: Pegatina + Estado venta */}
-                <div className="col-6">
-                  <label className="form-label">Pegatina</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.pegatina ? "is-invalid" : ""
-                    }`}
-                    name="pegatina"
-                    value={vehiculo.pegatina}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    La pegatina es obligatoria.
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label className="form-label">Estado de venta</label>
-                  <select
-                    className="form-select"
-                    name="estadoVenta"
-                    value={vehiculo.estadoVenta}
-                    onChange={handleChange}
-                  >
-                    <option value="en_venta">En venta</option>
-                    <option value="vendido">Vendido</option>
-                    <option value="reservado">Reservado</option>
-                  </select>
-                </div>
-
-                {/* Descripción — ancho completo */}
-                <div className="col-12">
-                  <label className="form-label">Descripción</label>
-                  <textarea
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.descripcion ? "is-invalid" : ""
-                    }`}
-                    name="descripcion"
-                    rows={3}
-                    value={vehiculo.descripcion}
-                    onChange={handleChange}
-                    required
-                    minLength={10}
-                  />
-                  <div className="invalid-feedback">
-                    La descripción es obligatoria (mínimo 10 caracteres).
-                  </div>
-                </div>
-
-                {/* Comentarios del anunciante- ancho completo */}
-                <div className="col-12">
-                  <label className="form-label">
-                    Comentarios del anunciante
-                  </label>
-                  <textarea
-                    className={`form-control ${
-                      intentoEnvio && !vehiculo.comentarios ? "is-invalid" : ""
-                    }`}
-                    name="comentarios"
-                    rows={3}
-                    value={vehiculo.comentarios}
-                    onChange={handleChange}
-                    required
-                    minLength={10}
-                  />
-                  <div className="invalid-feedback">
-                    Los comentarios del anunciante son obligatorios.
-                  </div>
-                </div>
-
-                {/* Extras — ancho completo */}
-                <div className="col-12">
-                  <label className="form-label">Extras</label>
-                  <textarea
-                    className="form-control"
-                    name="extras"
-                    rows={2}
-                    value={vehiculo.extras}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {/* Checkboxes */}
-                <div className="col-6">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      name="visible"
-                      id="checkVisible"
-                      checked={vehiculo.visible}
-                      onChange={handleChange}
-                    />
-                    <label className="form-check-label" htmlFor="checkVisible">
-                      Visible
-                    </label>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      name="enOferta"
-                      id="checkOferta"
-                      checked={vehiculo.enOferta}
-                      onChange={handleChange}
-                    />
-                    <label className="form-check-label" htmlFor="checkOferta">
-                      En oferta
-                    </label>
-                  </div>
-                </div>
-
-                {/* Precio oferta + Fecha fin — solo si enOferta es true */}
-                {vehiculo.enOferta && (
-                  <>
-                    <div className="col-6">
-                      <label className="form-label">
-                        Precio oferta{" "}
-                        {vehiculo.precioOferta && vehiculo.precio && (
-                          <span
-                            className="text-muted"
-                            style={{ fontSize: "12px" }}
-                          >
-                            (−
-                            {Math.round(
-                              ((vehiculo.precio - vehiculo.precioOferta) /
-                                vehiculo.precio) *
-                                100,
-                            )}
-                            %)
-                          </span>
-                        )}
-                      </label>
-                      <input
-                        type="number"
-                        className={`form-control ${
-                          intentoEnvio &&
-                          vehiculo.enOferta &&
-                          !vehiculo.precioOferta
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        name="precioOferta"
-                        value={vehiculo.precioOferta}
-                        onChange={handleChange}
-                        max={vehiculo.precio} // no puede ser mayor que el precio original
-                        placeholder={`Máx. €${vehiculo.precio}`}
-                        required={vehiculo.enOferta}
-                      />
-                      <div className="invalid-feedback">
-                        Si está en oferta, indica un precio de oferta.
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <label className="form-label">Fecha fin oferta</label>
-                      <input
-                        type="datetime-local"
-                        className={`form-control ${
-                          intentoEnvio &&
-                          vehiculo.enOferta &&
-                          !vehiculo.fechaFinOferta
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        name="fechaFinOferta"
-                        value={vehiculo.fechaFinOferta}
-                        onChange={handleChange}
-                        min={new Date(Date.now() + 60000)
-                          .toISOString()
-                          .slice(0, 16)} // mínimo: ahora + 1 min
-                        required={vehiculo.enOferta}
-                      />
-                      <div className="invalid-feedback">
-                        Si está en oferta, indica la fecha de fin.
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="col-12">
-                  <button type="submit" className="btn btn-primary w-100">
-                    Guardar
-                  </button>
-                </div>
-              </div>
+          <div className="col-6">
+            <div className="form-check mt-4">
+              <input className="form-check-input" type="checkbox" name="visible" id="checkVisible" checked={comunes.visible} onChange={handleComunesChange} />
+              <label className="form-check-label" htmlFor="checkVisible">Visible</label>
             </div>
           </div>
-        </form>
-      </div>
-    </>
+
+          <div className="col-6">
+            <div className="form-check">
+              <input className="form-check-input" type="checkbox" name="enOferta" id="checkOferta" checked={comunes.enOferta} onChange={handleComunesChange} />
+              <label className="form-check-label" htmlFor="checkOferta">En oferta</label>
+            </div>
+          </div>
+
+          {comunes.enOferta && (
+            <>
+              <div className="col-6">
+                <label className="form-label">Precio oferta</label>
+                <input type="number" className="form-control" name="precioOferta" value={comunes.precioOferta} onChange={handleComunesChange} />
+              </div>
+              <div className="col-6">
+                <label className="form-label">Fecha fin oferta</label>
+                <input type="datetime-local" className="form-control" name="fechaFinOferta" value={comunes.fechaFinOferta} onChange={handleComunesChange} />
+              </div>
+            </>
+          )}
+
+          <div className="col-12">
+            <button type="submit" className="btn btn-primary w-100">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
 

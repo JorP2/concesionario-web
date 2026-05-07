@@ -1,10 +1,11 @@
 import { authFetch } from "../utils/authFetch";
 
-const API_URL = process.env.REACT_APP_API_URL + "/vehiculos";
+const API_URL_TURISMOS = process.env.REACT_APP_API_URL + "/turismos";
+const API_URL_FURGONETAS = process.env.REACT_APP_API_URL + "/furgonetas";
+const API_URL_SCOOTERS = process.env.REACT_APP_API_URL + "/scooters";
 const API_URL_PUBLIC = process.env.REACT_APP_API_URL + "/vehiculos/public";
 
 // ── PÚBLICAS (fetch normal) ──────────────────────────────
-
 export const getVehiculosEnVenta = async () => {
   const response = await fetch(`${API_URL_PUBLIC}/en-venta`);
   if (!response.ok) throw new Error("Error al obtener los vehículos en venta");
@@ -41,20 +42,45 @@ export const getVehiculoByIdPublic = async (id) => {
 
 // ── ADMIN (authFetch — lleva token automáticamente) ──────
 
+// Obtener todos los vehículos (uniendo los 3 tipos)
 export const getVehiculos = async () => {
-  const response = await authFetch(API_URL);
-  if (!response.ok) throw new Error("Error al obtener los vehículos");
-  return await response.json();
+  const [turismos, furgonetas, scooters] = await Promise.all([
+    authFetch(API_URL_TURISMOS).then(res => res.ok ? res.json() : []),
+    authFetch(API_URL_FURGONETAS).then(res => res.ok ? res.json() : []),
+    authFetch(API_URL_SCOOTERS).then(res => res.ok ? res.json() : [])
+  ]);
+  return [...turismos, ...furgonetas, ...scooters];
 };
 
+// Obtener un vehículo por ID (buscando en los 3 tipos)
 export const getVehiculoById = async (id) => {
-  const response = await authFetch(`${API_URL}/${id}`);
-  if (!response.ok) throw new Error("Error al obtener el vehículo");
-  return await response.json();
+  try {
+    const response = await authFetch(`${API_URL_TURISMOS}/${id}`);
+    if (response.ok) return await response.json();
+  } catch {}
+  try {
+    const response = await authFetch(`${API_URL_FURGONETAS}/${id}`);
+    if (response.ok) return await response.json();
+  } catch {}
+  try {
+    const response = await authFetch(`${API_URL_SCOOTERS}/${id}`);
+    if (response.ok) return await response.json();
+  } catch {}
+  throw new Error("Vehículo no encontrado");
 };
 
+// Crear vehículo (detecta el tipo por los campos)
 export const addVehiculo = async (vehiculo) => {
-  const response = await authFetch(API_URL, {
+  let url;
+  if (vehiculo.cilindrada !== undefined) {
+    url = API_URL_SCOOTERS;
+  } else if (vehiculo.capacidadCarga !== undefined) {
+    url = API_URL_FURGONETAS;
+  } else {
+    url = API_URL_TURISMOS;
+  }
+  
+  const response = await authFetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(vehiculo),
@@ -63,8 +89,18 @@ export const addVehiculo = async (vehiculo) => {
   return await response.json();
 };
 
+// Actualizar vehículo (detecta el tipo por los campos)
 export const updateVehiculo = async (id, vehiculo) => {
-  const response = await authFetch(`${API_URL}/${id}`, {
+  let url;
+  if (vehiculo.cilindrada !== undefined) {
+    url = `${API_URL_SCOOTERS}/${id}`;
+  } else if (vehiculo.capacidadCarga !== undefined) {
+    url = `${API_URL_FURGONETAS}/${id}`;
+  } else {
+    url = `${API_URL_TURISMOS}/${id}`;
+  }
+  
+  const response = await authFetch(url, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(vehiculo),
@@ -73,18 +109,39 @@ export const updateVehiculo = async (id, vehiculo) => {
   return await response.json();
 };
 
-export const deleteVehiculo = async (id) => {
-  const response = await authFetch(`${API_URL}/${id}`, { method: "DELETE" });
+// Eliminar vehículo (necesita el tipo)
+export const deleteVehiculo = async (id, tipo) => {
+  let url;
+  if (tipo === "SCOOTER") url = `${API_URL_SCOOTERS}/${id}`;
+  else if (tipo === "FURGONETA") url = `${API_URL_FURGONETAS}/${id}`;
+  else url = `${API_URL_TURISMOS}/${id}`;
+  
+  const response = await authFetch(url, { method: "DELETE" });
   if (!response.ok) throw new Error("Error al borrar el vehículo");
 };
 
+// ── OFERTAS Y ESTADOS (funcionan con cualquier tipo) ──────
+const getBaseUrlPorId = async (id) => {
+  try {
+    const res = await authFetch(`${API_URL_TURISMOS}/${id}`);
+    if (res.ok) return API_URL_TURISMOS;
+  } catch {}
+  try {
+    const res = await authFetch(`${API_URL_FURGONETAS}/${id}`);
+    if (res.ok) return API_URL_FURGONETAS;
+  } catch {}
+  return API_URL_SCOOTERS;
+};
+
 export const deleteOferta = async (id) => {
-  const response = await authFetch(`${API_URL}/${id}/oferta`, { method: "DELETE" });
+  const baseUrl = await getBaseUrlPorId(id);
+  const response = await authFetch(`${baseUrl}/${id}/oferta`, { method: "DELETE" });
   if (!response.ok) throw new Error("Error al borrar la oferta");
 };
 
 export const updateEstadoVehiculo = async (id, estado) => {
-  const response = await authFetch(`${API_URL}/${id}/estado?estado=${estado}`, {
+  const baseUrl = await getBaseUrlPorId(id);
+  const response = await authFetch(`${baseUrl}/${id}/estado?estado=${estado}`, {
     method: "PATCH",
   });
   if (!response.ok) throw new Error("Error al actualizar el estado");
@@ -92,7 +149,8 @@ export const updateEstadoVehiculo = async (id, estado) => {
 };
 
 export const cambiarVisibilidad = async (id, visible) => {
-  const response = await authFetch(`${API_URL}/${id}/visible?visible=${visible}`, {
+  const baseUrl = await getBaseUrlPorId(id);
+  const response = await authFetch(`${baseUrl}/${id}/visible?visible=${visible}`, {
     method: "PATCH",
   });
   if (!response.ok) throw new Error("Error al cambiar la visibilidad");
@@ -100,8 +158,9 @@ export const cambiarVisibilidad = async (id, visible) => {
 };
 
 export const aplicarOfertaPrecioFijo = async (id, precioOferta, fechaFin) => {
+  const baseUrl = await getBaseUrlPorId(id);
   const response = await authFetch(
-    `${API_URL}/${id}/oferta-precio?precioOferta=${encodeURIComponent(precioOferta)}&fechaFin=${encodeURIComponent(fechaFin)}`,
+    `${baseUrl}/${id}/oferta-precio?precioOferta=${encodeURIComponent(precioOferta)}&fechaFin=${encodeURIComponent(fechaFin)}`,
     { method: "POST" }
   );
   if (!response.ok) throw new Error("Error al aplicar la oferta");

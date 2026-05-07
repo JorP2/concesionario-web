@@ -6,6 +6,7 @@ import {
   MdAccessTime,
 } from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
+//import "../styles/footer.css";
 
 function Footer() {
   return (

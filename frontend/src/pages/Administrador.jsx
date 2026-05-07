@@ -11,9 +11,7 @@ function Administrador() {
   const esSuperUsuario = sesion?.role === "ADMIN";
 
   const [pestana, setPestana] = React.useState("vehiculos");
-  const [subPestanaVehiculos, setSubPestanaVehiculos] = React.useState(
-    "en_stock",
-  );
+  const [subPestanaVehiculos, setSubPestanaVehiculos] = React.useState("en_stock");
   const [vehiculos, setVehiculos] = React.useState([]);
   const [busqueda, setBusqueda] = React.useState("");
   const [loading, setLoading] = React.useState(true);
@@ -44,12 +42,14 @@ function Administrador() {
 
   const vehiculosFiltrados = vehiculos.filter(
     (v) =>
-      v.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
-      v.modelo.toLowerCase().includes(busqueda.toLowerCase()),
+      v.marca?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      v.modelo?.toLowerCase().includes(busqueda.toLowerCase()),
   );
+  
   const vehiculosEnStockFiltrados = vehiculosFiltrados.filter(
     (v) => v.estadoVenta !== "vendido",
   );
+  
   const vehiculosVendidosFiltrados = vehiculosFiltrados.filter(
     (v) => v.estadoVenta === "vendido",
   );
@@ -57,13 +57,12 @@ function Administrador() {
   const totalVehiculos = vehiculos.length;
   const vehiculosVisibles = vehiculos.filter((v) => v.visible).length;
   const vehiculosEnOferta = vehiculos.filter((v) => v.enOferta).length;
-  const vehiculosVendidos = vehiculos.filter(
-    (v) => v.estadoVenta === "vendido",
-  ).length;
+  const vehiculosVendidos = vehiculos.filter((v) => v.estadoVenta === "vendido").length;
 
-  const handleEliminar = async (vehiculoId) => {
+  // ✅ CORREGIDO: AHORA RECIBE EL TIPO
+  const handleEliminar = async (vehiculoId, tipo) => {
     try {
-      await deleteVehiculo(vehiculoId);
+      await deleteVehiculo(vehiculoId, tipo);
       setVehiculos((prev) => prev.filter((v) => v.id !== vehiculoId));
     } catch {
       console.error("Error al eliminar el vehiculo:");
@@ -145,6 +144,7 @@ function Administrador() {
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
               </div>
+              
               <div className="vehiculos-tabs mb-4">
                 <button
                   className={`tab-btn ${subPestanaVehiculos === "en_stock" ? "activo" : ""}`}
@@ -159,14 +159,9 @@ function Administrador() {
                   Vendidos ({vehiculosVendidosFiltrados.length})
                 </button>
               </div>
-              {loading && (
-                <p className="text-center mt-4">Cargando vehiculos...</p>
-              )}
-              {!loading && error && (
-                <p className="text-center mt-4 text-danger">
-                  Error al cargar los vehiculos.
-                </p>
-              )}
+              
+              {loading && <p className="text-center mt-4">Cargando vehiculos...</p>}
+              {!loading && error && <p className="text-center mt-4 text-danger">Error al cargar los vehiculos.</p>}
               {!loading && !error && (
                 <VehiculosLista
                   vehiculos={

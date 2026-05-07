@@ -1,24 +1,29 @@
 import React from "react";
-// Componente
 import CardVehiculoAdmin from "./CardVehiculoAdmin";
 
 function VehiculosLista({ vehiculos, onEliminar }) {
-  if (!vehiculos.length) {
-    return <p>No hay vehículos para mostrar.</p>;
+  // Si no hay vehículos o está vacío
+  if (!vehiculos || vehiculos.length === 0) {
+    return (
+      <div className="admin-list-empty">
+        <p>No hay vehículos para mostrar.</p>
+        <p className="admin-list-empty-sub">
+          Agrega tu primer vehículo usando el botón "Añadir vehículo"
+        </p>
+      </div>
+    );
   }
 
   return (
-    <>
-      <div className="d-flex flex-column gap-3">
-        {vehiculos.map((vehiculo) => (
-          <CardVehiculoAdmin
-            key={vehiculo.id}
-            vehiculo={vehiculo}
-            onEliminar={onEliminar}
-          />
-        ))}
-      </div>
-    </>
+    <div className="admin-list">
+      {vehiculos.map((vehiculo) => (
+        <CardVehiculoAdmin
+          key={vehiculo.id}
+          vehiculo={vehiculo}
+          onEliminar={onEliminar}
+        />
+      ))}
+    </div>
   );
 }
 
