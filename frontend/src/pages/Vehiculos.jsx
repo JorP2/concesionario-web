@@ -26,6 +26,7 @@ const FILTROS_INICIALES = {
   km: "",
   pegatina: "",
   color: "",
+  tipo:"",
 };
 
 function Vehiculos() {
@@ -41,16 +42,20 @@ function Vehiculos() {
 
   const loadVehiculos = React.useCallback(async (filtrosActuales = filtros) => {
     setLoading(true);
+    setError(false);
     try {
-      const usarBusqueda = filtrosActuales.marca || filtrosActuales.precio;
+      const usarBusqueda =
+        filtrosActuales.marca || filtrosActuales.precio || filtrosActuales.tipo;
       const data = usarBusqueda
         ? await serchVehiculos(
             filtrosActuales.marca || null,
             null,
             filtrosActuales.precio ? Number(filtrosActuales.precio) : null,
+            filtrosActuales.tipo || null,
           )
         : await getVehiculosEnVenta();
       setVehiculos(data);
+      setError(false);
     } catch (error) {
       console.error("Error al cargar los vehículos:", error);
       setError(true);
@@ -67,7 +72,7 @@ function Vehiculos() {
   React.useEffect(() => {
     if (pestana !== "en_venta") return;
     loadVehiculos(filtros);
-  }, [filtros.marca, filtros.precio]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filtros.marca, filtros.precio, filtros.tipo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // UX estados
   if (loadingInicial) {
@@ -130,6 +135,7 @@ function Vehiculos() {
     const colorMatch = filtros.color
       ? v.colorExterior?.toLowerCase() === filtros.color.toLowerCase()
       : true;
+    const tipoMatch = filtros.tipo ? v.tipo === filtros.tipo : true;
 
     return (
       textoMatch &&
@@ -140,7 +146,8 @@ function Vehiculos() {
       transmisionMatch &&
       kmMatch &&
       pegatinaMatch &&
-      colorMatch
+      colorMatch &&
+      tipoMatch
     );
   });
 

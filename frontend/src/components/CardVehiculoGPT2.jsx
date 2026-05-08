@@ -18,6 +18,8 @@ import "../styles/vehiculoCard.css";
 
 const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
   const [showGallery, setShowGallery] = React.useState(false);
+  const transmision = vehiculo.transmision || vehiculo.cambio;
+  const cv = vehiculo.cv || vehiculo.caballos;
 
   const getFuelIcon = (tipo) => {
     if (!tipo) return <FaGasPump size={12} />;
@@ -94,16 +96,16 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
                 {vehiculo.combustible}
               </span>
             )}
-            {vehiculo.cv && (
+            {cv && (
               <span className="spec-item">
                 <FaTachometerAlt size={12} />
-                {vehiculo.cv}cv
+                {cv}cv
               </span>
             )}
-            {vehiculo.transmision && (
+            {transmision && (
               <span className="spec-item">
                 <FaCog size={12} />
-                {vehiculo.transmision}
+                {transmision}
               </span>
             )}
             {vehiculo.kilometros != null && (

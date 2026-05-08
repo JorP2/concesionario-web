@@ -25,6 +25,7 @@ function VehiculoFormulario() {
 
   // Función para manejar el estado del formulario
   const [vehiculo, setVehiculo] = React.useState({
+    tipo: "",
     marca: "",
     modelo: "",
     anio: "",
@@ -55,6 +56,7 @@ function VehiculoFormulario() {
         try {
           const data = await getVehiculoById(id);
           setVehiculo({
+            tipo: data.tipo ?? "",
             marca: data.marca ?? "",
             modelo: data.modelo ?? "",
             anio: data.anio ?? "",
@@ -191,6 +193,21 @@ function VehiculoFormulario() {
               className={`col-12 ${esEdicion ? "col-lg-6" : "col-lg-8 mx-auto"}`}
             >
               <div className="row g-3">
+                {/* Fila: Tipo */}
+                <div className="col-12">
+                  <label className="form-label">Tipo</label>
+                  <select
+                    className="form-select"
+                    name="tipo"
+                    value={vehiculo.tipo}
+                    onChange={handleChange}
+                  >
+                    <option value="">Selecciona un tipo</option>
+                    <option value="TURISMO">Turismo</option>
+                    <option value="FURGONETA">Furgoneta</option>
+                    <option value="MOTOCICLETA">Motocicleta</option>
+                  </select>
+                </div>
                 {/* Fila: Marca + Modelo */}
                 <div className="col-6">
                   <label className="form-label">Marca</label>

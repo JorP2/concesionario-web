@@ -1,17 +1,17 @@
 import React from "react";
-// Iconos
 import { FaFilter, FaBroom, FaTimes } from "react-icons/fa";
 
 const PEGATINAS = ["0 Emisiones", "ECO", "C", "B"];
 const COMBUSTIBLES = [
   "Gasolina",
-  "Diésel",
-  "Híbrido",
-  "Híbrido Enchufable",
-  "Eléctrico",
+  "Diesel",
+  "Hibrido",
+  "Hibrido Enchufable",
+  "Electrico",
   "GLP",
 ];
-const TRANSMISIONES = ["Manual", "Automático"];
+const TRANSMISIONES = ["Manual", "Automatico"];
+const TIPOS = ["TURISMO", "FURGONETA", "MOTOCICLETA"];
 
 function FiltroVehiculo({
   filtros,
@@ -29,6 +29,7 @@ function FiltroVehiculo({
       filtros.precio,
       filtros.combustible,
       filtros.transmision,
+      filtros.tipo,
       filtros.pegatina,
       filtros.color,
     ].filter((v) => v !== "").length +
@@ -38,7 +39,6 @@ function FiltroVehiculo({
   return (
     <div className="card shadow-sm border-0 rounded-4 mb-4">
       <div className="card-body p-4">
-        {/* HEADER */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="mb-0 d-flex align-items-center gap-2">
             <FaFilter /> Filtros
@@ -50,7 +50,6 @@ function FiltroVehiculo({
           </h5>
         </div>
 
-        {/* CHIPS ACTIVOS */}
         {filtrosActivos > 0 && (
           <div className="d-flex flex-wrap gap-2 mb-3">
             {filtros.busqueda && (
@@ -85,7 +84,7 @@ function FiltroVehiculo({
             )}
             {filtros.precio && (
               <span className="badge bg-light text-dark border">
-                Hasta €{Number(filtros.precio).toLocaleString("es-ES")}
+                Hasta EUR {Number(filtros.precio).toLocaleString("es-ES")}
                 <FaTimes
                   className="ms-1"
                   style={{ cursor: "pointer" }}
@@ -113,6 +112,16 @@ function FiltroVehiculo({
                 />
               </span>
             )}
+            {filtros.tipo && (
+              <span className="badge bg-light text-dark border">
+                {filtros.tipo}
+                <FaTimes
+                  className="ms-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onChange("tipo", "")}
+                />
+              </span>
+            )}
             {filtros.pegatina && (
               <span className="badge bg-light text-dark border">
                 DGT {filtros.pegatina}
@@ -133,24 +142,20 @@ function FiltroVehiculo({
                 />
               </span>
             )}
-            {filtros.km &&
-              Number(filtros.km) < (kmMax || 200000) && (
-                <span className="badge bg-light text-dark border">
-                  Hasta{" "}
-                  {Number(filtros.km).toLocaleString("es-ES")} km
-                  <FaTimes
-                    className="ms-1"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => onChange("km", "")}
-                  />
-                </span>
-              )}
+            {filtros.km && Number(filtros.km) < (kmMax || 200000) && (
+              <span className="badge bg-light text-dark border">
+                Hasta {Number(filtros.km).toLocaleString("es-ES")} km
+                <FaTimes
+                  className="ms-1"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onChange("km", "")}
+                />
+              </span>
+            )}
           </div>
         )}
 
-        {/* CAMPOS */}
         <div>
-          {/* BUSCADOR */}
           <div className="mb-3">
             <label className="form-label fw-semibold">Buscar</label>
             <div className="input-group">
@@ -162,7 +167,7 @@ function FiltroVehiculo({
                 className={`form-control ${
                   filtros.busqueda ? "border-primary shadow-sm" : ""
                 }`}
-                placeholder="Modelo, versión..."
+                placeholder="Modelo, version..."
                 value={filtros.busqueda}
                 onChange={(e) => onChange("busqueda", e.target.value)}
               />
@@ -177,7 +182,24 @@ function FiltroVehiculo({
             </div>
           </div>
 
-          {/* MARCA */}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Tipo</label>
+            <select
+              className={`form-select ${
+                filtros.tipo ? "border-primary shadow-sm" : ""
+              }`}
+              value={filtros.tipo}
+              onChange={(e) => onChange("tipo", e.target.value)}
+            >
+              <option value="">Todos</option>
+              {TIPOS.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo.charAt(0) + tipo.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="mb-3">
             <label className="form-label fw-semibold">Marca</label>
             <select
@@ -196,7 +218,6 @@ function FiltroVehiculo({
             </select>
           </div>
 
-          {/* AÑO */}
           <div className="mb-3">
             <label className="form-label fw-semibold">Año</label>
             <select
@@ -215,7 +236,6 @@ function FiltroVehiculo({
             </select>
           </div>
 
-          {/* COMBUSTIBLE */}
           <div className="mb-3">
             <label className="form-label fw-semibold">Combustible</label>
             <select
@@ -223,9 +243,7 @@ function FiltroVehiculo({
                 filtros.combustible ? "border-primary shadow-sm" : ""
               }`}
               value={filtros.combustible}
-              onChange={(e) =>
-                onChange("combustible", e.target.value)
-              }
+              onChange={(e) => onChange("combustible", e.target.value)}
             >
               <option value="">Todos</option>
               {COMBUSTIBLES.map((c) => (
@@ -236,11 +254,8 @@ function FiltroVehiculo({
             </select>
           </div>
 
-          {/* TRANSMISIÓN */}
           <div className="mb-3">
-            <label className="form-label fw-semibold">
-              Transmisión
-            </label>
+            <label className="form-label fw-semibold">Transmisión</label>
             <div className="d-flex gap-2">
               {TRANSMISIONES.map((t) => (
                 <button
@@ -263,15 +278,11 @@ function FiltroVehiculo({
             </div>
           </div>
 
-          {/* PRECIO */}
           <div className="mb-3">
             <label className="form-label fw-semibold">
               Precio máximo
               <span className="text-muted fw-normal ms-2 small">
-                €
-                {Number(
-                  filtros.precio || 50000
-                ).toLocaleString("es-ES")}
+                EUR {Number(filtros.precio || 50000).toLocaleString("es-ES")}
               </span>
             </label>
             <input
@@ -281,25 +292,21 @@ function FiltroVehiculo({
               step="1000"
               className="form-range"
               value={filtros.precio || 50000}
-              onChange={(e) =>
-                onChange("precio", e.target.value)
-              }
+              onChange={(e) => onChange("precio", e.target.value)}
             />
             <div className="d-flex justify-content-between text-muted small">
-              <span>€0</span>
-              <span>{Number(filtros.precio || 50000).toLocaleString("es-ES")} €</span>
+              <span>EUR 0</span>
+              <span>
+                {Number(filtros.precio || 50000).toLocaleString("es-ES")} EUR
+              </span>
             </div>
           </div>
 
-          {/* KILÓMETROS */}
           <div className="mb-3">
             <label className="form-label fw-semibold">
-              Kilómetros máximos
+              Kilometros máximos
               <span className="text-muted fw-normal ms-2 small">
-                {Number(
-                  filtros.km || kmMax || 400000
-                ).toLocaleString("es-ES")}{" "}
-                km
+                {Number(filtros.km || kmMax || 400000).toLocaleString("es-ES")} km
               </span>
             </label>
             <input
@@ -309,23 +316,16 @@ function FiltroVehiculo({
               step="5000"
               className="form-range"
               value={filtros.km || kmMax || 400000}
-              onChange={(e) =>
-                onChange("km", e.target.value)
-              }
+              onChange={(e) => onChange("km", e.target.value)}
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>0 km</span>
-              <span>
-                {Number(kmMax || 400000).toLocaleString("es-ES")} km
-              </span>
+              <span>{Number(kmMax || 400000).toLocaleString("es-ES")} km</span>
             </div>
           </div>
 
-          {/* PEGATINA */}
           <div className="mb-3">
-            <label className="form-label fw-semibold">
-              Pegatina DGT
-            </label>
+            <label className="form-label fw-semibold">Pegatina DGT</label>
             <div className="d-flex gap-2 flex-wrap">
               {PEGATINAS.map((p) => (
                 <button
@@ -336,10 +336,7 @@ function FiltroVehiculo({
                       : "btn-outline-secondary"
                   }`}
                   onClick={() =>
-                    onChange(
-                      "pegatina",
-                      filtros.pegatina === p ? "" : p
-                    )
+                    onChange("pegatina", filtros.pegatina === p ? "" : p)
                   }
                 >
                   {p}
@@ -348,11 +345,8 @@ function FiltroVehiculo({
             </div>
           </div>
 
-          {/* COLOR */}
           <div className="mb-3">
-            <label className="form-label fw-semibold">
-              Color exterior
-            </label>
+            <label className="form-label fw-semibold">Color exterior</label>
             <select
               className={`form-select ${
                 filtros.color ? "border-primary shadow-sm" : ""
@@ -369,12 +363,8 @@ function FiltroVehiculo({
             </select>
           </div>
 
-          {/* LIMPIAR */}
           {filtrosActivos > 0 && (
-            <button
-              className="btn btn-outline-danger w-100"
-              onClick={onReset}
-            >
+            <button className="btn btn-outline-danger w-100" onClick={onReset}>
               <FaBroom className="me-2" />
               Limpiar filtros
             </button>
