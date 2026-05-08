@@ -121,26 +121,21 @@ export const deleteVehiculo = async (id, tipo) => {
 };
 
 // ── OFERTAS Y ESTADOS (funcionan con cualquier tipo) ──────
-const getBaseUrlPorId = async (id) => {
-  try {
-    const res = await authFetch(`${API_URL_TURISMOS}/${id}`);
-    if (res.ok) return API_URL_TURISMOS;
-  } catch {}
-  try {
-    const res = await authFetch(`${API_URL_FURGONETAS}/${id}`);
-    if (res.ok) return API_URL_FURGONETAS;
-  } catch {}
-  return API_URL_SCOOTERS;
+const getBaseUrlPorTipo = (tipo) => {
+  if (tipo === "SCOOTER") return API_URL_SCOOTERS;
+  if (tipo === "FURGONETA") return API_URL_FURGONETAS;
+  return API_URL_TURISMOS;
 };
 
-export const deleteOferta = async (id) => {
-  const baseUrl = await getBaseUrlPorId(id);
+
+export const deleteOferta = async (id, tipo) => {
+  const baseUrl = getBaseUrlPorTipo(tipo);
   const response = await authFetch(`${baseUrl}/${id}/oferta`, { method: "DELETE" });
   if (!response.ok) throw new Error("Error al borrar la oferta");
 };
 
-export const updateEstadoVehiculo = async (id, estado) => {
-  const baseUrl = await getBaseUrlPorId(id);
+export const updateEstadoVehiculo = async (id, estado, tipo) => {
+  const baseUrl = getBaseUrlPorTipo(tipo);
   const response = await authFetch(`${baseUrl}/${id}/estado?estado=${estado}`, {
     method: "PATCH",
   });
@@ -148,8 +143,8 @@ export const updateEstadoVehiculo = async (id, estado) => {
   return await response.json();
 };
 
-export const cambiarVisibilidad = async (id, visible) => {
-  const baseUrl = await getBaseUrlPorId(id);
+export const cambiarVisibilidad = async (id, visible, tipo) => {
+  const baseUrl = getBaseUrlPorTipo(tipo);
   const response = await authFetch(`${baseUrl}/${id}/visible?visible=${visible}`, {
     method: "PATCH",
   });
@@ -157,8 +152,8 @@ export const cambiarVisibilidad = async (id, visible) => {
   return await response.json();
 };
 
-export const aplicarOfertaPrecioFijo = async (id, precioOferta, fechaFin) => {
-  const baseUrl = await getBaseUrlPorId(id);
+export const aplicarOfertaPrecioFijo = async (id, precioOferta, fechaFin, tipo) => {
+  const baseUrl = getBaseUrlPorTipo(tipo);
   const response = await authFetch(
     `${baseUrl}/${id}/oferta-precio?precioOferta=${encodeURIComponent(precioOferta)}&fechaFin=${encodeURIComponent(fechaFin)}`,
     { method: "POST" }

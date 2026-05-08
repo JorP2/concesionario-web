@@ -4,6 +4,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import FormularioTurismo from "../components/formularios/FormularioTurismo";
 import FormularioFurgoneta from "../components/formularios/FormularioFurgoneta";
 import FormularioScooter from "../components/formularios/FormularioScooter";
+import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
 import {
   addVehiculo,
   updateVehiculo,
@@ -17,6 +18,7 @@ import {
 function VehiculoFormulario() {
   const { id } = useParams();
   const esEdicion = Boolean(id);
+  const [imagenesNuevas, setImagenesNuevas] = useState([]);
   const navigate = useNavigate();
   const [tipo, setTipo] = useState("TURISMO");
   const [comunes, setComunes] = useState({
@@ -113,7 +115,7 @@ function VehiculoFormulario() {
     setComunes({ ...comunes, [name]: type === "checkbox" ? checked : value });
 
     if (name === "enOferta" && !checked && esEdicion) {
-      deleteOferta(id).catch(() => {});
+      deleteOferta(id, tipo).catch(() => {});
     }
   };
 
@@ -146,17 +148,18 @@ function VehiculoFormulario() {
         vehiculoId = data.id;
       }
 
-      await cambiarVisibilidad(vehiculoId, comunes.visible);
-      await updateEstadoVehiculo(vehiculoId, comunes.estadoVenta);
+      await cambiarVisibilidad(vehiculoId, comunes.visible, tipo);
+      await updateEstadoVehiculo(vehiculoId, comunes.estadoVenta, tipo);
 
       if (comunes.enOferta && comunes.precioOferta && comunes.fechaFinOferta) {
         await aplicarOfertaPrecioFijo(
           vehiculoId,
           comunes.precioOferta,
           comunes.fechaFinOferta,
+          tipo,
         );
       } else if (!comunes.enOferta && esEdicion) {
-        await deleteOferta(vehiculoId).catch(() => {});
+        await deleteOferta(vehiculoId, tipo).catch(() => {});
       }
 
       navigate("/administrador");
@@ -180,242 +183,273 @@ function VehiculoFormulario() {
         {esEdicion ? "Editar Vehículo" : "Agregar Vehículo"}
       </h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="row g-3">
-          {!esEdicion && (
-            <div className="col-12">
-              <label className="form-label">Tipo de vehículo</label>
-              <select
-                className="form-select"
-                value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
-              >
-                <option value="TURISMO">🚗 Turismo</option>
-                <option value="FURGONETA">🚐 Furgoneta</option>
-                <option value="SCOOTER">🛵 Scooter</option>
-              </select>
-            </div>
-          )}
+      <div className="row g-4">
+        {/* GALERÍA — solo visible en edición */}
+        {esEdicion && (
+          <div className="col-12 col-lg-5">
+            <GaleriaMultimedia
+              vehiculoId={id}
+              imagenesNuevas={imagenesNuevas}
+              setImagenesNuevas={setImagenesNuevas}
+            />
+          </div>
+        )}
+        {/* FORMULARIO */}
+        <div className={esEdicion ? "col-12 col-lg-7" : "col-12"}>
+          <form onSubmit={handleSubmit}>
+            <div className="row g-3">
+              {!esEdicion && (
+                <div className="col-12">
+                  <label className="form-label">Tipo de vehículo</label>
+                  <select
+                    className="form-select"
+                    value={tipo}
+                    onChange={(e) => setTipo(e.target.value)}
+                  >
+                    <option value="TURISMO">🚗 Turismo</option>
+                    <option value="FURGONETA">🚐 Furgoneta</option>
+                    <option value="SCOOTER">🛵 Scooter</option>
+                  </select>
+                </div>
+              )}
 
-          {esEdicion && (
-            <div className="col-12">
-              <label className="form-label">Tipo</label>
-              <input
-                type="text"
-                className="form-control"
-                value={tipo}
-                disabled
-              />
-            </div>
-          )}
+              {esEdicion && (
+                <div className="col-12">
+                  <label className="form-label">Tipo</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={tipo}
+                    disabled
+                  />
+                </div>
+              )}
 
-          <div className="col-6">
-            <input
-              className="form-control"
-              name="marca"
-              placeholder="Marca"
-              value={comunes.marca}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-6">
-            <input
-              className="form-control"
-              name="modelo"
-              placeholder="Modelo"
-              value={comunes.modelo}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-4">
-            <input
-              className="form-control"
-              name="anio"
-              placeholder="Año"
-              type="number"
-              value={comunes.anio}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-4">
-            <input
-              className="form-control"
-              name="precio"
-              placeholder="Precio"
-              type="number"
-              value={comunes.precio}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-4">
-            <input
-              className="form-control"
-              name="kilometros"
-              placeholder="Kilómetros"
-              type="number"
-              value={comunes.kilometros}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-6">
-            <input
-              className="form-control"
-              name="combustible"
-              placeholder="Combustible"
-              value={comunes.combustible}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-6">
-            <input
-              className="form-control"
-              name="colorExterior"
-              placeholder="Color exterior"
-              value={comunes.colorExterior}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-12">
-            <textarea
-              className="form-control"
-              name="descripcion"
-              placeholder="Descripción"
-              rows="3"
-              value={comunes.descripcion}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-          <div className="col-12">
-            <textarea
-              className="form-control"
-              name="comentarios"
-              placeholder="Comentarios del vendedor"
-              rows="3"
-              value={comunes.comentarios}
-              onChange={handleComunesChange}
-              required
-            />
-          </div>
-
-          {tipo === "TURISMO" && (
-            <FormularioTurismo
-              valores={especificos}
-              onChange={handleEspecificosChange}
-            />
-          )}
-          {tipo === "FURGONETA" && (
-            <FormularioFurgoneta
-              valores={especificos}
-              onChange={handleEspecificosChange}
-            />
-          )}
-          {tipo === "SCOOTER" && (
-            <FormularioScooter
-              valores={especificos}
-              onChange={handleEspecificosChange}
-            />
-          )}
-
-          <div className="col-12">
-            <label className="form-label">
-              Extras <span className="text-muted">(opcional)</span>
-            </label>
-            <textarea
-              className="form-control"
-              name="extras"
-              placeholder="ej: Techo panorámico, sensores de aparcamiento..."
-              rows="2"
-              value={comunes.extras}
-              onChange={handleComunesChange}
-            />
-          </div>
-
-          <div className="col-6">
-            <label className="form-label">Estado de venta</label>
-            <select
-              className="form-select"
-              name="estadoVenta"
-              value={comunes.estadoVenta}
-              onChange={handleComunesChange}
-            >
-              <option value="en_venta">En venta</option>
-              <option value="vendido">Vendido</option>
-              <option value="reservado">Reservado</option>
-            </select>
-          </div>
-
-          <div className="col-6">
-            <div className="form-check mt-4">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="visible"
-                id="checkVisible"
-                checked={comunes.visible}
-                onChange={handleComunesChange}
-              />
-              <label className="form-check-label" htmlFor="checkVisible">
-                Visible
-              </label>
-            </div>
-          </div>
-
-          <div className="col-6">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="enOferta"
-                id="checkOferta"
-                checked={comunes.enOferta}
-                onChange={handleComunesChange}
-              />
-              <label className="form-check-label" htmlFor="checkOferta">
-                En oferta
-              </label>
-            </div>
-          </div>
-
-          {comunes.enOferta && (
-            <>
               <div className="col-6">
-                <label className="form-label">Precio oferta</label>
                 <input
+                  className="form-control"
+                  name="marca"
+                  minLength={2}
+                  maxLength={50}
+                  placeholder="Marca"
+                  value={comunes.marca}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-6">
+                <input
+                  className="form-control"
+                  name="modelo"
+                  placeholder="Modelo"
+                  value={comunes.modelo}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-4">
+                <input
+                  className="form-control"
+                  name="anio"
+                  placeholder="Año"
                   type="number"
-                  className="form-control"
-                  name="precioOferta"
-                  value={comunes.precioOferta}
+                  min="1900"
+                  max="2026"
+                  value={comunes.anio}
                   onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-4">
+                <input
+                  className="form-control"
+                  name="precio"
+                  placeholder="Precio"
+                  type="number"
+                  min="0.01"
+                  value={comunes.precio}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-4">
+                <input
+                  className="form-control"
+                  name="kilometros"
+                  placeholder="Kilómetros"
+                  type="number"
+                  min="0"
+                  value={comunes.kilometros}
+                  onChange={handleComunesChange}
+                  required
                 />
               </div>
               <div className="col-6">
-                <label className="form-label">Fecha fin oferta</label>
                 <input
-                  type="datetime-local"
                   className="form-control"
-                  name="fechaFinOferta"
-                  value={comunes.fechaFinOferta}
+                  name="combustible"
+                  placeholder="Combustible"
+                  minLength={3}
+                  maxLength={30}
+                  value={comunes.combustible}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-6">
+                <input
+                  className="form-control"
+                  name="colorExterior"
+                  placeholder="Color exterior"
+                  minLength={3}
+                  maxLength={30}
+                  value={comunes.colorExterior}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-12">
+                <textarea
+                  className="form-control"
+                  name="descripcion"
+                  minLength={10}
+                  maxLength={200}
+                  placeholder="Descripción"
+                  rows="3"
+                  value={comunes.descripcion}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+              <div className="col-12">
+                <textarea
+                  className="form-control"
+                  name="comentarios"
+                  minLength={10}
+                  maxLength={1000}
+                  placeholder="Comentarios del vendedor"
+                  rows="3"
+                  value={comunes.comentarios}
+                  onChange={handleComunesChange}
+                  required
+                />
+              </div>
+
+              {tipo === "TURISMO" && (
+                <FormularioTurismo
+                  valores={especificos}
+                  onChange={handleEspecificosChange}
+                />
+              )}
+              {tipo === "FURGONETA" && (
+                <FormularioFurgoneta
+                  valores={especificos}
+                  onChange={handleEspecificosChange}
+                />
+              )}
+              {tipo === "SCOOTER" && (
+                <FormularioScooter
+                  valores={especificos}
+                  onChange={handleEspecificosChange}
+                />
+              )}
+
+              <div className="col-12">
+                <label className="form-label">
+                  Extras <span className="text-muted">(opcional)</span>
+                </label>
+                <textarea
+                  className="form-control"
+                  name="extras"
+                  placeholder="ej: Techo panorámico, sensores de aparcamiento..."
+                  rows="2"
+                  value={comunes.extras}
                   onChange={handleComunesChange}
                 />
               </div>
-            </>
-          )}
 
-          <div className="col-12">
-            <button type="submit" className="btn btn-primary w-100">
-              Guardar
-            </button>
-          </div>
+              <div className="col-6">
+                <label className="form-label">Estado de venta</label>
+                <select
+                  className="form-select"
+                  name="estadoVenta"
+                  value={comunes.estadoVenta}
+                  onChange={handleComunesChange}
+                >
+                  <option value="en_venta">En venta</option>
+                  <option value="vendido">Vendido</option>
+                  <option value="reservado">Reservado</option>
+                </select>
+              </div>
+
+              <div className="col-6">
+                <div className="form-check mt-4">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="visible"
+                    id="checkVisible"
+                    checked={comunes.visible}
+                    onChange={handleComunesChange}
+                  />
+                  <label className="form-check-label" htmlFor="checkVisible">
+                    Visible
+                  </label>
+                </div>
+              </div>
+
+              <div className="col-6">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="enOferta"
+                    id="checkOferta"
+                    checked={comunes.enOferta}
+                    onChange={handleComunesChange}
+                  />
+                  <label className="form-check-label" htmlFor="checkOferta">
+                    En oferta
+                  </label>
+                </div>
+              </div>
+
+              {comunes.enOferta && (
+                <>
+                  <div className="col-6">
+                    <label className="form-label">Precio oferta</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="precioOferta"
+                      min="0.01"
+                      value={comunes.precioOferta}
+                      onChange={handleComunesChange}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label className="form-label">Fecha fin oferta</label>
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      name="fechaFinOferta"
+                      value={comunes.fechaFinOferta}
+                      min={new Date().toISOString().slice(0, 16)}
+                      onChange={handleComunesChange}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="col-12">
+                <button type="submit" className="btn btn-primary w-100">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
