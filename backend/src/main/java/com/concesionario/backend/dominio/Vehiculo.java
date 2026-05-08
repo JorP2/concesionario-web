@@ -55,7 +55,7 @@ public class Vehiculo {
     private Integer asientos;
 
     @NotNull(message = "Las puertas no pueden ser nulas")
-    @Min(2) @Max(5)
+    @Min(2) @Max(6)
     @Column(nullable = false)
     private Integer puertas;
 
@@ -98,6 +98,10 @@ public class Vehiculo {
 
     @Column(name = "estado_venta", length = 20)
     private String estadoVenta = "en_venta";
+    
+    @NotNull(message = "El tipo no puede estar vacío")
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
 
 
     // Constructor vacío
@@ -171,4 +175,7 @@ public class Vehiculo {
 
     public String getEstadoVenta() { return estadoVenta; }
     public void setEstadoVenta(String estadoVenta) { this.estadoVenta = estadoVenta; }
+    
+    public Tipo getTipo() { return tipo; }
+    public void setTipo(Tipo tipo) {this.tipo = tipo;}
 }

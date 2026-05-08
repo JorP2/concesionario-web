@@ -84,6 +84,7 @@ public class DTOConverter {
         dto.setPrecioOferta(vehiculo.getPrecioOferta());
         dto.setFechaFinOferta(DateUtils.formatearParaJSON(vehiculo.getFechaFinOferta()));
         dto.setEstadoVenta(vehiculo.getEstadoVenta());
+        dto.setTipo(vehiculo.getTipo());
         return dto;
     }
 
@@ -128,6 +129,7 @@ public class DTOConverter {
         vehiculo.setDescripcion(request.getDescripcion());
         vehiculo.setComentarios(request.getComentarios());
         vehiculo.setExtras(request.getExtras());
+        vehiculo.setTipo(request.getTipo());
         return vehiculo;
     }
 

@@ -5,6 +5,14 @@ const API_URL_PUBLIC = process.env.REACT_APP_API_URL + "/vehiculos/public";
 
 // ── PÚBLICAS (fetch normal) ──────────────────────────────
 
+export const getVehiculosPorTipo = async (tipo) => {
+  const response = await fetch(
+    `${API_URL_PUBLIC}/tipo?tipo=${encodeURIComponent(tipo)}`
+  );
+  if (!response.ok) throw new Error("Error al obtener vehículos por tipo");
+  return await response.json();
+};
+
 export const getVehiculosEnVenta = async () => {
   const response = await fetch(`${API_URL_PUBLIC}/en-venta`);
   if (!response.ok) throw new Error("Error al obtener los vehículos en venta");
@@ -23,11 +31,12 @@ export const getVehiculosVendidos = async () => {
   return await response.json();
 };
 
-export const serchVehiculos = async (marca, precioMin, precioMax) => {
+export const serchVehiculos = async (marca, precioMin, precioMax, tipo) => {
   const params = new URLSearchParams();
   if (marca) params.append("marca", marca);
   if (precioMin) params.append("precioMin", precioMin);
   if (precioMax) params.append("precioMax", precioMax);
+  if(tipo) params.append("tipo", tipo);
   const response = await fetch(`${API_URL_PUBLIC}/buscar?${params.toString()}`);
   if (!response.ok) throw new Error("Error al buscar vehículos");
   return await response.json();

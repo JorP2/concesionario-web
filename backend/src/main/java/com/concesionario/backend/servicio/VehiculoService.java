@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.concesionario.backend.config.UploadConfig;
 import com.concesionario.backend.dominio.Imagen;
+import com.concesionario.backend.dominio.Tipo;
 import com.concesionario.backend.dominio.Vehiculo;
 import com.concesionario.backend.dominio.Video;
 import com.concesionario.backend.repositorio.VehiculoRepository;
@@ -231,10 +232,15 @@ public class VehiculoService {
     public List<Vehiculo> obtenerVendidos() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("vendido");
     }
-
-    public List<Vehiculo> buscarVehiculos(String marca, Double precioMin, Double precioMax) {
-        return vehiculoRepository.buscarAvanzado(marca, "en_venta", precioMin, precioMax);
+    
+    public List<Vehiculo> obtenerVehiculosTipo(Tipo tipo) {
+        return vehiculoRepository.findByTipo(tipo);
     }
+
+    public List<Vehiculo> buscarVehiculos(String marca, Double precioMin, Double precioMax, Tipo tipo) {
+        return vehiculoRepository.buscarAvanzado(marca, "en_venta", precioMin, precioMax, tipo);
+    }
+    
 
     // .- ESTADÍSTICAS
 
@@ -298,5 +304,6 @@ public class VehiculoService {
         existente.setDescripcion(nuevo.getDescripcion());
         existente.setComentarios(nuevo.getComentarios());
         existente.setExtras(nuevo.getExtras());
+        existente.setTipo(nuevo.getTipo());
     }
 }

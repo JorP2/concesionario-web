@@ -1,5 +1,7 @@
 package com.concesionario.backend.dto.request;
 
+import com.concesionario.backend.dominio.Tipo;
+
 public class VehiculoRequestDTO {
     private String marca;
     private String modelo;
@@ -17,6 +19,7 @@ public class VehiculoRequestDTO {
     private String descripcion;
     private String comentarios;
     private String extras;
+    private Tipo tipo;
 
     // Getters y Setters
     public String getMarca() { return marca; }
@@ -51,4 +54,6 @@ public class VehiculoRequestDTO {
     public void setComentarios(String comentarios) { this.comentarios = comentarios; }
     public String getExtras() { return extras; }
     public void setExtras(String extras) { this.extras = extras; }
+    public Tipo getTipo() { return tipo; }
+    public void setTipo(Tipo tipo) {this.tipo = tipo;}
 }

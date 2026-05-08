@@ -1,6 +1,7 @@
 package com.concesionario.backend.controlador;
 
 import com.concesionario.backend.dominio.Imagen;
+import com.concesionario.backend.dominio.Tipo;
 import com.concesionario.backend.dominio.Vehiculo;
 import com.concesionario.backend.dto.request.VehiculoRequestDTO;
 import com.concesionario.backend.dto.response.VehiculoResponseDTO;
@@ -51,13 +52,26 @@ public class VehiculoController {
                 })
                 .toList();
     }
+    
+    @GetMapping("/public/tipo")
+    public List<VehiculoResponseDTO> listarTipo(
+    		@RequestParam(required = false) Tipo tipo) {
+    	List<Vehiculo> vehiculos = vehiculoService.obtenerVehiculosTipo(tipo);
+    	return vehiculos.stream()
+    			.map(v -> {
+                    List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(v.getId());
+                    return dtoConverter.toVehiculoResponseDTO(v, imagenes);
+                })
+                .toList();
+    }
 
     @GetMapping("/public/buscar")
     public List<VehiculoResponseDTO> buscarPublico(
             @RequestParam(required = false) String marca,
             @RequestParam(required = false) Double precioMin,
-            @RequestParam(required = false) Double precioMax) {
-        List<Vehiculo> vehiculos = vehiculoService.buscarVehiculos(marca, precioMin, precioMax);
+            @RequestParam(required = false) Double precioMax,
+            @RequestParam(required = false) Tipo tipo) {
+        List<Vehiculo> vehiculos = vehiculoService.buscarVehiculos(marca, precioMin, precioMax, tipo);
         return vehiculos.stream()
                 .map(v -> {
                     List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(v.getId());

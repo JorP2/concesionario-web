@@ -1,6 +1,7 @@
 package com.concesionario.backend.dto.response;
 
 import java.util.List;
+import com.concesionario.backend.dominio.Tipo;
 
 
 public class VehiculoResponseDTO {
@@ -22,6 +23,7 @@ public class VehiculoResponseDTO {
     private String descripcion;
     private String comentarios;
     private String extras;
+    private Tipo tipo;
     private Boolean visible; 
     private Boolean enOferta;
     private Double precioOferta;
@@ -66,6 +68,8 @@ public class VehiculoResponseDTO {
     public String getComentarios() { return comentarios; }
     public void setComentarios(String comentarios) { this.comentarios = comentarios; }
     public String getExtras() { return extras; }
+    public Tipo getTipo() { return tipo; }
+    public void setTipo(Tipo tipo) {this.tipo = tipo;}
     public void setExtras(String extras) { this.extras = extras; }
     public Boolean getEnOferta() { return enOferta; }
     public void setEnOferta(Boolean enOferta) { this.enOferta = enOferta; }
@@ -79,6 +83,7 @@ public class VehiculoResponseDTO {
 	public void setImagenPortada(String imagenPortada) {this.imagenPortada = imagenPortada;}
 	public Boolean getVisible() { return visible; }
     public void setVisible(Boolean visible) { this.visible = visible; }
+    
 
 	public List<String> getImagenes() { return imagenes; }
     public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }

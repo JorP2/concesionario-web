@@ -1,5 +1,6 @@
 package com.concesionario.backend.repositorio;
 
+import com.concesionario.backend.dominio.Tipo;
 import com.concesionario.backend.dominio.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,17 +31,21 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
     List<Vehiculo> findByVisibleTrueAndEstadoVenta(String estadoVenta);
 
     List<Vehiculo> findByEnOfertaTrue();
+    
+    List<Vehiculo> findByTipo(Tipo tipo);
 
     @Query("SELECT v FROM Vehiculo v WHERE " +
            "(:marca IS NULL OR LOWER(v.marca) LIKE LOWER(CONCAT('%', :marca, '%'))) AND " +
            "(:estado IS NULL OR v.estadoVenta = :estado) AND " +
            "(:precioMin IS NULL OR v.precio >= :precioMin) AND " +
-           "(:precioMax IS NULL OR v.precio <= :precioMax)")
+           "(:precioMax IS NULL OR v.precio <= :precioMax) AND "+
+           "(:tipo IS NULL OR v.tipo = :tipo)")
     List<Vehiculo> buscarAvanzado(
             @Param("marca") String marca,
             @Param("estado") String estado,
             @Param("precioMin") Double precioMin,
-            @Param("precioMax") Double precioMax);
+            @Param("precioMax") Double precioMax,
+            @Param("tipo") Tipo tipo);
 
     long countByEstadoVenta(String estadoVenta);
 

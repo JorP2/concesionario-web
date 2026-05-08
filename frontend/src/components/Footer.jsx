@@ -24,7 +24,7 @@ function Footer() {
               style={{ maxWidth: "170px" }}
             />
             <p className="text-white-50 small">
-              Vehículos revisados, garantía y confianza.
+              Vehículos de confianza
             </p>
           </div>
 
