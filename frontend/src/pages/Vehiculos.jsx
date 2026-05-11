@@ -26,7 +26,7 @@ const FILTROS_INICIALES = {
   km: "",
   pegatina: "",
   color: "",
-  tipo:"",
+  tipo: "",
 };
 
 function Vehiculos() {
@@ -110,6 +110,10 @@ function Vehiculos() {
     ? Math.ceil(Math.max(...vehiculos.map((v) => v.kilometros)) / 5000) * 5000
     : 200000;
 
+  const precioMax = vehiculos.length
+    ? Math.ceil(Math.max(...vehiculos.map((v) => v.precio)) / 1000) * 1000
+    : 50000;
+
   const vehiculosFiltrados = vehiculos.filter((v) => {
     const texto = filtros.busqueda.toLowerCase();
 
@@ -152,31 +156,57 @@ function Vehiculos() {
   });
 
   return (
-    <div>
-      {/* ── PESTAÑAS ── */}
-      <div className="vehiculos-tabs">
-        <button
-          className={`tab-btn ${pestana === "en_venta" ? "activo" : ""}`}
-          onClick={() => setPestana("en_venta")}
-        >
-          En venta
-        </button>
-        <button
-          className={`tab-btn ${pestana === "vendidos" ? "activo" : ""}`}
-          onClick={() => {
-            setPestana("vendidos");
-            if (vehiculosVendidos.length === 0) {
-              setLoadingVendidos(true);
-              getVehiculosVendidos()
-                .then(setVehiculosVendidos)
-                .catch(console.error)
-                .finally(() => setLoadingVendidos(false));
-            }
-          }}
-        >
-          Vendidos
-        </button>
-      </div>
+    <div className="vehiculos-page">
+      {/* ── HERO ── */}
+      <section className="vehiculos-hero">
+        <div className="vehiculos-hero-inner">
+          <span className="vehiculos-kicker">Selección disponible</span>
+          <div className="vehiculos-hero-top">
+            <div>
+              <h1>Encuentra tu próximo coche</h1>
+              <p>
+                Vehículos revisados, listos para entrega y organizados para que
+                elegir el adecuado sea más rápido.
+              </p>
+            </div>
+            <div className="vehiculos-hero-stats">
+              <div>
+                <strong>{vehiculos.length}</strong>
+                <span>en venta</span>
+              </div>
+              <div>
+                <strong>{vehiculosVendidos.length}</strong>
+                <span>vendidos</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── PESTAÑAS (dentro del hero) ── */}
+          <div className="vehiculos-tabs">
+            <button
+              className={`tab-btn ${pestana === "en_venta" ? "activo" : ""}`}
+              onClick={() => setPestana("en_venta")}
+            >
+              En venta
+            </button>
+            <button
+              className={`tab-btn ${pestana === "vendidos" ? "activo" : ""}`}
+              onClick={() => {
+                setPestana("vendidos");
+                if (vehiculosVendidos.length === 0) {
+                  setLoadingVendidos(true);
+                  getVehiculosVendidos()
+                    .then(setVehiculosVendidos)
+                    .catch(console.error)
+                    .finally(() => setLoadingVendidos(false));
+                }
+              }}
+            >
+              Vendidos
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* ── PESTAÑA: EN VENTA ── */}
       {pestana === "en_venta" && (
@@ -227,6 +257,7 @@ function Vehiculos() {
                     anios={anios}
                     colores={colores}
                     kmMax={kmMax}
+                    precioMax={precioMax}
                   />
                 </aside>
 
