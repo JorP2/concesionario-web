@@ -13,17 +13,14 @@ public class Vehiculo {
     private Long id;
 
     @NotBlank(message = "La marca no puede estar vacía")
-    @Size(min = 2, max = 50)
     @Column(nullable = false, length = 50)
     private String marca;
 
     @NotBlank(message = "El modelo no puede estar vacío")
-    @Size(min = 1, max = 100)
     @Column(nullable = false, length = 100)
     private String modelo;
 
     @NotNull(message = "El año no puede ser nulo")
-    @Min(1900) @Max(2026)
     @Column(nullable = false)
     private Integer anio;
 
@@ -38,50 +35,40 @@ public class Vehiculo {
     private Integer kilometros;
 
     @NotBlank(message = "El combustible no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Combustible entre 3 y 30 caracteres")
     private String combustible;
 
     @NotBlank(message = "El color exterior no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Color entre 3 y 30 caracteres")
     private String colorExterior;
 
     @NotBlank(message = "El interior no puede estar vacío")
-    @Size(min = 3, max = 30, message = "Interior entre 3 y 30 caracteres")
     private String interior;
 
     @NotNull(message = "Los asientos no pueden ser nulos")
-    @Min(1) @Max(9)
     @Column(nullable = false)
     private Integer asientos;
 
     @NotNull(message = "Las puertas no pueden ser nulas")
-    @Min(2) @Max(6)
     @Column(nullable = false)
     private Integer puertas;
 
     @NotBlank(message = "El motor no puede estar vacío")
-    @Size(min = 2, max = 50, message = "Motor entre 2 y 50 caracteres")
     private String motor;
 
     @NotBlank(message = "El cambio no puede estar vacío")
-    @Size(min = 3, max = 50, message = "Cambio entre 3 y 50 caracteres")
     private String cambio;
 
     @NotBlank(message = "La pegatina no puede estar vacía")
-    @Size(min = 1, max = 10, message = "Pegatina 1-10 caracteres")
     private String pegatina;
 
     @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(min = 10, max = 200)
     @Column(nullable = false, length = 200)
     private String descripcion;
     
     @NotBlank(message = "Los comentarios no pueden estar vacios")
-    @Size(min = 10, max = 1000)
     @Column(nullable = false, length = 1000)
     private String comentarios;
 
-    @Column(length = 500)
+    @Column
     private String extras;
 
     @Column(name = "en_oferta")

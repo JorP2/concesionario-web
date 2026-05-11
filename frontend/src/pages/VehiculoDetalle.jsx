@@ -15,6 +15,7 @@ function VehiculoDetalle() {
   const [error, setError] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [videos, setVideos] = useState([]);
+  const esMoto = vehiculo?.tipo === "MOTOCICLETA";
 
   useEffect(() => {
     getVehiculoByIdPublic(id)
@@ -71,49 +72,54 @@ function VehiculoDetalle() {
 
           {/* GALERÍA SIMPLE */}
           {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
-          <div className="row g-3 mb-4">
-            {vehiculo.imagenes.map((img, i) => (
-              <div key={i} className="col-6 col-md-4">
+            <div
+              className="d-flex gap-3 mb-4 overflow-auto pb-2"
+              style={{
+                scrollbarWidth: "thin",
+              }}
+            >
+              {vehiculo.imagenes.map((img, i) => (
                 <img
+                  key={i}
                   src={img}
                   alt=""
-                  className="w-100 rounded-3 shadow-sm hover-shadow"
+                  className="rounded-3 shadow-sm flex-shrink-0"
                   style={{
-                    height: "150px",
+                    width: "280px",
+                    height: "170px",
                     objectFit: "cover",
                     cursor: "pointer",
                     transition: "0.2s",
                   }}
                   onClick={() => setSelectedImg(img)}
                 />
-              </div>
-            ))}
-          </div>
-        )}
-
-        { /* GALERÍA VIDEOS */}
-        {videos.length > 0 && (
-          <div className="mb-4">
-            <div className="row g-3">
-              {videos.map((video, i) => (
-                <div key={i} className="col-12 col-md-6">
-                  <div
-                  className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm"
-                  style={{ cursor: "pointer" }}
-                  >
-                    <video
-                      src={video.url}
-                      controls
-                      preload="metadata"
-                      controlsList="nodownload"
-                      className="w-100 h-100 object-fit-cover"
-                    />
-                  </div>
-                </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+
+          { /* GALERÍA VIDEOS */}
+          {videos.length > 0 && (
+            <div className="mb-4">
+              <div className="row g-3">
+                {videos.map((video, i) => (
+                  <div key={i} className="col-12 col-md-6">
+                    <div
+                    className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm"
+                    style={{ cursor: "pointer" }}
+                    >
+                      <video
+                        src={video.url}
+                        controls
+                        preload="metadata"
+                        controlsList="nodownload"
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* MINI CARDS */}
           <div className="row g-3">
@@ -121,7 +127,7 @@ function VehiculoDetalle() {
               <div className="card text-center h-100 border-0 shadow-sm rounded-4">
                 <div className="card-body">
                   <FaGasPump size={25} />
-                  <p className="mb-1 small text-muted">Combustible</p>
+                  <p className="my-1 small text-muted">Combustible</p>
                   <strong>{vehiculo.combustible}</strong>
                 </div>
               </div>
@@ -131,7 +137,7 @@ function VehiculoDetalle() {
               <div className="card text-center h-100 border-0 shadow-sm rounded-4">
                 <div className="card-body">
                   <FaCogs size={25} />
-                  <p className="mb-1 small text-muted">Motor</p>
+                  <p className="my-1 small text-muted">Motor</p>
                   <strong>{vehiculo.motor}</strong>
                 </div>
               </div>
@@ -141,7 +147,7 @@ function VehiculoDetalle() {
               <div className="card text-center h-100 border-0 shadow-sm rounded-4">
                 <div className="card-body">
                   <FaTachometerAlt size={25} />
-                  <p className="mb-1 small text-muted">KM</p>
+                  <p className="my-1 small text-muted">KM</p>
                   <strong>{vehiculo.kilometros.toLocaleString()}</strong>
                 </div>
               </div>
@@ -151,7 +157,7 @@ function VehiculoDetalle() {
               <div className="card text-center h-100 border-0 shadow-sm rounded-4">
                 <div className="card-body">
                   <GiGearStick size={25} />
-                  <p className="mb-1 small text-muted">Cambio</p>
+                  <p className="my-1 small text-muted">Cambio</p>
                   <strong>{vehiculo.cambio}</strong>
                 </div>
               </div>
@@ -161,7 +167,7 @@ function VehiculoDetalle() {
           {/* DETALLES */}
           <div className="card shadow-sm rounded-4 border-0 mt-4">
             <div className="card-body">
-              <h5 className="fw-bold mb-3">Detalles</h5>
+              <h5 className="fw-bold mb-3">Detalles de {vehiculo.tipo.toLowerCase()}</h5>
 
               <div className="row g-2 small">
                 <div className="col-6">
@@ -176,11 +182,13 @@ function VehiculoDetalle() {
                   </div>
                 </div>
 
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Puertas:</strong> {vehiculo.puertas}
+                {!esMoto && (
+                  <div className="col-6">
+                    <div className="p-2 bg-light rounded-3">
+                      <strong>Puertas:</strong> {vehiculo.puertas}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="col-6">
                   <div className="p-2 bg-light rounded-3">
@@ -194,11 +202,13 @@ function VehiculoDetalle() {
                   </div>
                 </div>
 
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Interior:</strong> {vehiculo.interior}
+                {!esMoto && (
+                  <div className="col-6">
+                    <div className="p-2 bg-light rounded-3">
+                      <strong>Interior:</strong> {vehiculo.interior}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

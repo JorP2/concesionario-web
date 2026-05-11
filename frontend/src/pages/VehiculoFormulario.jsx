@@ -99,6 +99,16 @@ function VehiculoFormulario() {
       deleteOferta(id).catch(() => {});
     }
 
+    if (name === "tipo" && value === "MOTOCICLETA") {
+    setVehiculo((prev) => ({
+      ...prev,
+      tipo: value,
+      puertas: 0,
+      interior: "Ninguno",
+    }));
+    return;
+  }
+  
     setVehiculo({ ...vehiculo, [name]: newValue });
   };
 
@@ -201,6 +211,7 @@ function VehiculoFormulario() {
                     name="tipo"
                     value={vehiculo.tipo}
                     onChange={handleChange}
+                    required
                   >
                     <option value="">Selecciona un tipo</option>
                     <option value="TURISMO">Turismo</option>
@@ -217,6 +228,7 @@ function VehiculoFormulario() {
                     name="marca"
                     value={vehiculo.marca}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-6">
@@ -227,6 +239,7 @@ function VehiculoFormulario() {
                     name="modelo"
                     value={vehiculo.modelo}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -239,8 +252,8 @@ function VehiculoFormulario() {
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
-                    min={1900}
                     max={new Date().getFullYear()}
+                    required
                   />
                 </div>
                 <div className="col-6">
@@ -253,6 +266,7 @@ function VehiculoFormulario() {
                     onChange={handleChange}
                     min={0}
                     max={999999999}
+                    required
                   />
                 </div>
 
@@ -266,7 +280,8 @@ function VehiculoFormulario() {
                     value={vehiculo.kilometros}
                     onChange={handleChange}
                     min={0}
-                    max={999999}
+                    max={9999999}
+                    required
                   />
                 </div>
                 <div className="col-6">
@@ -277,6 +292,7 @@ function VehiculoFormulario() {
                     name="combustible"
                     value={vehiculo.combustible}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -289,18 +305,23 @@ function VehiculoFormulario() {
                     name="colorExterior"
                     value={vehiculo.colorExterior}
                     onChange={handleChange}
+                    required
                   />
                 </div>
-                <div className="col-6">
-                  <label className="form-label">Interior</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="interior"
-                    value={vehiculo.interior}
-                    onChange={handleChange}
-                  />
-                </div>
+
+                {vehiculo.tipo !== "MOTOCICLETA" && (
+                  <div className="col-6">
+                    <label className="form-label">Interior</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="interior"
+                      value={vehiculo.interior}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
 
                 {/* Fila: Motor + Cambio */}
                 <div className="col-6">
@@ -311,6 +332,7 @@ function VehiculoFormulario() {
                     name="motor"
                     value={vehiculo.motor}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-6">
@@ -321,22 +343,25 @@ function VehiculoFormulario() {
                     name="cambio"
                     value={vehiculo.cambio}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
                 {/* Fila: Puertas + Asientos */}
-                <div className="col-6">
-                  <label className="form-label">Puertas</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    name="puertas"
-                    value={vehiculo.puertas}
-                    onChange={handleChange}
-                    min={1}
-                    max={9}
-                  />
-                </div>
+                {vehiculo.tipo !== "MOTOCICLETA" && (
+                  <div className="col-6">
+                    <label className="form-label">Puertas</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="puertas"
+                      value={vehiculo.puertas}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
+
                 <div className="col-6">
                   <label className="form-label">Asientos</label>
                   <input
@@ -345,8 +370,7 @@ function VehiculoFormulario() {
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
-                    min={1}
-                    max={20}
+                    required
                   />
                 </div>
 
@@ -359,6 +383,7 @@ function VehiculoFormulario() {
                     name="pegatina"
                     value={vehiculo.pegatina}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-6">
@@ -384,6 +409,7 @@ function VehiculoFormulario() {
                     rows={3}
                     value={vehiculo.descripcion}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -396,6 +422,7 @@ function VehiculoFormulario() {
                     rows={3}
                     value={vehiculo.comentarios}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -408,6 +435,7 @@ function VehiculoFormulario() {
                     rows={2}
                     value={vehiculo.extras}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
