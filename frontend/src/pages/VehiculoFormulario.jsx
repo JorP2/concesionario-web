@@ -167,7 +167,7 @@ function VehiculoFormulario() {
         <button
           className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
           onClick={() => navigate(-1)}
-          style={{ width: "45px", height: "45px" }}
+          style={{ width: "45px", height: "45px", marginTop: "20px" }}
         >
           <FaArrowLeft />
         </button>
@@ -389,7 +389,9 @@ function VehiculoFormulario() {
 
                 {/* Comentarios del anunciante- ancho completo */}
                 <div className="col-12">
-                  <label className="form-label">Comentarios del anunciante</label>
+                  <label className="form-label">
+                    Comentarios del anunciante
+                  </label>
                   <textarea
                     className="form-control"
                     name="comentarios"
