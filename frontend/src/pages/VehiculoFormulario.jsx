@@ -91,26 +91,27 @@ function VehiculoFormulario() {
 
   // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
+  const { name, value, type, checked } = e.target;
+  const newValue = type === "checkbox" ? checked : value;
 
-    // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
-    if (name === "enOferta" && !checked && esEdicion) {
-      deleteOferta(id).catch(() => {});
-    }
-
-    if (name === "tipo" && value === "MOTOCICLETA") {
-    setVehiculo((prev) => ({
-      ...prev,
-      tipo: value,
-      puertas: 0,
-      interior: "Ninguno",
-    }));
-    return;
+  // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
+  if (name === "enOferta" && !checked && esEdicion) {
+    deleteOferta(id).catch(() => {});
   }
-  
-    setVehiculo({ ...vehiculo, [name]: newValue });
+
+  let vehiculoActualizado = {
+    ...vehiculo,
+    [name]: newValue,
   };
+
+  // Valores válidos para motocicletas
+  if (name === "tipo" && value === "MOTOCICLETA") {
+    vehiculoActualizado.interior = "Ninguno";
+    vehiculoActualizado.puertas = 0;
+  }
+
+  setVehiculo(vehiculoActualizado);
+};
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {

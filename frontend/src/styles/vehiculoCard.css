@@ -92,7 +92,7 @@
 
 /* ── INFO ── */
 .vehiculo-info {
-  padding: 18px 16px 16px;
+  padding: 0px 16px 16px;
 
 }
 
@@ -147,13 +147,6 @@
   white-space: nowrap;
 }
 
-/* ── SPECS ── */
-.vehiculo-specs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
-  margin-bottom: 8px;
-}
 
 .spec-item {
   display: flex;
