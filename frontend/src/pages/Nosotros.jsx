@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa";
-import "../styles/Nosotros.css";
+import "../styles/nosotros.css";
 import React from "react";
 
 function Nosotros() {
@@ -54,8 +54,8 @@ function Nosotros() {
           <span className="nosotros-kicker">Burguillos de Toledo</span>
           <h1>Compraventa de vehículos en Toledo</h1>
           <p>
-            Vehículos revisados y transparencia en el proceso, 
-            tanto en nuestro concesionario como en el entorno digital.
+            Vehículos revisados y transparencia en el proceso, tanto en nuestro
+            concesionario como en el entorno digital.
           </p>
           <a href="#opiniones" className="btn btn-outline-light btn-lg">
             Ver opiniones
@@ -78,8 +78,8 @@ function Nosotros() {
               <span>Lo que cuidamos</span>
               <h3>Profesionalidad y transparencia</h3>
               <p>
-                Asesoramos durante todo el proceso con comunicación directa,
-                sin rodeos y con foco en que el cliente se sienta bien atendido.
+                Asesoramos durante todo el proceso con comunicación directa, sin
+                rodeos y con foco en que el cliente se sienta bien atendido.
               </p>
             </div>
           </div>
@@ -105,9 +105,9 @@ function Nosotros() {
                 previa y trato cercano.
               </p>
               <p className="text-muted mb-4">
-                Nuestro objetivo es que el cliente sienta claridad
-                y que al salir del concesionario tenga la sensación de haber
-                tomado una buena decisión.
+                Nuestro objetivo es que el cliente sienta claridad y que al
+                salir del concesionario tenga la sensación de haber tomado una
+                buena decisión.
               </p>
               <div className="nosotros-points">
                 <span>Revisión completa antes de venta</span>
@@ -124,16 +124,16 @@ function Nosotros() {
           <div className="nosotros-heading text-center">
             <span>Opiniones</span>
             <h2>Lo que dicen nuestros clientes</h2>
-            <p>
-              Cómo lo recuerdan
-              quienes ya han comprado con nosotros.
-            </p>
+            <p>Cómo lo recuerdan quienes ya han comprado con nosotros.</p>
           </div>
 
           <div className="nosotros-reviews-carousel">
             <div className="nosotros-reviews-track nosotros-reviews-track--auto">
               {reviewsLoop.map((review, index) => (
-                <div key={`${review.name}-${index}`} className="nosotros-review-slide">
+                <div
+                  key={`${review.name}-${index}`}
+                  className="nosotros-review-slide"
+                >
                   <a
                     href={review.link}
                     target="_blank"

@@ -1,6 +1,6 @@
 import { MdLocationOn, MdEuroSymbol } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
-import "../styles/Home.css";
+import "../styles/home.css";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -10,12 +10,10 @@ function Home() {
         className="home-hero"
         style={{ backgroundImage: "url(/imagenHome.jpeg)" }}
       >
-      <div className="home-hero-overlay" />
+        <div className="home-hero-overlay" />
         <div className="container home-hero-content mb-4">
           <div className="home-hero-copy">
-            <span className="home-hero-kicker">
-              Vehículos de confianza
-            </span>
+            <span className="home-hero-kicker">Vehículos de confianza</span>
             <h1>Nohales Automóviles</h1>
             <p>
               Coches seleccionados con criterio, financiación flexible y un
@@ -91,7 +89,6 @@ function Home() {
 
         <div className="row g-4">
           <div className="col-md-4">
-
             <div className="card feature-card h-100 text-center border-0 p-4">
               <div className="card-body">
                 <div className="feature-icon-wrapper mb-3">
@@ -100,8 +97,9 @@ function Home() {
 
                 <h5 className="fw-bold">Garantía y financiación</h5>
                 <p className="text-muted">
-                  Hasta 12 meses de garantía y 96 meses de financiación sin entrada.
-                  Tenemos taller propio con más de 35 años de experiencia.
+                  Hasta 12 meses de garantía y 96 meses de financiación sin
+                  entrada. Tenemos taller propio con más de 35 años de
+                  experiencia.
                 </p>
               </div>
             </div>
@@ -131,9 +129,9 @@ function Home() {
                 </div>
                 <h5 className="fw-bold">Ubicacion y trato</h5>
                 <p className="text-muted">
-                  Concesionario en Burguillos de Toledo con presencia 
-                  en portales de venta y redes sociales, 
-                  así como gestionando la entrega en las Islas.
+                  Concesionario en Burguillos de Toledo con presencia en
+                  portales de venta y redes sociales, así como gestionando la
+                  entrega en las Islas.
                 </p>
               </div>
             </div>
@@ -229,7 +227,9 @@ function Home() {
           <div className="home-cta-box">
             <div>
               <span>Da el siguiente paso</span>
-              <h2>Explora nuestro catálogo o cuentanos qué coche estás buascando</h2>
+              <h2>
+                Explora nuestro catálogo o cuentanos qué coche estás buascando
+              </h2>
             </div>
             <div className="home-cta-actions">
               <Link to="/vehiculos" className="btn btn-primary btn-lg px-5">
