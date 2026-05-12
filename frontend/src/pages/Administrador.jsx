@@ -78,10 +78,10 @@ function Administrador() {
       <div className="container py-5">
         <section className="admin-hero mb-4">
           <div>
-            <span className="admin-kicker">Gestion interna</span>
-            <h1 className="mb-1">Panel de Administracion</h1>
+            <span className="admin-kicker">Gestión interna</span>
+            <h1 className="mb-1">Panel de Administración</h1>
             <p className="admin-subtitle mb-1">
-              Controla el stock, las ofertas y los accesos desde un unico sitio.
+              Controla el stock, las ofertas y los accesos desde un único sitio.
             </p>
             <small className="text-muted">Bienvenido, {sesion.username}</small>
           </div>
@@ -91,13 +91,13 @@ function Administrador() {
               <div className="admin-pill">
                 {subPestanaVehiculos === "vendidos"
                   ? `${vehiculosVendidosFiltrados.length} vendidos en la lista`
-                  : `${vehiculosEnStockFiltrados.length} vehiculos en stock`}
+                  : `${vehiculosEnStockFiltrados.length} vehículos en stock`}
               </div>
               <Link
                 to="/administrador/vehiculo-form"
                 className="btn btn-success"
               >
-                + Anadir vehiculo
+                + Anadir vehículo
               </Link>
             </div>
           )}
@@ -128,7 +128,7 @@ function Administrador() {
               className={`tab-btn ${pestana === "vehiculos" ? "activo" : ""}`}
               onClick={() => setPestana("vehiculos")}
             >
-              Vehiculos
+              Vehículos
             </button>
             {esSuperUsuario && (
               <button
@@ -146,7 +146,7 @@ function Administrador() {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Buscar vehiculo por marca o modelo..."
+                  placeholder="Buscar vehículo..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />

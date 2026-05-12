@@ -167,7 +167,7 @@ function FiltroVehiculo({
                 className={`form-control ${
                   filtros.busqueda ? "border-primary shadow-sm" : ""
                 }`}
-                placeholder="Modelo, version..."
+                placeholder="Modelo, versión..."
                 value={filtros.busqueda}
                 onChange={(e) => onChange("busqueda", e.target.value)}
               />
@@ -304,7 +304,7 @@ function FiltroVehiculo({
 
           <div className="mb-3">
             <label className="form-label fw-semibold">
-              Kilometros máximos
+              Kilómetros máximos
               <span className="text-muted fw-normal ms-2 small">
                 {Number(filtros.km || kmMax || 400000).toLocaleString("es-ES")} km
               </span>
