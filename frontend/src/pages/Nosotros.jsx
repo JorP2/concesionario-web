@@ -159,7 +159,7 @@ function Nosotros() {
                       </div>
                       <p className="mb-4">{review.text}</p>
                       <div className="nosotros-review-footer">
-                        <strong>5.0</strong>
+                        <strong></strong>
                         <span>Ver en Google -&gt;</span>
                       </div>
                     </div>
