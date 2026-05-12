@@ -13,6 +13,7 @@ import Nosotros from "./pages/Nosotros";
 import Administrador from "./pages/Administrador";
 import VehiculoDetalle from "./pages/VehiculoDetalle";
 import VehiculoFormulario from "./pages/VehiculoFormulario";
+import LegalPrivacidad from "./pages/LegalPrivacidad";
 import WhatsappFab from "./components/WhatsappFab";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/vehiculos" element={<Vehiculos />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/legalprivacidad" element={<LegalPrivacidad />} />
           <Route path="/administrador" element={<Administrador />} />
           <Route path="/administrador/vehiculo-form" element={<VehiculoFormulario />} />
           <Route path="/administrador/vehiculo-form/:id" element={<VehiculoFormulario />} />
