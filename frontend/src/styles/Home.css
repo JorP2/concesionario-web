@@ -28,11 +28,13 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   align-items: end;
   gap: 2rem;
-  padding-top: 6rem;
-  padding-bottom: 4rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .home-hero-copy {
+  gap: 1rem;
+  align-self: center;
   max-width: 760px;
   color: #fff;
 }
@@ -160,7 +162,7 @@
 .home-strip-grid div {
   padding: 1.15rem 1.35rem;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
 }
 

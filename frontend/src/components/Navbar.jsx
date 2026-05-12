@@ -13,6 +13,17 @@ export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navbarCollapseRef = useRef(null);
   const isFirstRender = useRef(true);
+  const [scrolled, setScrolled] = useState(false);
+
+useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 40);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   // Sincroniza el estado con los eventos reales de Bootstrap
   useEffect(() => {
@@ -174,7 +185,11 @@ export const Navbar = () => {
         />
       )}
 
-      <div className="topbar bg-primary text-white py-2">
+      <div
+        className={`topbar bg-primary text-white ${
+          scrolled ? "topbar-hidden" : "py-2"
+        }`}
+      >
         <div className="container topbar-content">
           <span>Nohales Automóviles</span>
           <span>Talleres García</span>
@@ -182,8 +197,13 @@ export const Navbar = () => {
       </div>
 
       <nav
-        className="navbar navbar-expand-lg navbar-dark bg-dark shadow modern-navbar"
-        style={{ overflow: "visible" }}
+        className={`navbar navbar-expand-lg navbar-dark bg-dark shadow modern-navbar sticky-top ${
+          scrolled ? "navbar-scrolled" : ""
+        }`}
+        style={{
+          overflow: "visible",
+          zIndex: 1030,
+        }}
       >
         <div className="container-fluid px-lg-4">
           <NavLink to="/" className="navbar-brand brand-wrap">

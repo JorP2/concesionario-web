@@ -275,3 +275,44 @@
     padding: 10px 10px !important;
   }
 }
+
+.modern-navbar {
+  transition:
+    min-height 0.1s ease,
+    padding 0.1s ease,
+}
+
+.brand-logo {
+  transition:
+    width 0.1s ease,
+    height 0.1s ease,
+}
+
+.topbar {
+  transition:
+    all 0.1s ease,
+    opacity 0.1s ease;
+}
+
+/* ESTADO SCROLL */
+
+.navbar-scrolled {
+  min-height: 64px;
+  padding-top: 0.4px;
+  padding-bottom: 0.4px;
+  backdrop-filter: blur(5px);
+  background: rgba(26, 30, 33, 0.94) !important;
+}
+
+.navbar-scrolled .brand-logo {
+  width: 150px;
+  height: 54px;
+}
+
+.topbar-hidden {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
