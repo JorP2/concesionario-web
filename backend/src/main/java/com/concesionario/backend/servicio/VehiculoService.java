@@ -270,7 +270,7 @@ public class VehiculoService {
         if (vehiculo.getKilometros() < 0) {
             throw new RuntimeException("Los kilómetros no pueden ser negativos");
         }
-        if (vehiculo.getAsientos() < 1 || vehiculo.getAsientos() > 9) {
+        if (vehiculo.getAsientos() < 0 || vehiculo.getAsientos() > 9) {
             throw new RuntimeException("Número de asientos no válido");
         }
     }

@@ -1,25 +1,19 @@
 import React from "react";
-// Iconos
 import {
   FaSearchPlus,
   FaGasPump,
   FaTachometerAlt,
-  FaCog,
   FaRoad,
   FaCalendarAlt,
   FaLeaf,
 } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
-
-import sinImagen from "../assets/sin-imagen.svg";
-// style
+import sinImagen from "../assets/sin-imagen.png";
 import "../styles/vehiculoCard.css";
 
 const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
   const [showGallery, setShowGallery] = React.useState(false);
-  const transmision = vehiculo.transmision || vehiculo.cambio;
-  const cv = vehiculo.cv || vehiculo.caballos;
 
   const getFuelIcon = (tipo) => {
     if (!tipo) return <FaGasPump size={12} />;
@@ -38,7 +32,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
           <img
             src={vehiculo.imagenPortada || sinImagen}
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
-            className="img-fluid w-100"
+            className={`img-fluid w-100 ${!vehiculo.imagenPortada ? "sin-imagen-img" : ""}`}
           />
 
           {vendido && <div className="vendido-ribbon">VENDIDO</div>}
@@ -53,75 +47,70 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
         </div>
 
         <div className="vehiculo-info">
-          <div className="vehiculo-header">
+          <div className="vehiculo-header mb-3 d-flex justify-content-between align-items-baseline">
             <div>
-              <h5>
+              <h5 className="mb-0">
                 {vehiculo.marca} {vehiculo.modelo}
               </h5>
+
               {vehiculo.version && (
-                <p className="vehiculo-version">{vehiculo.version}</p>
+                <p className="vehiculo-version mb-0">{vehiculo.version}</p>
               )}
             </div>
 
-            <div className="vehiculo-price-block">
-              {vehiculo.enOferta && vehiculo.precioOferta ? (
+            <div className="vehiculo-price-block text-end text-nowrap">
+              {!vendido && (
                 <>
-                  <span className="precio-tachado">
-                    €{Number(vehiculo.precio).toLocaleString("es-ES")}€
-                  </span>
-                  <span className="precio precio-oferta text-primary">
-                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")}€
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span
-                    className="precio-tachado"
-                    style={{ visibility: "hidden" }}
-                  >
-                    &nbsp;
-                  </span>
-                  <span className="precio text-primary">
-                    {Number(vehiculo.precio).toLocaleString("es-ES")}€
-                  </span>
+                  {vehiculo.enOferta && vehiculo.precioOferta ? (
+                    <div className="d-flex gap-2 justify-content-end">
+                      <span className="text-decoration-line-through text-muted">
+                        {Number(vehiculo.precio).toLocaleString("es-ES")} €
+                      </span>
+                      <span className="text-primary fw-bold">
+                        {Number(vehiculo.precioOferta).toLocaleString("es-ES")}{" "}
+                        €
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-primary fw-bold">
+                      {Number(vehiculo.precio).toLocaleString("es-ES")} €
+                    </span>
+                  )}
                 </>
               )}
             </div>
           </div>
 
-          <div className="vehiculo-specs">
+          {/* SPECS */}
+          <div className="vehiculo-specs mb-3 row g-2">
+            {vehiculo.tipo && (
+              <span className="spec-item col-6 d-flex align-items-center gap-1">
+                <FaTachometerAlt size={12} />
+                {vehiculo.tipo.charAt(0) + vehiculo.tipo.slice(1).toLowerCase()}
+              </span>
+            )}
+
+            {vehiculo.anio && (
+              <span className="spec-item col-6 d-flex align-items-center gap-1">
+                <FaCalendarAlt size={12} />
+                {vehiculo.anio}
+              </span>
+            )}
+
             {vehiculo.combustible && (
-              <span className="spec-item">
+              <span className="spec-item col-6 d-flex align-items-center gap-1">
                 {getFuelIcon(vehiculo.combustible)}
                 {vehiculo.combustible}
               </span>
             )}
-            {cv && (
-              <span className="spec-item">
-                <FaTachometerAlt size={12} />
-                {cv}cv
-              </span>
-            )}
-            {transmision && (
-              <span className="spec-item">
-                <FaCog size={12} />
-                {transmision}
-              </span>
-            )}
+
             {vehiculo.kilometros != null && (
-              <span className="spec-item">
+              <span className="spec-item col-6 d-flex align-items-center gap-1">
                 <FaRoad size={12} />
                 {Number(vehiculo.kilometros).toLocaleString("es-ES")} km
               </span>
             )}
           </div>
-
-          {vehiculo.anio && (
-            <div className="vehiculo-anio">
-              <FaCalendarAlt size={12} />
-              <span>{vehiculo.anio}</span>
-            </div>
-          )}
 
           <Link className="btn-ver bg-primary" to={`/vehiculos/${vehiculo.id}`}>
             Ver modelo →

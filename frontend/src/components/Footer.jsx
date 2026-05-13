@@ -100,7 +100,15 @@ function Footer() {
 
         {/* COPYRIGHT */}
         <div className="text-center mt-4 pt-3 border-top border-secondary small text-white-50">
-          © 2026 Nohales Automóviles. Todos los derechos reservados.
+          <p className="mb-2">
+            © 2026 Nohales Automóviles. Todos los derechos reservados.
+          </p>
+
+          <div className="d-flex justify-content-center flex-wrap">
+            <a href="/legalprivacidad" className="text-decoration-none text-white-50">
+              Política de Privacidad y Aviso Legal
+            </a>
+          </div>
         </div>
       </div>
     </footer>

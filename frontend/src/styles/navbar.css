@@ -1,8 +1,16 @@
 .topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1031;
   background: #198754;
   color: white;
   font-size: 13px;
   padding: 8px 0;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 
 .topbar-content {
@@ -33,7 +41,6 @@
   font-size: 14px;
 }
 
-/* separadores más finos */
 .topbar span:not(:last-child)::after {
   content: "•";
   margin-left: 12px;
@@ -41,9 +48,14 @@
 }
 
 .modern-navbar {
-  min-height: 102px;
+  height: 102px;
+  margin-top: 36px;
   background: linear-gradient(95deg, #212529 0%, #1a1e21 100%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    margin-top 0.25s ease,
+    background 0.25s ease,
+    backdrop-filter 0.25s ease;
 }
 
 .modern-navbar .container-fluid {
@@ -55,6 +67,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  overflow: visible;
 }
 
 .brand-logo {
@@ -62,6 +75,9 @@
   width: 210px;
   height: 76px;
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+  transition: transform 0.25s ease;
+  transform-origin: left center;
+  will-change: transform;
 }
 
 .modern-nav-links {
@@ -119,15 +135,15 @@
 .custom-toggler {
   width: 40px;
   height: 40px;
-  display: none;       
+  display: none;
   align-items: center;
   justify-content: center;
-  flex-direction: column; 
+  flex-direction: column;
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.06) !important;
   padding: 0;
-  gap: 0;             
+  gap: 0;
 }
 
 .custom-toggler:focus {
@@ -136,7 +152,7 @@
 
 .toggler-line {
   display: block;
-  width: 20px;     
+  width: 20px;
   height: 2px;
   background: #fff;
   border-radius: 4px;
@@ -144,7 +160,7 @@
 }
 
 .toggler-line + .toggler-line {
-  margin-top: 4px; 
+  margin-top: 4px;
 }
 
 .custom-toggler.is-open .toggler-line:nth-child(1) {
@@ -161,7 +177,6 @@
 
 /* ── MENÚ MÓVIL ── */
 .mobile-user-section {
-  margin-top: 8px;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.07);
   border-radius: 10px;
@@ -225,7 +240,7 @@
     transform: translateX(-50%);
     width: max-content;
   }
-  
+
   #navbarMain.collapsing {
     transition: none !important;
     height: auto !important;
@@ -242,7 +257,8 @@
   }
 
   .modern-navbar {
-    min-height: 72px;
+    height: 72px;
+    margin-top: 0;
   }
 
   .brand-logo {
@@ -274,4 +290,21 @@
     font-size: 1rem;
     padding: 10px 10px !important;
   }
+}
+
+/* ESTADO SCROLL */
+/*.navbar-scrolled {
+  margin-top: 0;
+  backdrop-filter: blur(5px);
+  background: rgba(26, 30, 33, 0.94) !important;
+}
+
+.navbar-scrolled .brand-logo {
+  transform: scale(0.82);
+}*/
+
+.topbar-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }

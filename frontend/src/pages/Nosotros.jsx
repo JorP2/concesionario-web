@@ -5,40 +5,40 @@ import React from "react";
 function Nosotros() {
   const reviews = [
     {
-      text: "Muy buenos profesionales y trato cercano en todo momento.",
+      text: "Muy buenos profesionales, tanto a la hora de venderme el coche, como en el taller preparándolo y dejándolo perfecto...",
       name: "Javier Garcia",
       role: "Cliente verificado",
-      link: "https://share.google/ficPdfbF2QA2WmW7x",
+      link: "https://maps.app.goo.gl/3Kyp9Ru73GZ3fAMf6",
     },
     {
-      text: "Paulino es muy buen profesional. Compra clara y sin sorpresas.",
-      name: "Antonio Pino",
+      text: "Han pasado ya dos meses desde la adquisición de mi vehículo en Nohales y estoy muy satisfecho con mi compra...",
+      name: "Tomás Sierra Notario",
       role: "Cliente verificado",
-      link: "https://share.google/c2Oa8QxjTlui5fyP1",
+      link: "https://maps.app.goo.gl/JLSiA7rWunSC8Nw56",
     },
     {
-      text: "Trato cercano, todo muy claro desde el primer momento y coche en perfecto estado.",
-      name: "Laura Martin",
+      text: "Hoy me han entregado un precioso Honda civic y el  trato de Paulino, Javier y el resto de integrantes del equipo ha  sido espectacular...",
+      name: "Saul Fernández Yagüe",
       role: "Cliente verificada",
-      link: "https://www.google.com/maps",
+      link: "https://maps.app.goo.gl/NaMNmKzHdwEqV1nJ8",
     },
     {
-      text: "Nos ayudaron con la financiacion y resolvieron todas las dudas sin prisas.",
-      name: "Carlos Romero",
+      text: "Espectacular el trato, muy recomendable. Son unos grandes profesionales. El personal del taller igualmente muy agradables...",
+      name: "Denisse",
       role: "Cliente verificado",
-      link: "https://www.google.com/maps",
+      link: "https://maps.app.goo.gl/by4K2E13KquJqhqi6",
     },
     {
-      text: "Concesionario serio, revisaron el vehiculo antes de entregarlo y cumplieron todo.",
-      name: "Sergio Diaz",
+      text: "Muy agradecidos a Nohales Automóviles y Talleres García por el tratamiento recibido, sinceridad y total transparencia...",
+      name: "Jose Angel Castellano",
       role: "Cliente verificado",
-      link: "https://www.google.com/maps",
+      link: "https://maps.app.goo.gl/WMMyRjquckjswp4PA",
     },
     {
-      text: "Muy buena experiencia de compra. Transparencia, rapidez y buena atencion postventa.",
-      name: "Marta Lopez",
+      text: "Estaba buscando un sitio de confianza y la verdad que estoy muy contento con el trato recibido y con el pedazo de coche que ahora tengo...",
+      name: "Di Ginius",
       role: "Cliente verificada",
-      link: "https://www.google.com/maps",
+      link: "https://maps.app.goo.gl/iNisKNdoFHNKC9WW9",
     },
   ];
   const reviewsLoop = [...reviews, ...reviews];
@@ -159,7 +159,7 @@ function Nosotros() {
                       </div>
                       <p className="mb-4">{review.text}</p>
                       <div className="nosotros-review-footer">
-                        <strong>5.0</strong>
+                        <strong></strong>
                         <span>Ver en Google -&gt;</span>
                       </div>
                     </div>

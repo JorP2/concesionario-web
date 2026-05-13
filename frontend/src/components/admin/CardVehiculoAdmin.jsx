@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/admin/vehiculoCardAdmin.css";
-import sinImagen from "../../assets/sin-imagen.svg";
+import sinImagen from "../../assets/sin-imagen.png";
 import { deleteOferta } from "../../api/vehiculoApi";
 import { FaClock } from "react-icons/fa";
 
@@ -67,8 +67,8 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
             )}
             <img
               src={vehiculo.imagenPortada || sinImagen}
-              className="img-admin"
               alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+              className={`img-admin ${!vehiculo.imagenPortada ? "sin-imagen-img-admin" : ""}`}
             />
           </div>
 
@@ -101,41 +101,30 @@ function CardVehiculoAdmin({ vehiculo, onEliminar }) {
                 </div>
                 <div className="col-6">
                   <p className="card-text mb-1">
-                    <strong>Precio:</strong>
-                  </p>
-                  <div className="precio-wrapper">
+                    <strong>Precio:</strong>{" "}
                     {vehiculo.enOferta && vehiculo.precioOferta ? (
-                      <>
-                        <span className="precio-original">
-                          €{vehiculo.precio}
-                        </span>
-                        <div className="oferta-row">
-                          <span className="precio-oferta">
-                            Oferta: €{vehiculo.precioOferta}
-                          </span>
-                          {tiempoRestante && (
-                            <span
-                              className={`contador-oferta${tiempoRestante === "Expirada" ? " expirada" : ""}`}
-                            >
-                              <FaClock size={10} />
-                              {tiempoRestante}
-                            </span>
-                          )}
-                        </div>
-                      </>
+                      <span className="precio-original">
+                        €{vehiculo.precio}
+                      </span>
                     ) : (
-                      <>
-                        <span
-                          style={{ visibility: "hidden", fontSize: "14px" }}
-                        >
-                          €0
-                        </span>
-                        <span className="precio-normal">
-                          €{vehiculo.precio}
-                        </span>
-                      </>
+                      <span className="precio-normal">€{vehiculo.precio}</span>
                     )}
-                  </div>
+                  </p>
+                  {vehiculo.enOferta && vehiculo.precioOferta && (
+                    <div className="oferta-row">
+                      <span className="precio-oferta">
+                        Oferta: €{vehiculo.precioOferta}
+                      </span>
+                      {tiempoRestante && (
+                        <span
+                          className={`contador-oferta${tiempoRestante === "Expirada" ? " expirada" : ""}`}
+                        >
+                          <FaClock size={10} />
+                          {tiempoRestante}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="col-6">
                   <p className="card-text mb-1">
