@@ -180,7 +180,7 @@ useEffect(() => {
     <>
       {dropdownOpen && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 9998 }}
+          style={{ position: "fixed", inset: 0, zIndex: 9998, pointerEvents: "none" }}
           onClick={() => setDropdownOpen(false)}
         />
       )}

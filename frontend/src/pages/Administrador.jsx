@@ -166,11 +166,11 @@ function Administrador() {
                 </button>
               </div>
               {loading && (
-                <p className="text-center mt-4">Cargando vehiculos...</p>
+                <p className="text-center mt-4">Cargando vehículos...</p>
               )}
               {!loading && error && (
                 <p className="text-center mt-4 text-danger">
-                  Error al cargar los vehiculos.
+                  Error al cargar los vehículos.
                 </p>
               )}
               {!loading && !error && (
