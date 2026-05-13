@@ -15,6 +15,7 @@ import {
   aplicarOfertaPrecioFijo,
 } from "../api/vehiculoApi";
 import { addImagenes } from "../api/imagenApi";
+import "../styles/vehiculoFormulario.css"
 
 function VehiculoFormulario() {
   // Obtener el ID del vehículo de la URL
@@ -214,7 +215,6 @@ function VehiculoFormulario() {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Selecciona un tipo</option>
                     <option value="TURISMO">Turismo</option>
                     <option value="FURGONETA">Furgoneta</option>
                     <option value="MOTOCICLETA">Motocicleta</option>
@@ -225,23 +225,40 @@ function VehiculoFormulario() {
                   <label className="form-label">Marca</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.marca.length <= 0 || vehiculo.marca.length > 50 ? "is-invalid" : ""}`}
                     name="marca"
                     value={vehiculo.marca}
                     onChange={handleChange}
+                    minLength={1}
+                    maxLength={50}
                     required
                   />
+                  {(vehiculo.marca.length <= 0 || vehiculo.marca.length > 50) && (
+                    <div className="invalid-feedback d-block">
+                      Marca debe estar entre 1 - 50 caracteres
+                    </div>
+                  )}
                 </div>
+
                 <div className="col-6">
                   <label className="form-label">Modelo</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.modelo.length <= 0 || vehiculo.modelo.length > 100 ? "is-invalid" : ""}`}
                     name="modelo"
                     value={vehiculo.modelo}
                     onChange={handleChange}
+                    minLength={1}
+                    maxLength={100}
                     required
                   />
+                  {(vehiculo.modelo.length <= 0 || vehiculo.modelo.length > 100) && (
+                    <div className="invalid-feedback d-block">
+                      Modelo debe estar entre 1 - 100 caracteres
+                    </div>
+                  )}
                 </div>
 
                 {/* Fila: Año + Precio */}
@@ -249,26 +266,38 @@ function VehiculoFormulario() {
                   <label className="form-label">Año</label>
                   <input
                     type="number"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.anio <= 1900 || vehiculo.anio > Date.now().getFullYear() ? "is-invalid" : "is-valid"}`}
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
+                    min={1900}
                     max={new Date().getFullYear()}
                     required
                   />
+                  {(vehiculo.anio < 1900 || vehiculo.anio > Date.now().getFullYear()) && (
+                    <div className="invalid-feedback d-block">
+                      Año debe estar entre 1900 - Actual
+                    </div>
+                  )}
                 </div>
                 <div className="col-6">
                   <label className="form-label">Precio</label>
                   <input
                     type="number"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.precio <= 0 ? "is-invalid" : "is-valid"}`}
                     name="precio"
                     value={vehiculo.precio}
                     onChange={handleChange}
-                    min={0}
-                    max={999999999}
+                    min={1}
                     required
                   />
+                  {vehiculo.precio <= 0 && (
+                    <div className="invalid-feedback d-block">
+                      Precio debe ser mayor que 0
+                    </div>
+                  )}
                 </div>
 
                 {/* Fila: Kilómetros + Combustible */}
@@ -276,25 +305,38 @@ function VehiculoFormulario() {
                   <label className="form-label">Kilómetros</label>
                   <input
                     type="number"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.kilometros < 0 ? "is-invalid" : ""}`}
                     name="kilometros"
                     value={vehiculo.kilometros}
                     onChange={handleChange}
                     min={0}
-                    max={9999999}
                     required
                   />
+                  {vehiculo.kilometros < 0 && (
+                    <div className="invalid-feedback d-block">
+                      Kilómetros deben ser mayor o igual que 0
+                    </div>
+                  )}
                 </div>
+
                 <div className="col-6">
                   <label className="form-label">Combustible</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.combustible.length <= 0 ? "is-invalid" : ""}`}
                     name="combustible"
                     value={vehiculo.combustible}
                     onChange={handleChange}
+                    minLength={1}
                     required
                   />
+                  {vehiculo.combustible.length <= 0 && (
+                    <div className="invalid-feedback d-block">
+                      Combustible no puede estar vacío
+                    </div>
+                  )}
                 </div>
 
                 {/* Fila: Color exterior + Interior */}
@@ -302,12 +344,19 @@ function VehiculoFormulario() {
                   <label className="form-label">Color exterior</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.colorExterior.length <= 0 ? "is-invalid" : ""}`}
                     name="colorExterior"
                     value={vehiculo.colorExterior}
                     onChange={handleChange}
+                    minLength={1}
                     required
                   />
+                  {vehiculo.colorExterior.length <= 0 && (
+                    <div className="invalid-feedback d-block">
+                      Color exterior no puede estar vacío
+                    </div>
+                  )}
                 </div>
 
                 {vehiculo.tipo !== "MOTOCICLETA" && (
@@ -315,12 +364,19 @@ function VehiculoFormulario() {
                     <label className="form-label">Interior</label>
                     <input
                       type="text"
-                      className="form-control"
+                      placeholder="..."
+                      className={`form-control ${vehiculo.interior.length <= 0 ? "is-invalid" : ""}`}
                       name="interior"
                       value={vehiculo.interior}
                       onChange={handleChange}
+                      minLength={1}
                       required
                     />
+                    {vehiculo.interior.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Interior no puede estar vacío
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -329,23 +385,38 @@ function VehiculoFormulario() {
                   <label className="form-label">Motor</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.motor.length <= 0 ? "is-invalid" : ""}`}
                     name="motor"
                     value={vehiculo.motor}
                     onChange={handleChange}
+                    minLength={1}
                     required
                   />
+                  {vehiculo.motor.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Motor no puede estar vacío
+                      </div>
+                    )}
                 </div>
+
                 <div className="col-6">
                   <label className="form-label">Cambio</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.cambio.length <= 0 ? "is-invalid" : ""}`}
                     name="cambio"
                     value={vehiculo.cambio}
                     onChange={handleChange}
+                    minLength={1}
                     required
                   />
+                  {vehiculo.cambio.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Cambio no puede estar vacío
+                      </div>
+                    )}
                 </div>
 
                 {/* Fila: Puertas + Asientos */}
@@ -354,12 +425,19 @@ function VehiculoFormulario() {
                     <label className="form-label">Puertas</label>
                     <input
                       type="number"
-                      className="form-control"
+                      placeholder="..."
+                      className={`form-control ${vehiculo.puertas <= 0 ? "is-invalid" : ""}`}
                       name="puertas"
                       value={vehiculo.puertas}
                       onChange={handleChange}
+                      min={1}
                       required
                     />
+                    {vehiculo.puertas <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Puertas debe ser mayor a 0
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -367,12 +445,19 @@ function VehiculoFormulario() {
                   <label className="form-label">Asientos</label>
                   <input
                     type="number"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.asientos <= 0 ? "is-invalid" : ""}`}
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
+                    min={1}
                     required
                   />
+                  {vehiculo.asientos <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Asientos debe ser mayor a 0
+                      </div>
+                    )}
                 </div>
 
                 {/* Fila: Pegatina + Estado venta */}
@@ -380,13 +465,21 @@ function VehiculoFormulario() {
                   <label className="form-label">Pegatina</label>
                   <input
                     type="text"
-                    className="form-control"
+                    placeholder="..."
+                    className={`form-control ${vehiculo.pegatina.length <= 0 ? "is-invalid" : ""}`}
                     name="pegatina"
                     value={vehiculo.pegatina}
                     onChange={handleChange}
+                    minLength={1}
                     required
                   />
+                  {vehiculo.pegatina.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Pegatina no puede estar vacío
+                      </div>
+                    )}
                 </div>
+
                 <div className="col-6">
                   <label className="form-label">Estado de venta</label>
                   <select
@@ -405,26 +498,42 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Descripción</label>
                   <textarea
-                    className="form-control"
+                    className={`form-control ${vehiculo.descripcion.length <= 0 || vehiculo.descripcion.length > 200 ? "is-invalid" : ""}`}
+                    placeholder="..."
                     name="descripcion"
                     rows={3}
                     value={vehiculo.descripcion}
                     onChange={handleChange}
+                    minLength={1}
+                    maxLength={200}
                     required
                   />
+                  {vehiculo.descripcion.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Descripción debe tener entre 1 - 200 caracteres
+                      </div>
+                    )}
                 </div>
 
                 {/* Comentarios del anunciante- ancho completo */}
                 <div className="col-12">
                   <label className="form-label">Comentarios del anunciante</label>
                   <textarea
-                    className="form-control"
+                    className={`form-control ${vehiculo.comentarios.length <= 0 || vehiculo.comentarios.length > 1000 ? "is-invalid" : ""}`}
+                    placeholder="..."
                     name="comentarios"
                     rows={3}
                     value={vehiculo.comentarios}
                     onChange={handleChange}
+                    minLength={1}
+                    maxLength={1000}
                     required
                   />
+                  {vehiculo.comentarios.length <= 0 && (
+                      <div className="invalid-feedback d-block">
+                        Comentarios debe tener entre 1 - 1000 caracteres
+                      </div>
+                    )}
                 </div>
 
                 {/* Extras — ancho completo */}
@@ -432,12 +541,16 @@ function VehiculoFormulario() {
                   <label className="form-label">Extras</label>
                   <textarea
                     className="form-control"
+                    placeholder="..."
                     name="extras"
                     rows={2}
                     value={vehiculo.extras}
                     onChange={handleChange}
                     required
                   />
+                      <div className="text-muted small d-block">
+                        Separa cada extra con una coma
+                      </div>
                 </div>
 
                 {/* Checkboxes */}
