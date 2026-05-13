@@ -177,7 +177,7 @@ function VehiculoFormulario() {
     <>
       <div className="containear-fluid px-4">
         <button
-          className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+          className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center m-4"
           onClick={() => navigate(-1)}
           style={{ width: "45px", height: "45px" }}
         >
@@ -267,7 +267,7 @@ function VehiculoFormulario() {
                   <input
                     type="number"
                     placeholder="..."
-                    className={`form-control ${vehiculo.anio <= 1900 || vehiculo.anio > Date.now().getFullYear() ? "is-invalid" : "is-valid"}`}
+                    className={`form-control ${vehiculo.anio <= 1900 || vehiculo.anio > new Date().getFullYear() ? "is-invalid" : "is-valid"}`}
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
@@ -275,12 +275,13 @@ function VehiculoFormulario() {
                     max={new Date().getFullYear()}
                     required
                   />
-                  {(vehiculo.anio < 1900 || vehiculo.anio > Date.now().getFullYear()) && (
+                  {(vehiculo.anio < 1900 || vehiculo.anio > new Date().getFullYear()) && (
                     <div className="invalid-feedback d-block">
                       Año debe estar entre 1900 - Actual
                     </div>
                   )}
                 </div>
+
                 <div className="col-6">
                   <label className="form-label">Precio</label>
                   <input
@@ -613,7 +614,7 @@ function VehiculoFormulario() {
                         value={vehiculo.precioOferta}
                         onChange={handleChange}
                         max={vehiculo.precio} // no puede ser mayor que el precio original
-                        placeholder={`Máx. €${vehiculo.precio}`}
+                        placeholder={`${vehiculo.precio}€`}
                       />
                     </div>
                     <div className="col-6">
