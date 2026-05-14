@@ -2,9 +2,7 @@ import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-// Componentes
 import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
-// API
 import {
   addVehiculo,
   getVehiculoById,
@@ -18,13 +16,11 @@ import { addImagenes } from "../api/imagenApi";
 import "../styles/vehiculoFormulario.css"
 
 function VehiculoFormulario() {
-  // Obtener el ID del vehículo de la URL
   const { id } = useParams();
-  const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
-  const [imagenesNuevas, setImagenesNuevas] = React.useState([]); // Estado para las nuevas imágenes a subir
+  const esEdicion = Boolean(id);
+  const [imagenesNuevas, setImagenesNuevas] = React.useState([]);
   const navigate = useNavigate();
 
-  // Función para manejar el estado del formulario
   const [vehiculo, setVehiculo] = React.useState({
     tipo: "",
     marca: "",
@@ -50,7 +46,6 @@ function VehiculoFormulario() {
     estadoVenta: "en_venta",
   });
 
-  // Función para cargar los datos del vehículo si estamos editando
   React.useEffect(() => {
     if (esEdicion) {
       const cargarVehiculo = async () => {
@@ -90,31 +85,27 @@ function VehiculoFormulario() {
     }
   }, [id, esEdicion]);
 
-  // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  const newValue = type === "checkbox" ? checked : value;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
 
-  // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
-  if (name === "enOferta" && !checked && esEdicion) {
-    deleteOferta(id).catch(() => {});
-  }
+    if (name === "enOferta" && !checked && esEdicion) {
+      deleteOferta(id).catch(() => {});
+    }
 
-  let vehiculoActualizado = {
-    ...vehiculo,
-    [name]: newValue,
+    let vehiculoActualizado = {
+      ...vehiculo,
+      [name]: newValue,
+    };
+
+    if (name === "tipo" && value === "MOTOCICLETA") {
+      vehiculoActualizado.interior = "Ninguno";
+      vehiculoActualizado.puertas = 0;
+    }
+
+    setVehiculo(vehiculoActualizado);
   };
 
-  // Valores válidos para motocicletas
-  if (name === "tipo" && value === "MOTOCICLETA") {
-    vehiculoActualizado.interior = "Ninguno";
-    vehiculoActualizado.puertas = 0;
-  }
-
-  setVehiculo(vehiculoActualizado);
-};
-
-  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -209,7 +200,7 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Tipo</label>
                   <select
-                    className="form-select"
+                    className={"form-select is-valid"}
                     name="tipo"
                     value={vehiculo.tipo}
                     onChange={handleChange}
@@ -226,12 +217,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.marca.length <= 0 || vehiculo.marca.length > 50 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.marca.length <= 0 || vehiculo.marca.length > 50 ? "is-invalid" : "is-valid"}`}
                     name="marca"
                     value={vehiculo.marca}
                     onChange={handleChange}
-                    minLength={1}
-                    maxLength={50}
                     required
                   />
                   {(vehiculo.marca.length <= 0 || vehiculo.marca.length > 50) && (
@@ -246,12 +235,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.modelo.length <= 0 || vehiculo.modelo.length > 100 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.modelo.length <= 0 || vehiculo.modelo.length > 100 ? "is-invalid" : "is-valid"}`}
                     name="modelo"
                     value={vehiculo.modelo}
                     onChange={handleChange}
-                    minLength={1}
-                    maxLength={100}
                     required
                   />
                   {(vehiculo.modelo.length <= 0 || vehiculo.modelo.length > 100) && (
@@ -271,8 +258,6 @@ function VehiculoFormulario() {
                     name="anio"
                     value={vehiculo.anio}
                     onChange={handleChange}
-                    min={1900}
-                    max={new Date().getFullYear()}
                     required
                   />
                   {(vehiculo.anio < 1900 || vehiculo.anio > new Date().getFullYear()) && (
@@ -291,7 +276,6 @@ function VehiculoFormulario() {
                     name="precio"
                     value={vehiculo.precio}
                     onChange={handleChange}
-                    min={1}
                     required
                   />
                   {vehiculo.precio <= 0 && (
@@ -307,11 +291,10 @@ function VehiculoFormulario() {
                   <input
                     type="number"
                     placeholder="..."
-                    className={`form-control ${vehiculo.kilometros < 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.kilometros < 0 ? "is-invalid" : "is-valid"}`}
                     name="kilometros"
                     value={vehiculo.kilometros}
                     onChange={handleChange}
-                    min={0}
                     required
                   />
                   {vehiculo.kilometros < 0 && (
@@ -326,11 +309,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.combustible.length <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.combustible.length <= 0 ? "is-invalid" : "is-valid"}`}
                     name="combustible"
                     value={vehiculo.combustible}
                     onChange={handleChange}
-                    minLength={1}
                     required
                   />
                   {vehiculo.combustible.length <= 0 && (
@@ -346,11 +328,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.colorExterior.length <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.colorExterior.length <= 0 ? "is-invalid" : "is-valid"}`}
                     name="colorExterior"
                     value={vehiculo.colorExterior}
                     onChange={handleChange}
-                    minLength={1}
                     required
                   />
                   {vehiculo.colorExterior.length <= 0 && (
@@ -366,11 +347,10 @@ function VehiculoFormulario() {
                     <input
                       type="text"
                       placeholder="..."
-                      className={`form-control ${vehiculo.interior.length <= 0 ? "is-invalid" : ""}`}
+                      className={`form-control ${vehiculo.interior.length <= 0 ? "is-invalid" : "is-valid"}`}
                       name="interior"
                       value={vehiculo.interior}
                       onChange={handleChange}
-                      minLength={1}
                       required
                     />
                     {vehiculo.interior.length <= 0 && (
@@ -387,11 +367,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.motor.length <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.motor.length <= 0 ? "is-invalid" : "is-valid"}`}
                     name="motor"
                     value={vehiculo.motor}
                     onChange={handleChange}
-                    minLength={1}
                     required
                   />
                   {vehiculo.motor.length <= 0 && (
@@ -406,11 +385,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.cambio.length <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.cambio.length <= 0 ? "is-invalid" : "is-valid"}`}
                     name="cambio"
                     value={vehiculo.cambio}
                     onChange={handleChange}
-                    minLength={1}
                     required
                   />
                   {vehiculo.cambio.length <= 0 && (
@@ -427,11 +405,10 @@ function VehiculoFormulario() {
                     <input
                       type="number"
                       placeholder="..."
-                      className={`form-control ${vehiculo.puertas <= 0 ? "is-invalid" : ""}`}
+                      className={`form-control ${vehiculo.puertas <= 0 ? "is-invalid" : "is-valid"}`}
                       name="puertas"
                       value={vehiculo.puertas}
                       onChange={handleChange}
-                      min={1}
                       required
                     />
                     {vehiculo.puertas <= 0 && (
@@ -447,11 +424,10 @@ function VehiculoFormulario() {
                   <input
                     type="number"
                     placeholder="..."
-                    className={`form-control ${vehiculo.asientos <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.asientos <= 0 ? "is-invalid" : "is-valid"}`}
                     name="asientos"
                     value={vehiculo.asientos}
                     onChange={handleChange}
-                    min={1}
                     required
                   />
                   {vehiculo.asientos <= 0 && (
@@ -467,11 +443,10 @@ function VehiculoFormulario() {
                   <input
                     type="text"
                     placeholder="..."
-                    className={`form-control ${vehiculo.pegatina.length <= 0 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.pegatina.length <= 0 ? "is-invalid" : "is-valid"}`}
                     name="pegatina"
                     value={vehiculo.pegatina}
                     onChange={handleChange}
-                    minLength={1}
                     required
                   />
                   {vehiculo.pegatina.length <= 0 && (
@@ -484,7 +459,7 @@ function VehiculoFormulario() {
                 <div className="col-6">
                   <label className="form-label">Estado de venta</label>
                   <select
-                    className="form-select"
+                    className="form-select is-valid"
                     name="estadoVenta"
                     value={vehiculo.estadoVenta}
                     onChange={handleChange}
@@ -499,14 +474,12 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Descripción</label>
                   <textarea
-                    className={`form-control ${vehiculo.descripcion.length <= 0 || vehiculo.descripcion.length > 200 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.descripcion.length <= 0 || vehiculo.descripcion.length > 200 ? "is-invalid" : "is-valid"}`}
                     placeholder="..."
                     name="descripcion"
                     rows={3}
                     value={vehiculo.descripcion}
                     onChange={handleChange}
-                    minLength={1}
-                    maxLength={200}
                     required
                   />
                   {vehiculo.descripcion.length <= 0 && (
@@ -520,19 +493,17 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Comentarios del anunciante</label>
                   <textarea
-                    className={`form-control ${vehiculo.comentarios.length <= 0 || vehiculo.comentarios.length > 1000 ? "is-invalid" : ""}`}
+                    className={`form-control ${vehiculo.comentarios.length <= 0 || vehiculo.comentarios.length > 2000 ? "is-invalid" : "is-valid"}`}
                     placeholder="..."
                     name="comentarios"
                     rows={3}
                     value={vehiculo.comentarios}
                     onChange={handleChange}
-                    minLength={1}
-                    maxLength={1000}
                     required
                   />
                   {vehiculo.comentarios.length <= 0 && (
                       <div className="invalid-feedback d-block">
-                        Comentarios debe tener entre 1 - 1000 caracteres
+                        Comentarios debe tener entre 1 - 2000 caracteres
                       </div>
                     )}
                 </div>
@@ -541,7 +512,7 @@ function VehiculoFormulario() {
                 <div className="col-12">
                   <label className="form-label">Extras</label>
                   <textarea
-                    className="form-control"
+                    className={`form-control ${vehiculo.comentarios.length <= 0 || vehiculo.comentarios.length > 2000 ? "is-invalid" : "is-valid"}`}
                     placeholder="..."
                     name="extras"
                     rows={2}
@@ -627,7 +598,7 @@ function VehiculoFormulario() {
                         onChange={handleChange}
                         min={new Date(Date.now() + 60000)
                           .toISOString()
-                          .slice(0, 16)} // mínimo: ahora + 1 min
+                          .slice(0, 16)}
                       />
                     </div>
                   </>
