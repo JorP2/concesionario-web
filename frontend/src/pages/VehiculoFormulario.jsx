@@ -2,9 +2,7 @@ import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-// Componentes
 import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
-// API
 import {
   addVehiculo,
   getVehiculoById,
@@ -16,14 +14,22 @@ import {
 } from "../api/vehiculoApi";
 import { addImagenes } from "../api/imagenApi";
 
+// Helper para el contador
+const Contador = ({ valor, max }) => (
+  <small
+    className={`text-muted ms-1 ${(valor?.length ?? 0) >= max ? "text-danger" : ""}`}
+  >
+    ({valor?.length ?? 0}/{max})
+  </small>
+);
+
 function VehiculoFormulario() {
-  // Obtener el ID del vehículo de la URL
   const { id } = useParams();
-  const esEdicion = Boolean(id); // Si hay ID, es edición; si no, es creación
-  const [imagenesNuevas, setImagenesNuevas] = React.useState([]); // Estado para las nuevas imágenes a subir
+  const esEdicion = Boolean(id);
+  const [imagenesNuevas, setImagenesNuevas] = React.useState([]);
+  const [portadaNuevaIdx, setPortadaNuevaIdx] = React.useState(0);
   const navigate = useNavigate();
 
-  // Función para manejar el estado del formulario
   const [vehiculo, setVehiculo] = React.useState({
     tipo: "",
     marca: "",
@@ -49,7 +55,6 @@ function VehiculoFormulario() {
     estadoVenta: "en_venta",
   });
 
-  // Función para cargar los datos del vehículo si estamos editando
   React.useEffect(() => {
     if (esEdicion) {
       const cargarVehiculo = async () => {
@@ -89,34 +94,26 @@ function VehiculoFormulario() {
     }
   }, [id, esEdicion]);
 
-  // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  const newValue = type === "checkbox" ? checked : value;
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
 
-  // Si estamos editando y se desmarca enOferta, eliminar oferta en la API
-  if (name === "enOferta" && !checked && esEdicion) {
-    deleteOferta(id).catch(() => {});
-  }
+    if (name === "enOferta" && !checked && esEdicion) {
+      deleteOferta(id).catch(() => {});
+    }
 
-  let vehiculoActualizado = {
-    ...vehiculo,
-    [name]: newValue,
+    let vehiculoActualizado = { ...vehiculo, [name]: newValue };
+
+    if (name === "tipo" && value === "MOTOCICLETA") {
+      vehiculoActualizado.interior = "Ninguno";
+      vehiculoActualizado.puertas = 0;
+    }
+
+    setVehiculo(vehiculoActualizado);
   };
 
-  // Valores válidos para motocicletas
-  if (name === "tipo" && value === "MOTOCICLETA") {
-    vehiculoActualizado.interior = "Ninguno";
-    vehiculoActualizado.puertas = 0;
-  }
-
-  setVehiculo(vehiculoActualizado);
-};
-
-  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (
         vehiculo.enOferta &&
@@ -129,7 +126,6 @@ function VehiculoFormulario() {
       }
 
       let vehiculoId;
-
       if (esEdicion) {
         await updateVehiculo(id, vehiculo);
         vehiculoId = id;
@@ -138,14 +134,9 @@ function VehiculoFormulario() {
         vehiculoId = data.id;
       }
 
-      // ── Visibilidad ──────────────────────────────
       await cambiarVisibilidad(vehiculoId, vehiculo.visible);
-      // ─────────────────────────────────────────────
-
-      // ── Estado venta ─────────────────────────────
       await updateEstadoVehiculo(vehiculoId, vehiculo.estadoVenta);
 
-      // ── Gestionar oferta ──────────────────────────
       if (
         vehiculo.enOferta &&
         vehiculo.precioOferta &&
@@ -159,8 +150,6 @@ function VehiculoFormulario() {
       } else if (!vehiculo.enOferta) {
         await deleteOferta(vehiculoId).catch(() => {});
       }
-
-      // ─────────────────────────────────────────────
 
       if (imagenesNuevas.length > 0) {
         await addImagenes(vehiculoId, imagenesNuevas);
@@ -188,23 +177,23 @@ function VehiculoFormulario() {
 
         <form onSubmit={handleSubmit}>
           <div className="row g-4">
-            {/* Columna izquierda — galería (solo edición) */}
             {esEdicion && (
               <div className="col-12 col-lg-6">
                 <GaleriaMultimedia
                   vehiculoId={id}
                   imagenesNuevas={imagenesNuevas}
                   setImagenesNuevas={setImagenesNuevas}
+                  portadaNuevaIdx={portadaNuevaIdx}
+                  setPortadaNuevaIdx={setPortadaNuevaIdx}
                 />
               </div>
             )}
 
-            {/* Columna derecha — campos */}
             <div
               className={`col-12 ${esEdicion ? "col-lg-6" : "col-lg-8 mx-auto"}`}
             >
               <div className="row g-3">
-                {/* Fila: Tipo */}
+                {/* Tipo */}
                 <div className="col-12">
                   <label className="form-label">Tipo</label>
                   <select
@@ -220,31 +209,38 @@ function VehiculoFormulario() {
                     <option value="MOTOCICLETA">Motocicleta</option>
                   </select>
                 </div>
-                {/* Fila: Marca + Modelo */}
+
+                {/* Marca + Modelo */}
                 <div className="col-6">
-                  <label className="form-label">Marca</label>
+                  <label className="form-label">
+                    Marca <Contador valor={vehiculo.marca} max={20} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="marca"
                     value={vehiculo.marca}
                     onChange={handleChange}
+                    maxLength={20}
                     required
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label">Modelo</label>
+                  <label className="form-label">
+                    Modelo <Contador valor={vehiculo.modelo} max={30} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="modelo"
                     value={vehiculo.modelo}
                     onChange={handleChange}
+                    maxLength={30}
                     required
                   />
                 </div>
 
-                {/* Fila: Año + Precio */}
+                {/* Año + Precio */}
                 <div className="col-6">
                   <label className="form-label">Año</label>
                   <input
@@ -271,7 +267,7 @@ function VehiculoFormulario() {
                   />
                 </div>
 
-                {/* Fila: Kilómetros + Combustible */}
+                {/* Kilómetros + Combustible */}
                 <div className="col-6">
                   <label className="form-label">Kilómetros</label>
                   <input
@@ -286,69 +282,85 @@ function VehiculoFormulario() {
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label">Combustible</label>
+                  <label className="form-label">
+                    Combustible{" "}
+                    <Contador valor={vehiculo.combustible} max={20} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="combustible"
                     value={vehiculo.combustible}
                     onChange={handleChange}
+                    maxLength={20}
                     required
                   />
                 </div>
 
-                {/* Fila: Color exterior + Interior */}
+                {/* Color exterior + Interior */}
                 <div className="col-6">
-                  <label className="form-label">Color exterior</label>
+                  <label className="form-label">
+                    Color exterior{" "}
+                    <Contador valor={vehiculo.colorExterior} max={25} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="colorExterior"
                     value={vehiculo.colorExterior}
                     onChange={handleChange}
+                    maxLength={25}
                     required
                   />
                 </div>
-
                 {vehiculo.tipo !== "MOTOCICLETA" && (
                   <div className="col-6">
-                    <label className="form-label">Interior</label>
+                    <label className="form-label">
+                      Interior <Contador valor={vehiculo.interior} max={25} />
+                    </label>
                     <input
                       type="text"
                       className="form-control"
                       name="interior"
                       value={vehiculo.interior}
                       onChange={handleChange}
+                      maxLength={25}
                       required
                     />
                   </div>
                 )}
 
-                {/* Fila: Motor + Cambio */}
+                {/* Motor + Cambio */}
                 <div className="col-6">
-                  <label className="form-label">Motor</label>
+                  <label className="form-label">
+                    Motor <Contador valor={vehiculo.motor} max={30} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="motor"
                     value={vehiculo.motor}
                     onChange={handleChange}
+                    maxLength={30}
                     required
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label">Cambio</label>
+                  <label className="form-label">
+                    Cambio <Contador valor={vehiculo.cambio} max={20} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="cambio"
                     value={vehiculo.cambio}
                     onChange={handleChange}
+                    maxLength={20}
                     required
                   />
                 </div>
 
-                {/* Fila: Puertas + Asientos */}
+                {/* Puertas + Asientos */}
                 {vehiculo.tipo !== "MOTOCICLETA" && (
                   <div className="col-6">
                     <label className="form-label">Puertas</label>
@@ -362,7 +374,6 @@ function VehiculoFormulario() {
                     />
                   </div>
                 )}
-
                 <div className="col-6">
                   <label className="form-label">Asientos</label>
                   <input
@@ -375,15 +386,18 @@ function VehiculoFormulario() {
                   />
                 </div>
 
-                {/* Fila: Pegatina + Estado venta */}
+                {/* Pegatina + Estado venta */}
                 <div className="col-6">
-                  <label className="form-label">Pegatina</label>
+                  <label className="form-label">
+                    Pegatina <Contador valor={vehiculo.pegatina} max={10} />
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     name="pegatina"
                     value={vehiculo.pegatina}
                     onChange={handleChange}
+                    maxLength={10}
                     required
                   />
                 </div>
@@ -401,23 +415,28 @@ function VehiculoFormulario() {
                   </select>
                 </div>
 
-                {/* Descripción — ancho completo */}
+                {/* Descripción */}
                 <div className="col-12">
-                  <label className="form-label">Descripción</label>
+                  <label className="form-label">
+                    Descripción{" "}
+                    <Contador valor={vehiculo.descripcion} max={500} />
+                  </label>
                   <textarea
                     className="form-control"
                     name="descripcion"
                     rows={3}
                     value={vehiculo.descripcion}
                     onChange={handleChange}
+                    maxLength={500}
                     required
                   />
                 </div>
 
-                {/* Comentarios del anunciante- ancho completo */}
+                {/* Comentarios */}
                 <div className="col-12">
                   <label className="form-label">
-                    Comentarios del anunciante
+                    Comentarios del anunciante{" "}
+                    <Contador valor={vehiculo.comentarios} max={500} />
                   </label>
                   <textarea
                     className="form-control"
@@ -425,19 +444,23 @@ function VehiculoFormulario() {
                     rows={3}
                     value={vehiculo.comentarios}
                     onChange={handleChange}
+                    maxLength={500}
                     required
                   />
                 </div>
 
-                {/* Extras — ancho completo */}
+                {/* Extras */}
                 <div className="col-12">
-                  <label className="form-label">Extras</label>
+                  <label className="form-label">
+                    Extras <Contador valor={vehiculo.extras} max={500} />
+                  </label>
                   <textarea
                     className="form-control"
                     name="extras"
                     rows={2}
                     value={vehiculo.extras}
                     onChange={handleChange}
+                    maxLength={500}
                     required
                   />
                 </div>
@@ -474,7 +497,7 @@ function VehiculoFormulario() {
                   </div>
                 </div>
 
-                {/* Precio oferta + Fecha fin — solo si enOferta es true */}
+                {/* Precio oferta + Fecha fin */}
                 {vehiculo.enOferta && (
                   <>
                     <div className="col-6">
@@ -501,7 +524,7 @@ function VehiculoFormulario() {
                         name="precioOferta"
                         value={vehiculo.precioOferta}
                         onChange={handleChange}
-                        max={vehiculo.precio} // no puede ser mayor que el precio original
+                        max={vehiculo.precio}
                         placeholder={`Máx. €${vehiculo.precio}`}
                       />
                     </div>
@@ -515,7 +538,7 @@ function VehiculoFormulario() {
                         onChange={handleChange}
                         min={new Date(Date.now() + 60000)
                           .toISOString()
-                          .slice(0, 16)} // mínimo: ahora + 1 min
+                          .slice(0, 16)}
                       />
                     </div>
                   </>

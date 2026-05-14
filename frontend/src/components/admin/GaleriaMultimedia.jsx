@@ -15,7 +15,13 @@ import {
 // Iconos
 import { FaPlus, FaTimes } from "react-icons/fa";
 
-function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
+function GaleriaMultimedia({
+  vehiculoId,
+  imagenesNuevas,
+  setImagenesNuevas,
+  portadaNuevaIdx,
+  setPortadaNuevaIdx,
+}) {
   const [imagenesExistentes, setImagenesExistentes] = React.useState([]);
   const [videosExistentes, setVideosExistentes] = React.useState([]);
   const [cargando, setCargando] = React.useState(false);
@@ -238,17 +244,42 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
               <div className="mt-3">
                 <h6 className="text-warning">
                   Imágenes a subir ({imagenesNuevas.length})
+                  <small
+                    className="text-muted ms-2"
+                    style={{ fontSize: "12px" }}
+                  >
+                    Haz click para marcar portada
+                  </small>
                 </h6>
                 <div className="row g-2">
                   {imagenesNuevas.map((archivo, i) => (
                     <div key={i} className="col-6 col-md-3 col-lg-2">
-                      <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
+                      <div
+                        className="ratio ratio-1x1 position-relative rounded overflow-hidden"
+                        style={{
+                          cursor: "pointer",
+                          outline:
+                            portadaNuevaIdx === i
+                              ? "3px solid #0d6efd"
+                              : "none",
+                          borderRadius: "8px",
+                        }}
+                        onClick={() => setPortadaNuevaIdx(i)}
+                      >
                         <img
                           src={URL.createObjectURL(archivo)}
                           className="w-100 h-100 position-absolute top-0 start-0"
                           style={{ objectFit: "cover" }}
                           alt={archivo.name}
                         />
+                        {portadaNuevaIdx === i && (
+                          <span
+                            className="position-absolute top-0 start-0 m-1 badge bg-primary"
+                            style={{ zIndex: 2 }}
+                          >
+                            Portada
+                          </span>
+                        )}
                         <button
                           type="button"
                           className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
@@ -257,11 +288,16 @@ function GaleriaMultimedia({ vehiculoId, imagenesNuevas, setImagenesNuevas }) {
                             height: "22px",
                             borderRadius: "50%",
                           }}
-                          onClick={() =>
-                            setImagenesNuevas(
-                              imagenesNuevas.filter((_, idx) => idx !== i),
-                            )
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const nuevas = imagenesNuevas.filter(
+                              (_, idx) => idx !== i,
+                            );
+                            setImagenesNuevas(nuevas);
+                            if (portadaNuevaIdx === i) setPortadaNuevaIdx(0);
+                            else if (portadaNuevaIdx > i)
+                              setPortadaNuevaIdx(portadaNuevaIdx - 1);
+                          }}
                         >
                           <FaTimes size={10} />
                         </button>
