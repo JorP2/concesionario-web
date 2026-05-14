@@ -4,9 +4,6 @@ import {
   addUsuario,
   updateUsuario,
   deleteUsuario,
-  activateUser,
-  deactivateUser,
-  changePassword,
 } from "../../api/usuarioApi";
 
 const USUARIO_VACIO = {
@@ -23,18 +20,13 @@ function GestionUsuarios() {
   const [error, setError] = React.useState(false);
   const [busqueda, setBusqueda] = React.useState("");
 
-  // Modal crear/editar
   const [modalAbierto, setModalAbierto] = React.useState(false);
-  const [usuarioEditando, setUsuarioEditando] = React.useState(null); // null = crear
+  const [usuarioEditando, setUsuarioEditando] = React.useState(null);
   const [form, setForm] = React.useState(USUARIO_VACIO);
-
-  // Modal cambiar contraseña
-  const [modalPassword, setModalPassword] = React.useState(false);
-  const [usuarioPassword, setUsuarioPassword] = React.useState(null);
-  const [nuevaPassword, setNuevaPassword] = React.useState("");
 
   const cargar = async () => {
     setLoading(true);
+    setError(false);
     try {
       const data = await getUsuarios();
       setUsuarios(data);
@@ -49,14 +41,12 @@ function GestionUsuarios() {
     cargar();
   }, []);
 
-  // Abrir modal crear
   const handleNuevo = () => {
     setUsuarioEditando(null);
     setForm(USUARIO_VACIO);
     setModalAbierto(true);
   };
 
-  // Abrir modal editar
   const handleEditar = (usuario) => {
     setUsuarioEditando(usuario);
     setForm({
@@ -69,25 +59,29 @@ function GestionUsuarios() {
     setModalAbierto(true);
   };
 
-  // Guardar (crear o editar)
   const handleGuardar = async () => {
-    // Validaciones
-    if (!form.nombre.trim()) return alert("El nombre es obligatorio");
-    if (!form.username.trim()) return alert("El username es obligatorio");
-    if (!form.email.trim() || !form.email.includes("@"))
-      return alert("El email no es válido");
-    if (!usuarioEditando && !form.password.trim())
-      return alert("La contraseña es obligatoria");
-    if (form.telefono && !/^\d{9}$/.test(form.telefono))
-      return alert("El teléfono debe tener exactamente 9 dígitos");
+    const nombre = form.nombre.trim();
+    const username = form.username.trim();
+    const email = form.email.trim();
+    const telefono = form.telefono.trim();
+    const password = form.password.trim();
 
-    // Construye solo los campos que acepta el backend
+    if (!nombre) return alert("El nombre es obligatorio");
+    if (!username) return alert("El username es obligatorio");
+    if (!email || !email.includes("@")) return alert("El email no es valido");
+    if (telefono && !/^\d{9}$/.test(telefono)) {
+      return alert("El telefono debe tener exactamente 9 digitos");
+    }
+    if (!usuarioEditando && password.length < 4) {
+      return alert("La contrasena debe tener al menos 4 caracteres");
+    }
+
     const payload = {
-      username: form.username,
-      nombre: form.nombre,
-      email: form.email,
-      telefono: form.telefono || null,
-      ...(!usuarioEditando && { password: form.password }),
+      username,
+      nombre,
+      email,
+      telefono: telefono || null,
+      ...(!usuarioEditando && { password }),
     };
 
     try {
@@ -106,44 +100,13 @@ function GestionUsuarios() {
     }
   };
 
-  // Activar / desactivar
-  const handleToggleActivo = async (usuario) => {
-    try {
-      const actualizado = usuario.activo
-        ? await deactivateUser(usuario.id)
-        : await activateUser(usuario.id);
-      setUsuarios((prev) =>
-        prev.map((u) => (u.id === actualizado.id ? actualizado : u)),
-      );
-    } catch {
-      console.error("Error al cambiar estado del usuario");
-    }
-  };
-
-  // Borrar
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este usuario?")) return;
+    if (!window.confirm("Seguro que quieres eliminar este usuario?")) return;
     try {
       await deleteUsuario(id);
       setUsuarios((prev) => prev.filter((u) => u.id !== id));
     } catch {
-      console.error("Error al eliminar el usuario");
-    }
-  };
-
-  // Cambiar contraseña
-  const handleAbrirPassword = (usuario) => {
-    setUsuarioPassword(usuario);
-    setNuevaPassword("");
-    setModalPassword(true);
-  };
-
-  const handleGuardarPassword = async () => {
-    try {
-      await changePassword(usuarioPassword.id, nuevaPassword);
-      setModalPassword(false);
-    } catch {
-      console.error("Error al cambiar la contraseña");
+      alert("Error al eliminar el usuario.");
     }
   };
 
@@ -156,15 +119,13 @@ function GestionUsuarios() {
 
   return (
     <div>
-      {/* Cabecera */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <span className="text-muted">{usuariosFiltrados.length} usuarios</span>
         <button className="btn btn-success" onClick={handleNuevo}>
-          + Añadir usuario
+          + Anadir usuario
         </button>
       </div>
 
-      {/* Buscador */}
       <input
         type="text"
         className="form-control mb-4"
@@ -173,7 +134,6 @@ function GestionUsuarios() {
         onChange={(e) => setBusqueda(e.target.value)}
       />
 
-      {/* Estados */}
       {loading && <p className="text-center mt-4">Cargando usuarios...</p>}
       {!loading && error && (
         <p className="text-center mt-4 text-danger">
@@ -181,7 +141,6 @@ function GestionUsuarios() {
         </p>
       )}
 
-      {/* Tabla */}
       {!loading && !error && (
         <div className="table-responsive">
           <table className="table table-hover align-middle">
@@ -190,9 +149,8 @@ function GestionUsuarios() {
                 <th>Nombre</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>Teléfono</th>
+                <th>Telefono</th>
                 <th>Rol</th>
-                <th>Estado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -204,7 +162,7 @@ function GestionUsuarios() {
                     <code>{u.username}</code>
                   </td>
                   <td>{u.email}</td>
-                  <td>{u.telefono || "—"}</td>
+                  <td>{u.telefono || "-"}</td>
                   <td>
                     {u.esSuperUsuario ? (
                       <span className="badge bg-dark">Superusuario</span>
@@ -213,32 +171,12 @@ function GestionUsuarios() {
                     )}
                   </td>
                   <td>
-                    <span
-                      className={`badge ${u.activo ? "bg-success" : "bg-danger"}`}
-                    >
-                      {u.activo ? "Activo" : "Inactivo"}
-                    </span>
-                  </td>
-                  <td>
                     <div className="d-flex gap-2 flex-wrap">
                       <button
                         className="btn btn-sm btn-outline-primary"
                         onClick={() => handleEditar(u)}
                       >
                         Editar
-                      </button>
-                      <button
-                        className={`btn btn-sm ${u.activo ? "btn-outline-warning" : "btn-outline-success"}`}
-                        onClick={() => handleToggleActivo(u)}
-                        disabled={u.esSuperUsuario}
-                      >
-                        {u.activo ? "Desactivar" : "Activar"}
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-secondary"
-                        onClick={() => handleAbrirPassword(u)}
-                      >
-                        Contraseña
                       </button>
                       <button
                         className="btn btn-sm btn-outline-danger"
@@ -256,7 +194,6 @@ function GestionUsuarios() {
         </div>
       )}
 
-      {/* ── MODAL CREAR / EDITAR ── */}
       {modalAbierto && (
         <div
           className="modal d-block"
@@ -307,7 +244,7 @@ function GestionUsuarios() {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Teléfono</label>
+                  <label className="form-label">Telefono</label>
                   <input
                     className="form-control"
                     value={form.telefono}
@@ -322,7 +259,7 @@ function GestionUsuarios() {
                 </div>
                 {!usuarioEditando && (
                   <div className="mb-3">
-                    <label className="form-label">Contraseña</label>
+                    <label className="form-label">Contrasena</label>
                     <input
                       type="password"
                       className="form-control"
@@ -342,51 +279,6 @@ function GestionUsuarios() {
                   Cancelar
                 </button>
                 <button className="btn btn-success" onClick={handleGuardar}>
-                  Guardar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── MODAL CAMBIAR CONTRASEÑA ── */}
-      {modalPassword && (
-        <div
-          className="modal d-block"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  Cambiar contraseña — {usuarioPassword?.nombre}
-                </h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setModalPassword(false)}
-                />
-              </div>
-              <div className="modal-body">
-                <label className="form-label">Nueva contraseña</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={nuevaPassword}
-                  onChange={(e) => setNuevaPassword(e.target.value)}
-                />
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setModalPassword(false)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={handleGuardarPassword}
-                >
                   Guardar
                 </button>
               </div>

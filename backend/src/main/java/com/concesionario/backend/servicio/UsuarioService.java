@@ -47,6 +47,7 @@ public class UsuarioService {
         validarUsernameUnico(usuario.getUsername());
         validarEmailUnico(usuario.getEmail());
         validarTelefono(usuario.getTelefono());
+        validarPassword(usuario.getPassword());
         validarSuperUsuario(usuario);
         
         asignarValoresPorDefecto(usuario);
@@ -299,10 +300,8 @@ public class UsuarioService {
             actualizarEmail(existente, nuevo.getEmail());
         }
         
-        if (nuevo.getTelefono() != null) {
-            validarTelefono(nuevo.getTelefono());
-            existente.setTelefono(nuevo.getTelefono());
-        }
+        validarTelefono(nuevo.getTelefono());
+        existente.setTelefono(nuevo.getTelefono());
         
         if (nuevo.getEsSuperUsuario() != null) {
             existente.setEsSuperUsuario(nuevo.getEsSuperUsuario());

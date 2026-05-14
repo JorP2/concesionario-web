@@ -34,6 +34,13 @@
   transform: scale(1.05);
 }
 
+/* ── SIN IMAGEN ── */
+.sin-imagen-img {
+  object-fit: contain;
+  padding: 16px;
+  background: #f5f6f8;
+}
+
 /* ── BADGES ── */
 .vehiculo-badges {
   position: absolute;

@@ -15,15 +15,15 @@ export const Navbar = () => {
   const isFirstRender = useRef(true);
   const [scrolled, setScrolled] = useState(false);
 
-useEffect(() => {
-  const handleScroll = () => {
-    setScrolled(window.scrollY > 40);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Sincroniza el estado con los eventos reales de Bootstrap
   useEffect(() => {
@@ -94,7 +94,7 @@ useEffect(() => {
             position: "absolute",
             top: "110%",
             right: 0,
-            zIndex: 9999,
+            zIndex: 10000,
             backgroundColor: "white",
             borderRadius: "8px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
@@ -180,7 +180,12 @@ useEffect(() => {
     <>
       {dropdownOpen && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 9998, pointerEvents: "none" }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9998,
+            pointerEvents: "none",
+          }}
           onClick={() => setDropdownOpen(false)}
         />
       )}

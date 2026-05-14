@@ -10,6 +10,7 @@ const COMBUSTIBLES = [
   "Electrico",
   "GLP",
 ];
+
 const TRANSMISIONES = ["Manual", "Automatico"];
 const TIPOS = ["TURISMO", "FURGONETA", "MOTOCICLETA"];
 
@@ -21,6 +22,7 @@ function FiltroVehiculo({
   anios,
   colores,
   kmMax,
+  precioMax,
 }) {
   const filtrosActivos =
     [
@@ -35,6 +37,11 @@ function FiltroVehiculo({
     ].filter((v) => v !== "").length +
     (filtros.busqueda.trim() !== "" ? 1 : 0) +
     (filtros.km && Number(filtros.km) < (kmMax || 200000) ? 1 : 0);
+
+  // Precios
+  const precioMaximo = precioMax || 50000;
+  const precioActual =
+    filtros.precio === "" ? precioMaximo : Number(filtros.precio);
 
   return (
     <div className="card shadow-sm border-0 rounded-4 mb-4">
@@ -82,7 +89,7 @@ function FiltroVehiculo({
                 />
               </span>
             )}
-            {filtros.precio && (
+            {filtros.precio !== "" && (
               <span className="badge bg-light text-dark border">
                 Hasta EUR {Number(filtros.precio).toLocaleString("es-ES")}
                 <FaTimes
@@ -266,10 +273,7 @@ function FiltroVehiculo({
                       : "btn-outline-secondary"
                   }`}
                   onClick={() =>
-                    onChange(
-                      "transmision",
-                      filtros.transmision === t ? "" : t
-                    )
+                    onChange("transmision", filtros.transmision === t ? "" : t)
                   }
                 >
                   {t}
@@ -282,23 +286,21 @@ function FiltroVehiculo({
             <label className="form-label fw-semibold">
               Precio máximo
               <span className="text-muted fw-normal ms-2 small">
-                EUR {Number(filtros.precio || 50000).toLocaleString("es-ES")}
+                EUR {precioActual.toLocaleString("es-ES")}
               </span>
             </label>
             <input
               type="range"
               min="0"
-              max="50000"
+              max={precioMaximo}
               step="1000"
               className="form-range"
-              value={filtros.precio || 50000}
-              onChange={(e) => onChange("precio", e.target.value)}
+              value={precioActual}
+              onChange={(e) => onChange("precio", Number(e.target.value))}
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>EUR 0</span>
-              <span>
-                {Number(filtros.precio || 50000).toLocaleString("es-ES")} EUR
-              </span>
+              <span>{precioActual.toLocaleString("es-ES")} EUR</span>
             </div>
           </div>
 
@@ -306,7 +308,8 @@ function FiltroVehiculo({
             <label className="form-label fw-semibold">
               Kilómetros máximos
               <span className="text-muted fw-normal ms-2 small">
-                {Number(filtros.km || kmMax || 400000).toLocaleString("es-ES")} km
+                {Number(filtros.km || kmMax || 400000).toLocaleString("es-ES")}{" "}
+                km
               </span>
             </label>
             <input

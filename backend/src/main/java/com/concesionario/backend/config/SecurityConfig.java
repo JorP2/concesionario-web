@@ -34,10 +34,10 @@ public class SecurityConfig {
         .cors(cors -> cors.configure(http))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/usuarios/**").permitAll()
             .requestMatchers("/api/vehiculos/public/**").permitAll()
             .requestMatchers("/uploads/**").permitAll()
-            .requestMatchers("/api/vehiculos/**").hasRole("ADMIN")
+            .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+            .requestMatchers("/api/vehiculos/**").hasAnyRole("ADMIN", "USER")
             .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

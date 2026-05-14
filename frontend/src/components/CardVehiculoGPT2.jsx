@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
-import sinImagen from "../assets/sin-imagen.svg";
+import sinImagen from "../assets/sin-imagen.png";
 import "../styles/vehiculoCard.css";
 
 const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
@@ -32,7 +32,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
           <img
             src={vehiculo.imagenPortada || sinImagen}
             alt={`${vehiculo.marca} ${vehiculo.modelo}`}
-            className="img-fluid w-100"
+            className={`img-fluid w-100 ${!vehiculo.imagenPortada ? "sin-imagen-img" : ""}`}
           />
 
           {vendido && <div className="vendido-ribbon">VENDIDO</div>}
@@ -48,37 +48,37 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
 
         <div className="vehiculo-info">
           <div className="vehiculo-header mb-3 d-flex justify-content-between align-items-baseline">
-
             <div>
               <h5 className="mb-0">
                 {vehiculo.marca} {vehiculo.modelo}
               </h5>
 
               {vehiculo.version && (
-                <p className="vehiculo-version mb-0">
-                  {vehiculo.version}
-                </p>
+                <p className="vehiculo-version mb-0">{vehiculo.version}</p>
               )}
             </div>
 
             <div className="vehiculo-price-block text-end text-nowrap">
-              {vehiculo.enOferta && vehiculo.precioOferta ? (
-                <div className="d-flex gap-2 justify-content-end">
-                  <span className="text-decoration-line-through text-muted">
-                    {Number(vehiculo.precio).toLocaleString("es-ES")} €
-                  </span>
-
-                  <span className="text-primary fw-bold">
-                    {Number(vehiculo.precioOferta).toLocaleString("es-ES")} €
-                  </span>
-                </div>
-              ) : (
-                <span className="text-primary fw-bold">
-                  {Number(vehiculo.precio).toLocaleString("es-ES")} €
-                </span>
+              {!vendido && (
+                <>
+                  {vehiculo.enOferta && vehiculo.precioOferta ? (
+                    <div className="d-flex gap-2 justify-content-end">
+                      <span className="text-decoration-line-through text-muted">
+                        {Number(vehiculo.precio).toLocaleString("es-ES")} €
+                      </span>
+                      <span className="text-primary fw-bold">
+                        {Number(vehiculo.precioOferta).toLocaleString("es-ES")}{" "}
+                        €
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-primary fw-bold">
+                      {Number(vehiculo.precio).toLocaleString("es-ES")} €
+                    </span>
+                  )}
+                </>
               )}
             </div>
-
           </div>
 
           {/* SPECS */}

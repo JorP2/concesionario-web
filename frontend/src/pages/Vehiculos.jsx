@@ -164,9 +164,7 @@ function Vehiculos() {
           <div className="vehiculos-hero-top">
             <div>
               <h1>Encuentra tu próximo coche</h1>
-              <p>
-                Vehículos revisados y listos para entrega.
-              </p>
+              <p>Vehículos revisados y listos para entrega.</p>
             </div>
             <div className="vehiculos-hero-stats">
               <div>
