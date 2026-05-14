@@ -70,7 +70,7 @@ function Contacto() {
                   <FaWhatsapp size={32} className="contacto-icon whatsapp" />
                   <h6>WhatsApp</h6>
                   <p>+34 651 86 82 30</p>
-                  <span className="text-primary">Enviar mensaje -</span>
+                  <span className="text-primary">- Enviar mensaje -</span>
                 </div>
               </a>
             </div>
@@ -81,7 +81,7 @@ function Contacto() {
                   <MdPhone size={32} className="contacto-icon phone" />
                   <h6>Teléfono</h6>
                   <p>+34 925 39 31 86</p>
-                  <span className="text-primary">Llamar ahora -</span>
+                  <span className="text-primary">- Llamar ahora -</span>
                 </div>
               </a>
             </div>
@@ -95,7 +95,7 @@ function Contacto() {
                   <MdEmail size={32} className="contacto-icon email" />
                   <h6>Email</h6>
                   <p>nohalesautomoviles@gmail.com</p>
-                  <span className="text-primary">Enviar email -</span>
+                  <span className="text-primary">- Enviar email -</span>
                 </div>
               </a>
             </div>
@@ -111,7 +111,7 @@ function Contacto() {
                   <MdLocationOn size={32} className="contacto-icon location" />
                   <h6>Ubicación</h6>
                   <p>Burguillos de Toledo</p>
-                  <span className="text-primary">Cómo llegar -</span>
+                  <span className="text-primary">- Cómo llegar -</span>
                 </div>
               </a>
             </div>

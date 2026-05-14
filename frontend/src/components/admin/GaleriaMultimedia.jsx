@@ -244,12 +244,14 @@ function GaleriaMultimedia({
               <div className="mt-3">
                 <h6 className="text-warning">
                   Imágenes a subir ({imagenesNuevas.length})
-                  <small
-                    className="text-muted ms-2"
-                    style={{ fontSize: "12px" }}
-                  >
-                    Haz click para marcar portada
-                  </small>
+                  {imagenesExistentes.length === 0 && (
+                    <small
+                      className="text-muted ms-2"
+                      style={{ fontSize: "12px" }}
+                    >
+                      Haz click para marcar portada
+                    </small>
+                  )}
                 </h6>
                 <div className="row g-2">
                   {imagenesNuevas.map((archivo, i) => (
@@ -257,14 +259,20 @@ function GaleriaMultimedia({
                       <div
                         className="ratio ratio-1x1 position-relative rounded overflow-hidden"
                         style={{
-                          cursor: "pointer",
-                          outline:
+                          cursor:
+                            imagenesExistentes.length === 0
+                              ? "pointer"
+                              : "default",
+                          border:
+                            imagenesExistentes.length === 0 &&
                             portadaNuevaIdx === i
-                              ? "3px solid #0d6efd"
-                              : "none",
-                          borderRadius: "8px",
+                              ? "3px solid #ffc107"
+                              : "3px solid transparent",
                         }}
-                        onClick={() => setPortadaNuevaIdx(i)}
+                        onClick={() =>
+                          imagenesExistentes.length === 0 &&
+                          setPortadaNuevaIdx(i)
+                        }
                       >
                         <img
                           src={URL.createObjectURL(archivo)}
@@ -272,14 +280,21 @@ function GaleriaMultimedia({
                           style={{ objectFit: "cover" }}
                           alt={archivo.name}
                         />
-                        {portadaNuevaIdx === i && (
-                          <span
-                            className="position-absolute top-0 start-0 m-1 badge bg-primary"
-                            style={{ zIndex: 2 }}
-                          >
-                            Portada
-                          </span>
-                        )}
+                        {imagenesExistentes.length === 0 &&
+                          portadaNuevaIdx === i && (
+                            <span
+                              className="position-absolute bottom-0 start-0 w-100 text-center py-1"
+                              style={{
+                                background: "rgba(13,110,253,0.75)",
+                                color: "white",
+                                fontSize: "11px",
+                                fontWeight: 600,
+                                zIndex: 2,
+                              }}
+                            >
+                              Portada
+                            </span>
+                          )}
                         <button
                           type="button"
                           className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"

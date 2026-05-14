@@ -44,13 +44,12 @@ function Vehiculos() {
     setLoading(true);
     setError(false);
     try {
-      const usarBusqueda =
-        filtrosActuales.marca || filtrosActuales.precio || filtrosActuales.tipo;
+      const usarBusqueda = filtrosActuales.marca || filtrosActuales.tipo;
       const data = usarBusqueda
         ? await serchVehiculos(
             filtrosActuales.marca || null,
             null,
-            filtrosActuales.precio ? Number(filtrosActuales.precio) : null,
+            null,
             filtrosActuales.tipo || null,
           )
         : await getVehiculosEnVenta();
@@ -72,7 +71,51 @@ function Vehiculos() {
   React.useEffect(() => {
     if (pestana !== "en_venta") return;
     loadVehiculos(filtros);
-  }, [filtros.marca, filtros.precio, filtros.tipo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filtros.marca, filtros.tipo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const marcas = React.useMemo(
+    () => [...new Set(vehiculos.map((v) => v.marca))].sort(),
+    [vehiculos],
+  );
+  const anios = React.useMemo(
+    () => [...new Set(vehiculos.map((v) => v.anio))].sort((a, b) => b - a),
+    [vehiculos],
+  );
+  const colores = React.useMemo(
+    () =>
+      [
+        ...new Set(vehiculos.map((v) => v.colorExterior).filter(Boolean)),
+      ].sort(),
+    [vehiculos],
+  );
+  const kmMax = React.useMemo(
+    () =>
+      vehiculos.length
+        ? Math.ceil(Math.max(...vehiculos.map((v) => v.kilometros)) / 5000) *
+          5000
+        : 200000,
+    [vehiculos],
+  );
+  const precioMax = React.useMemo(
+    () =>
+      vehiculos.length
+        ? Math.ceil(Math.max(...vehiculos.map((v) => v.precio)) / 1000) * 1000
+        : 50000,
+    [vehiculos],
+  );
+
+  React.useEffect(() => {
+    setFiltros((prev) => {
+      const newFiltros = { ...prev };
+      if (prev.precio && Number(prev.precio) > precioMax) {
+        newFiltros.precio = precioMax.toString();
+      }
+      if (prev.km && Number(prev.km) > kmMax) {
+        newFiltros.km = kmMax.toString();
+      }
+      return newFiltros;
+    });
+  }, [precioMax, kmMax]);
 
   // UX estados
   if (loadingInicial) {
@@ -97,22 +140,6 @@ function Vehiculos() {
   };
 
   const handleReset = () => setFiltros(FILTROS_INICIALES);
-
-  const marcas = [...new Set(vehiculos.map((v) => v.marca))].sort();
-  const anios = [...new Set(vehiculos.map((v) => v.anio))].sort(
-    (a, b) => b - a,
-  );
-  const colores = [
-    ...new Set(vehiculos.map((v) => v.colorExterior).filter(Boolean)),
-  ].sort();
-
-  const kmMax = vehiculos.length
-    ? Math.ceil(Math.max(...vehiculos.map((v) => v.kilometros)) / 5000) * 5000
-    : 200000;
-
-  const precioMax = vehiculos.length
-    ? Math.ceil(Math.max(...vehiculos.map((v) => v.precio)) / 1000) * 1000
-    : 50000;
 
   const vehiculosFiltrados = vehiculos.filter((v) => {
     const texto = filtros.busqueda.toLowerCase();
@@ -214,11 +241,7 @@ function Vehiculos() {
             <p className="text-center mt-4">Error cargando vehículos...</p>
           )}
 
-          {!loading && !error && vehiculos.length === 0 && (
-            <p className="text-center mt-4">No hay vehículos disponibles...</p>
-          )}
-
-          {!loading && !error && vehiculos.length > 0 && (
+          {!loading && !error && (
             <>
               {/* Barra sticky móvil */}
               <div className="filtro-telefono-bar">
@@ -233,7 +256,8 @@ function Vehiculos() {
                   )}
                 </button>
                 <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  {vehiculosFiltrados.length} resultados
+                  {vehiculos.length > 0 ? vehiculosFiltrados.length : 0}{" "}
+                  resultados
                 </span>
               </div>
 
@@ -266,41 +290,49 @@ function Vehiculos() {
                 )}
 
                 <div className="vehiculos-content">
-                  <h2 className="vehiculos-titulo d-none d-md-block">
-                    Disponibles
-                    <span className="fs-6 text-muted ms-2">
-                      ({vehiculosFiltrados.length} resultados)
-                    </span>
-                  </h2>
-
-                  {/* Overlay de recarga — solo aparece en refiltrados */}
-                  {loading && (
-                    <div className="vehiculos-recargando">
-                      <div
-                        className="spinner-border text-success"
-                        role="status"
-                      />
-                    </div>
-                  )}
-
-                  {vehiculosFiltrados.length > 0 ? (
-                    <div
-                      className={`vehiculos-grid${loading ? " vehiculos-grid--cargando" : ""}`}
-                    >
-                      {vehiculosFiltrados.map((vehiculo) => (
-                        <CardVehiculoGPT2
-                          key={vehiculo.id}
-                          vehiculo={vehiculo}
-                        />
-                      ))}
-                    </div>
+                  {vehiculos.length === 0 ? (
+                    <p className="text-center mt-4">
+                      No hay vehículos disponibles...
+                    </p>
                   ) : (
-                    !loading && (
-                      <p className="ms-3">
-                        Lo sentimos, no hay vehículos con esas características
-                        aún.
-                      </p>
-                    )
+                    <>
+                      <h2 className="vehiculos-titulo d-none d-md-block">
+                        Disponibles
+                        <span className="fs-6 text-muted ms-2">
+                          ({vehiculosFiltrados.length} resultados)
+                        </span>
+                      </h2>
+
+                      {/* Overlay de recarga — solo aparece en refiltrados */}
+                      {loading && (
+                        <div className="vehiculos-recargando">
+                          <div
+                            className="spinner-border text-success"
+                            role="status"
+                          />
+                        </div>
+                      )}
+
+                      {vehiculosFiltrados.length > 0 ? (
+                        <div
+                          className={`vehiculos-grid${loading ? " vehiculos-grid--cargando" : ""}`}
+                        >
+                          {vehiculosFiltrados.map((vehiculo) => (
+                            <CardVehiculoGPT2
+                              key={vehiculo.id}
+                              vehiculo={vehiculo}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        !loading && (
+                          <p className="ms-3">
+                            Lo sentimos, no hay vehículos con esas
+                            características aún.
+                          </p>
+                        )
+                      )}
+                    </>
                   )}
                 </div>
               </div>

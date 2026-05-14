@@ -12,7 +12,7 @@ import {
   updateEstadoVehiculo,
   aplicarOfertaPrecioFijo,
 } from "../api/vehiculoApi";
-import { addImagenes } from "../api/imagenApi";
+import { addImagenes, cambiarPortada } from "../api/imagenApi";
 
 // Helper para el contador
 const Contador = ({ valor, max }) => (
@@ -152,7 +152,12 @@ function VehiculoFormulario() {
       }
 
       if (imagenesNuevas.length > 0) {
-        await addImagenes(vehiculoId, imagenesNuevas);
+        const imagenesSubidas = await addImagenes(vehiculoId, imagenesNuevas);
+        // imagenesSubidas es el array que devuelve el backend con los IDs
+        const imagenPortada = imagenesSubidas[portadaNuevaIdx];
+        if (imagenPortada) {
+          await cambiarPortada(vehiculoId, imagenPortada.id);
+        }
       }
 
       navigate("/administrador");
@@ -163,7 +168,7 @@ function VehiculoFormulario() {
 
   return (
     <>
-      <div className="containear-fluid px-4">
+      <div className="containear-fluid px-4 mb-5">
         <button
           className="btn btn-light btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
           onClick={() => navigate(-1)}
