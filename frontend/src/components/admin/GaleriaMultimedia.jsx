@@ -1,5 +1,4 @@
 import React from "react";
-// APIs
 import {
   cambiarPortada,
   eliminarImagen,
@@ -11,9 +10,21 @@ import {
   eliminarVideo,
   getVideosByVehiculoId,
 } from "../../api/videoApi";
+import { FaPlus, FaTimes, FaArrowLeft, FaStar, FaVideo } from "react-icons/fa";
 
-// Iconos
-import { FaPlus, FaTimes } from "react-icons/fa";
+const sectionTitleStyle = {
+  fontSize: "11px",
+  fontWeight: 600,
+  textTransform: "uppercase",
+  letterSpacing: "0.07em",
+  color: "var(--bs-secondary-color, #6c757d)",
+  marginBottom: "12px",
+  paddingBottom: "8px",
+  borderBottom: "1px solid var(--bs-border-color, #dee2e6)",
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+};
 
 function GaleriaMultimedia({
   vehiculoId,
@@ -29,15 +40,12 @@ function GaleriaMultimedia({
   const inputVideoRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (!vehiculoId) return; // Si no hay ID, no hacemos nada
-
+    if (!vehiculoId) return;
     const cargarMultimedia = async () => {
       setCargando(true);
-
       try {
         const imgs = await getImagenesByVehiculoId(vehiculoId);
         const vids = await getVideosByVehiculoId(vehiculoId);
-
         setImagenesExistentes(imgs);
         setVideosExistentes(vids);
       } catch (error) {
@@ -49,13 +57,10 @@ function GaleriaMultimedia({
     cargarMultimedia();
   }, [vehiculoId]);
 
-  // Funcion para eliminar una imagen (tanto de la API como del estado local)
   const handleEliminarImg = async (vehiculoId, imagenId) => {
     try {
       if (!imagenId) return;
-
       await eliminarImagen(vehiculoId, imagenId);
-
       setImagenesExistentes((prev) =>
         prev.filter((img) => img.id !== imagenId),
       );
@@ -64,11 +69,9 @@ function GaleriaMultimedia({
     }
   };
 
-  // Funcion para cambiar la portada
   const handlePortada = async (vehiculoId, imagenId) => {
     try {
       await cambiarPortada(vehiculoId, imagenId);
-
       setImagenesExistentes((prev) =>
         prev.map((img) =>
           img.id === imagenId
@@ -81,38 +84,28 @@ function GaleriaMultimedia({
     }
   };
 
-  // Función ordenar imágenes mover a la izquierda
   const handleMoverIzquierda = async (index) => {
     if (index === 0) return;
-
-    // Crea la copia del array e intercambia la imagen con la anterior
     const nuevasImagenes = [...imagenesExistentes];
     [nuevasImagenes[index - 1], nuevasImagenes[index]] = [
       nuevasImagenes[index],
       nuevasImagenes[index - 1],
     ];
-
-    // Actualiza el estado local
     setImagenesExistentes(nuevasImagenes);
-
-    // Manda al backend solo los IDs en el uevo orden
     const idsOrdenados = nuevasImagenes.map((img) => img.id);
     try {
       await reordenarImagenes(vehiculoId, idsOrdenados);
     } catch (error) {
       console.error("Error al reordenar las imágenes:", error);
-      // Si falla revertimos
       setImagenesExistentes(imagenesExistentes);
     }
   };
 
-  // Funcion cuando el usuario selecciona archivos
   const handleSeleccionarImagenes = (e) => {
     const archivos = Array.from(e.target.files);
     setImagenesNuevas((prev) => [...prev, ...archivos]);
   };
 
-  // Funciones VIDEOS
   const handleEliminarVideo = async (vehiculoId, videoId) => {
     try {
       await eliminarVideo(vehiculoId, videoId);
@@ -132,16 +125,31 @@ function GaleriaMultimedia({
         console.error("Error al subir video:", error);
       }
     }
-    // Resetea el input para permitir subir el mismo archivo otra vez
     e.target.value = "";
   };
 
   return (
-    <div>
-      {/* Sección imágenes */}
-      <div className="mb-4">
-        <h5>Imágenes</h5>
-        {/* input siempre presente pero oculto */}
+    <div className="d-flex flex-column gap-4">
+      {/* ── Sección imágenes ── */}
+      <div>
+        <p style={sectionTitleStyle}>
+          Imágenes
+          {!cargando && (
+            <span
+              className="ms-auto"
+              style={{
+                fontSize: "10px",
+                fontWeight: 400,
+                color: "var(--bs-secondary-color, #6c757d)",
+                textTransform: "none",
+                letterSpacing: 0,
+              }}
+            >
+              Primera imagen = portada
+            </span>
+          )}
+        </p>
+
         <input
           type="file"
           ref={inputImagenRef}
@@ -151,26 +159,32 @@ function GaleriaMultimedia({
           onChange={handleSeleccionarImagenes}
         />
 
-        {/*grid de fotos */}
         {cargando ? (
-          // situacion 1 - Cargando...
           <div className="row g-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="col-6 col-md-3 col-lg-2">
-                <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
-                  <div className="placeholder-glow w-100 h-100">
-                    <span className="placeholder w-100 h-100 rounded"></span>
-                  </div>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="col-4">
+                <div className="ratio ratio-4x3 rounded overflow-hidden placeholder-glow">
+                  <span
+                    className="placeholder w-100 h-100 rounded"
+                    style={{ background: "var(--bs-border-color)" }}
+                  ></span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div>
+          <>
             <div className="row g-2">
               {imagenesExistentes.map((img, index) => (
-                <div key={img.id} className="col-6 col-md-3 col-lg-2">
-                  <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
+                <div key={img.id} className="col-4">
+                  <div
+                    className="ratio ratio-4x3 position-relative rounded overflow-hidden"
+                    style={{
+                      border: img.esPortada
+                        ? "2px solid #0d6efd"
+                        : "2px solid transparent",
+                    }}
+                  >
                     <img
                       src={img.url}
                       className="w-100 h-100 position-absolute top-0 start-0"
@@ -178,36 +192,51 @@ function GaleriaMultimedia({
                       alt={`Imagen ${img.id}`}
                     />
 
-                    {/* Portada */}
+                    {/* Badge portada */}
                     {img.esPortada && (
                       <span
-                        className="position-absolute top-0 start-0 m-1 badge"
-                        style={{ background: "rgba(0,0,0,0.5)", zIndex: 2 }}
+                        className="position-absolute top-0 start-0 m-1 d-flex align-items-center gap-1"
+                        style={{
+                          background: "rgba(13,110,253,0.85)",
+                          color: "#fff",
+                          fontSize: "10px",
+                          fontWeight: 600,
+                          padding: "2px 7px",
+                          borderRadius: "6px",
+                          zIndex: 2,
+                        }}
                       >
-                        Portada
+                        <FaStar size={8} /> Portada
                       </span>
                     )}
 
-                    {/* Overlay con botones */}
+                    {/* Overlay hover */}
                     <div
                       className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-1 gap-1"
-                      style={{ background: "rgba(0,0,0,0.45)", opacity: 0 }}
+                      style={{
+                        background: "rgba(0,0,0,0.5)",
+                        opacity: 0,
+                        transition: "opacity 0.15s",
+                        zIndex: 3,
+                      }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
                       {index > 0 && (
                         <button
                           type="button"
-                          className="btn btn-sm btn-secondary w-100"
+                          className="btn btn-sm btn-secondary w-100 d-flex align-items-center justify-content-center gap-1"
+                          style={{ fontSize: "11px", padding: "3px 0" }}
                           onClick={() => handleMoverIzquierda(index)}
                         >
-                          ← Mover
+                          <FaArrowLeft size={9} /> Mover
                         </button>
                       )}
                       {!img.esPortada && (
                         <button
                           type="button"
                           className="btn btn-sm btn-light w-100"
+                          style={{ fontSize: "11px", padding: "3px 0" }}
                           onClick={() => handlePortada(vehiculoId, img.id)}
                         >
                           Portada
@@ -216,6 +245,7 @@ function GaleriaMultimedia({
                       <button
                         type="button"
                         className="btn btn-sm btn-danger w-100"
+                        style={{ fontSize: "11px", padding: "3px 0" }}
                         onClick={() => handleEliminarImg(vehiculoId, img.id)}
                       >
                         Eliminar
@@ -225,39 +255,81 @@ function GaleriaMultimedia({
                 </div>
               ))}
 
-              {/* Botón agregar*/}
-              <div className="col-6 col-md-3 col-lg-2">
+              {/* Botón añadir */}
+              <div className="col-4">
                 <div
-                  className="ratio ratio-1x1 border rounded"
-                  style={{ cursor: "pointer", borderStyle: "dashed" }}
+                  style={{
+                    position: "relative",
+                    paddingTop: "75%",
+                    border: "1.5px dashed var(--bs-border-color, #dee2e6)",
+                    cursor: "pointer",
+                    transition: "border-color 0.15s",
+                  }}
                   onClick={() => inputImagenRef.current.click()}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.borderColor = "#0d6efd")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      "var(--bs-border-color, #dee2e6)")
+                  }
                 >
-                  <div className="d-flex align-items-center justify-content-center w-100 h-100">
-                    <FaPlus size={28} className="text-muted" />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "4px",
+                      color: "var(--bs-secondary-color, #6c757d)",
+                      fontSize: "11px",
+                    }}
+                  >
+                    <FaPlus size={18} />
+                    <span>Añadir</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Sección imágenes a subir */}
+            {/* Imágenes pendientes de subir */}
             {imagenesNuevas.length > 0 && (
               <div className="mt-3">
-                <h6 className="text-warning">
-                  Imágenes a subir ({imagenesNuevas.length})
+                <p
+                  className="mb-2 d-flex align-items-center gap-2"
+                  style={{
+                    fontSize: "12px",
+                    color: "#856404",
+                    fontWeight: 500,
+                  }}
+                >
+                  <span
+                    style={{
+                      background: "#fff3cd",
+                      border: "1px solid #ffc107",
+                      borderRadius: "20px",
+                      padding: "1px 8px",
+                    }}
+                  >
+                    {imagenesNuevas.length} pendiente
+                    {imagenesNuevas.length > 1 ? "s" : ""}
+                  </span>
                   {imagenesExistentes.length === 0 && (
-                    <small
-                      className="text-muted ms-2"
-                      style={{ fontSize: "12px" }}
-                    >
-                      Haz click para marcar portada
-                    </small>
+                    <span className="text-muted" style={{ fontWeight: 400 }}>
+                      Toca para marcar portada
+                    </span>
                   )}
-                </h6>
+                </p>
                 <div className="row g-2">
                   {imagenesNuevas.map((archivo, i) => (
-                    <div key={i} className="col-6 col-md-3 col-lg-2">
+                    <div key={i} className="col-4">
                       <div
-                        className="ratio ratio-1x1 position-relative rounded overflow-hidden"
+                        className="ratio ratio-4x3 position-relative rounded overflow-hidden"
                         style={{
                           cursor:
                             imagenesExistentes.length === 0
@@ -266,8 +338,8 @@ function GaleriaMultimedia({
                           border:
                             imagenesExistentes.length === 0 &&
                             portadaNuevaIdx === i
-                              ? "3px solid #ffc107"
-                              : "3px solid transparent",
+                              ? "2px solid #0d6efd"
+                              : "2px solid transparent",
                         }}
                         onClick={() =>
                           imagenesExistentes.length === 0 &&
@@ -285,9 +357,9 @@ function GaleriaMultimedia({
                             <span
                               className="position-absolute bottom-0 start-0 w-100 text-center py-1"
                               style={{
-                                background: "rgba(13,110,253,0.75)",
+                                background: "rgba(13,110,253,0.8)",
                                 color: "white",
-                                fontSize: "11px",
+                                fontSize: "10px",
                                 fontWeight: 600,
                                 zIndex: 2,
                               }}
@@ -299,9 +371,10 @@ function GaleriaMultimedia({
                           type="button"
                           className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
                           style={{
-                            width: "22px",
-                            height: "22px",
+                            width: "20px",
+                            height: "20px",
                             borderRadius: "50%",
+                            zIndex: 4,
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -314,7 +387,7 @@ function GaleriaMultimedia({
                               setPortadaNuevaIdx(portadaNuevaIdx - 1);
                           }}
                         >
-                          <FaTimes size={10} />
+                          <FaTimes size={9} />
                         </button>
                       </div>
                     </div>
@@ -322,69 +395,88 @@ function GaleriaMultimedia({
                 </div>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
 
-      {/* Sección videos */}
-      {vehiculoId ? (
-        <div className="mt-4">
-          <h5>Videos</h5>
-          <input
-            type="file"
-            ref={inputVideoRef}
-            className="d-none"
-            multiple
-            accept="video/*"
-            onChange={handleSeleccionarVideo}
-          />
-          <div className="row g-2">
-            {videosExistentes.map((vid) => (
-              <div key={vid.id} className="col-12 col-md-6 col-lg-4">
-                <div className="position-relative rounded overflow-hidden">
-                  <video
-                    src={vid.url}
-                    className="w-100 rounded"
-                    style={{ maxHeight: "180px", objectFit: "cover" }}
-                    controls
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "50%",
-                    }}
-                    onClick={() => handleEliminarVideo(vehiculoId, vid.id)}
-                  >
-                    <FaTimes size={10} />
-                  </button>
+      {/* ── Sección vídeos ── */}
+      <div>
+        <p style={sectionTitleStyle}>
+          <FaVideo size={11} style={{ opacity: 0.6 }} /> Vídeos
+        </p>
+
+        {vehiculoId ? (
+          <>
+            <input
+              type="file"
+              ref={inputVideoRef}
+              className="d-none"
+              multiple
+              accept="video/*"
+              onChange={handleSeleccionarVideo}
+            />
+            <div className="row g-2">
+              {videosExistentes.map((vid) => (
+                <div key={vid.id} className="col-12">
+                  <div className="position-relative rounded overflow-hidden">
+                    <video
+                      src={vid.url}
+                      className="w-100 rounded"
+                      style={{
+                        maxHeight: "160px",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                      controls
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "50%",
+                      }}
+                      onClick={() => handleEliminarVideo(vehiculoId, vid.id)}
+                    >
+                      <FaTimes size={10} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* Botón añadir vídeo */}
+              <div className="col-12">
+                <div
+                  className="rounded d-flex flex-column align-items-center justify-content-center gap-2 text-muted"
+                  style={{
+                    height: "90px",
+                    border: "1.5px dashed var(--bs-border-color, #dee2e6)",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    transition: "border-color 0.15s",
+                  }}
+                  onClick={() => inputVideoRef.current.click()}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.borderColor = "#0d6efd")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      "var(--bs-border-color, #dee2e6)")
+                  }
+                >
+                  <FaPlus size={16} />
+                  <span>Subir vídeo</span>
                 </div>
               </div>
-            ))}
-
-            {/* Botón agregar */}
-            <div className="col-12 col-md-6 col-lg-4">
-              <div
-                className="border rounded d-flex align-items-center justify-content-center"
-                style={{
-                  height: "180px",
-                  cursor: "pointer",
-                  borderStyle: "dashed",
-                }}
-                onClick={() => inputVideoRef.current.click()}
-              >
-                <FaPlus size={28} className="text-muted" />
-              </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <p className="text-muted small">
-          Guarda el vehículo primero para poder subir videos
-        </p>
-      )}
+          </>
+        ) : (
+          <p className="text-muted" style={{ fontSize: "12px" }}>
+            Guarda el vehículo primero para poder subir vídeos.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
