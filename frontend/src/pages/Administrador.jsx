@@ -20,6 +20,7 @@ function Administrador() {
   const [subPestanaVehiculos, setSubPestanaVehiculos] =
     React.useState("en_stock");
   const [error, setError] = React.useState(false);
+  const [filtroTipo, setFiltroTipo] = React.useState("todos");
 
   const cargar = async () => {
     try {
@@ -44,11 +45,15 @@ function Administrador() {
     );
   }
 
-  const vehiculosFiltrados = vehiculos.filter(
-    (v) =>
+  const vehiculosFiltrados = vehiculos.filter((v) => {
+    const coincideBusqueda =
       v.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
-      v.modelo.toLowerCase().includes(busqueda.toLowerCase()),
-  );
+      v.modelo.toLowerCase().includes(busqueda.toLowerCase());
+    const coincideTipo =
+      filtroTipo === "todos" ||
+      v.tipo?.toLowerCase() === filtroTipo.toLowerCase();
+    return coincideBusqueda && coincideTipo;
+  });
 
   const handleEliminar = async (vehiculoId) => {
     try {
@@ -142,7 +147,7 @@ function Administrador() {
 
           {pestana === "vehiculos" && (
             <>
-              <div className="admin-toolbar mb-4">
+              <div className="admin-toolbar mb-4 d-flex gap-2">
                 <input
                   type="text"
                   className="form-control"
@@ -150,6 +155,16 @@ function Administrador() {
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
+                <select
+                  className="form-select w-auto"
+                  value={filtroTipo}
+                  onChange={(e) => setFiltroTipo(e.target.value)}
+                >
+                  <option value="todos">🚗🏍️ Todos</option>
+                  <option value="turismo">🚗 Turismo</option>
+                  <option value="motocicleta">🏍️ Moto</option>
+                  <option value="furgoneta">🚐 Furgoneta</option>
+                </select>
               </div>
               <div className="vehiculos-tabs mb-4">
                 <button

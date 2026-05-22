@@ -44,7 +44,7 @@ function Nosotros() {
   const reviewsLoop = [...reviews, ...reviews];
 
   return (
-    <div className="nosotros-page">
+    <div className="nosotros-page mb-5">
       <section
         className="nosotros-hero"
         style={{ backgroundImage: "url(/imagenNosotros.jpeg)" }}
