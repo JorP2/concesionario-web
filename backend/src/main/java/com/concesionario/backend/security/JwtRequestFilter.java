@@ -1,6 +1,7 @@
 package com.concesionario.backend.security;
 
 import com.concesionario.backend.utils.JwtUtil;
+import com.concesionario.backend.utils.SecurityLogger;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,12 +24,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private SecurityLogger securityLogger;
+
+    private String getClientIP(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader != null) {
+            return xfHeader.split(",")[0];
+        }
+        return request.getRemoteAddr();
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
+        String ip = getClientIP(request);
+        String requestURI = request.getRequestURI();
 
         String username = null;
         String jwt = null;
@@ -46,8 +60,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                securityLogger.logTokenInvalid(username, ip, "Token inválido o expirado");
+                enviarError(response, "Token inválido o expirado. Inicie sesión nuevamente.");
+                return;
             }
         }
         chain.doFilter(request, response);
+    }
+    
+    private void enviarError(HttpServletResponse response, String mensaje) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + mensaje + "\"}");
     }
 }

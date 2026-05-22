@@ -30,12 +30,17 @@ public class VideoService {
     @Autowired
     private UploadConfig uploadConfig;
 
-    // ========== SUBIR VIDEO ==========
-
     public Video subirVideo(Long vehiculoId, MultipartFile archivo) throws IOException {
         log.info("Subiendo video para vehículo ID: {}", vehiculoId);
         
-        validarQueEsVideo(archivo);
+        if (archivo == null || archivo.isEmpty()) {
+            throw new RuntimeException("Debe seleccionar un archivo de video.");
+        }
+        
+        if (!FileUtils.esVideo(archivo)) {
+            throw new RuntimeException("El archivo debe ser un video válido (MP4, MPEG o MOV).");
+        }
+        
         Vehiculo vehiculo = obtenerVehiculo(vehiculoId);
         String carpeta = crearCarpetaVideos(vehiculoId);
         String uid = guardarArchivo(archivo, carpeta);
@@ -48,14 +53,10 @@ public class VideoService {
         return resultado;
     }
 
-    // ========== OBTENER VIDEOS ==========
-
     public List<Video> obtenerVideosPorVehiculo(Long vehiculoId) {
         log.info("Obteniendo videos del vehículo ID: {}", vehiculoId);
         return videoRepository.findByVehiculoIdOrderByOrdenAsc(vehiculoId);
     }
-
-    // ========== ELIMINAR VIDEO ==========
 
     public void eliminarVideo(Long id) {
         log.info("Eliminando video ID: {}", id);
@@ -67,20 +68,11 @@ public class VideoService {
         log.info("Video ID: {} eliminado", id);
     }
 
-    // ========== MÉTODOS PRIVADOS ==========
-
-    private void validarQueEsVideo(MultipartFile archivo) {
-        if (!FileUtils.esVideo(archivo)) {
-            log.warn("Archivo no válido: no es un video");
-            throw new RuntimeException("El archivo debe ser un video (MP4, MPEG, MOV)");
-        }
-    }
-
     private Vehiculo obtenerVehiculo(Long vehiculoId) {
         return vehiculoRepository.findById(vehiculoId)
                 .orElseThrow(() -> {
                     log.warn("Vehículo no encontrado con ID: {}", vehiculoId);
-                    return new RuntimeException("Vehículo no encontrado");
+                    return new RuntimeException("Vehículo no encontrado.");
                 });
     }
 
@@ -92,9 +84,14 @@ public class VideoService {
     }
 
     private String guardarArchivo(MultipartFile archivo, String carpeta) throws IOException {
-        String uid = FileUtils.guardarArchivo(archivo, carpeta);
-        log.debug("Archivo guardado con UID: {}", uid);
-        return uid;
+        try {
+            String uid = FileUtils.guardarArchivo(archivo, carpeta);
+            log.debug("Archivo guardado con UID: {}", uid);
+            return uid;
+        } catch (IOException e) {
+            log.error("Error al guardar archivo de video", e);
+            throw new RuntimeException("Error al guardar el video en el servidor.");
+        }
     }
 
     private int calcularNuevoOrden(Long vehiculoId) {
@@ -116,7 +113,7 @@ public class VideoService {
         return videoRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Video no encontrado con ID: {}", id);
-                    return new RuntimeException("Video no encontrado");
+                    return new RuntimeException("Video no encontrado.");
                 });
     }
 

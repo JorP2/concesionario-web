@@ -1,19 +1,15 @@
 import React from "react";
-// APIs
 import {
   cambiarPortada,
   eliminarImagen,
   getImagenesByVehiculoId,
-  reordenarImagenes,
 } from "../../api/imagenApi";
 import {
-  addVideo,
   eliminarVideo,
   getVideosByVehiculoId,
 } from "../../api/videoApi";
 
-// Iconos
-import { FaPlus, FaTimes } from "react-icons/fa";
+const MAX_VIDEOS = 2;
 
 function GaleriaMultimedia({
   vehiculoId,
@@ -21,127 +17,212 @@ function GaleriaMultimedia({
   setImagenesNuevas,
   portadaNuevaIdx,
   setPortadaNuevaIdx,
+  videosNuevos,
+  setVideosNuevos,
 }) {
   const [imagenesExistentes, setImagenesExistentes] = React.useState([]);
   const [videosExistentes, setVideosExistentes] = React.useState([]);
-  const [cargando, setCargando] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalImage, setModalImage] = React.useState(null);
+  const [modalImageId, setModalImageId] = React.useState(null);
+  const [modalIsNew, setModalIsNew] = React.useState(false);
+
   const inputImagenRef = React.useRef(null);
   const inputVideoRef = React.useRef(null);
 
+  // Determinar si estamos en modo edición (hay ID)
+  const esEdicion = Boolean(vehiculoId);
+
+  // Cargar multimedia existente
   React.useEffect(() => {
-    if (!vehiculoId) return; // Si no hay ID, no hacemos nada
+    if (!vehiculoId) return;
 
-    const cargarMultimedia = async () => {
-      setCargando(true);
-
+    const cargar = async () => {
+      setLoading(true);
       try {
         const imgs = await getImagenesByVehiculoId(vehiculoId);
         const vids = await getVideosByVehiculoId(vehiculoId);
-
         setImagenesExistentes(imgs);
         setVideosExistentes(vids);
       } catch (error) {
-        console.error("Error al cargar multimedia:", error);
+        console.error("Error:", error);
       } finally {
-        setCargando(false);
+        setLoading(false);
       }
     };
-    cargarMultimedia();
+    cargar();
   }, [vehiculoId]);
 
-  // Funcion para eliminar una imagen (tanto de la API como del estado local)
-  const handleEliminarImg = async (vehiculoId, imagenId) => {
+  const abrirModal = (imagen, esNueva = false, idx = null) => {
+    setModalImage(imagen);
+    setModalIsNew(esNueva);
+    if (!esNueva) {
+      setModalImageId(imagen.id);
+    } else {
+      setModalImageId(idx);
+    }
+    setModalOpen(true);
+  };
+
+  const cambiarPortadaDesdeModal = () => {
+    if (modalIsNew) {
+      setPortadaNuevaIdx(modalImageId);
+    } else {
+      handleCambiarPortada(modalImageId);
+    }
+    setModalOpen(false);
+  };
+
+  const eliminarImagenNueva = (index) => {
+    const nuevas = imagenesNuevas.filter((_, i) => i !== index);
+    setImagenesNuevas(nuevas);
+    if (portadaNuevaIdx === index) setPortadaNuevaIdx(-1);
+    else if (portadaNuevaIdx > index) setPortadaNuevaIdx(portadaNuevaIdx - 1);
+  };
+
+  const handleEliminarImagen = async (imagenId) => {
     try {
-      if (!imagenId) return;
-
       await eliminarImagen(vehiculoId, imagenId);
-
-      setImagenesExistentes((prev) =>
-        prev.filter((img) => img.id !== imagenId),
-      );
+      setImagenesExistentes((prev) => prev.filter((img) => img.id !== imagenId));
     } catch (error) {
-      console.error("Error al eliminar la imagen:", error);
+      console.error("Error:", error);
     }
   };
 
-  // Funcion para cambiar la portada
-  const handlePortada = async (vehiculoId, imagenId) => {
+  const handleCambiarPortada = async (imagenId) => {
     try {
       await cambiarPortada(vehiculoId, imagenId);
-
       setImagenesExistentes((prev) =>
-        prev.map((img) =>
-          img.id === imagenId
-            ? { ...img, esPortada: true }
-            : { ...img, esPortada: false },
-        ),
+        prev.map((img) => ({ ...img, esPortada: img.id === imagenId }))
       );
+      setPortadaNuevaIdx(-1);
     } catch (error) {
-      console.error("Error al cambiar la portada:", error);
+      console.error("Error:", error);
     }
   };
 
-  // Función ordenar imágenes mover a la izquierda
-  const handleMoverIzquierda = async (index) => {
-    if (index === 0) return;
-
-    // Crea la copia del array e intercambia la imagen con la anterior
-    const nuevasImagenes = [...imagenesExistentes];
-    [nuevasImagenes[index - 1], nuevasImagenes[index]] = [
-      nuevasImagenes[index],
-      nuevasImagenes[index - 1],
-    ];
-
-    // Actualiza el estado local
-    setImagenesExistentes(nuevasImagenes);
-
-    // Manda al backend solo los IDs en el uevo orden
-    const idsOrdenados = nuevasImagenes.map((img) => img.id);
-    try {
-      await reordenarImagenes(vehiculoId, idsOrdenados);
-    } catch (error) {
-      console.error("Error al reordenar las imágenes:", error);
-      // Si falla revertimos
-      setImagenesExistentes(imagenesExistentes);
+  // Click en imagen existente
+  const handleClickImagenExistente = (img) => {
+    if (!img.esPortada) {
+      handleCambiarPortada(img.id);
     }
   };
 
-  // Funcion cuando el usuario selecciona archivos
+  // Click en imagen nueva (SOLO en modo CREACIÓN)
+  const handleClickImagenNueva = (idx) => {
+    if (!esEdicion) {
+      setPortadaNuevaIdx(idx);
+    }
+    // En modo edición, NO hace nada
+  };
+
   const handleSeleccionarImagenes = (e) => {
     const archivos = Array.from(e.target.files);
     setImagenesNuevas((prev) => [...prev, ...archivos]);
+    e.target.value = "";
   };
 
-  // Funciones VIDEOS
-  const handleEliminarVideo = async (vehiculoId, videoId) => {
+  const eliminarVideoNuevo = (index) => {
+    const nuevos = videosNuevos.filter((_, i) => i !== index);
+    setVideosNuevos(nuevos);
+  };
+
+  const handleEliminarVideo = async (videoId) => {
     try {
       await eliminarVideo(vehiculoId, videoId);
       setVideosExistentes((prev) => prev.filter((v) => v.id !== videoId));
     } catch (error) {
-      console.error("Error al eliminar el video:", error);
+      console.error("Error:", error);
     }
   };
 
-  const handleSeleccionarVideo = async (e) => {
+  const handleSeleccionarVideo = (e) => {
     const archivos = Array.from(e.target.files);
-    for (const archivo of archivos) {
-      try {
-        const videoGuardado = await addVideo(vehiculoId, archivo);
-        setVideosExistentes((prev) => [...prev, videoGuardado]);
-      } catch (error) {
-        console.error("Error al subir video:", error);
-      }
+    const disponibles = MAX_VIDEOS - (videosExistentes.length + videosNuevos.length);
+    if (archivos.length > disponibles) {
+      alert(`Máximo ${MAX_VIDEOS} videos. Espacio disponible: ${disponibles}`);
+      e.target.value = "";
+      return;
     }
-    // Resetea el input para permitir subir el mismo archivo otra vez
+    setVideosNuevos((prev) => [...prev, ...archivos]);
     e.target.value = "";
   };
 
+  if (loading) return <div className="text-center py-4">Cargando...</div>;
+
+  const portadaNueva = (!esEdicion && portadaNuevaIdx >= 0 && portadaNuevaIdx < imagenesNuevas.length)
+    ? URL.createObjectURL(imagenesNuevas[portadaNuevaIdx])
+    : null;
+  const portadaExistente = imagenesExistentes.find((img) => img.esPortada);
+  const imagenPortadaActual = portadaNueva || portadaExistente?.url || null;
+
   return (
     <div>
-      {/* Sección imágenes */}
+      {/* IMÁGENES EXISTENTES (solo en edición) */}
+      {esEdicion && imagenesExistentes.length > 0 && (
+        <div className="mb-4">
+          <label className="form-label" style={{ fontSize: "11px", color: "#6c7a91" }}>
+            Imágenes guardadas
+          </label>
+          <div className="image-grid">
+            {imagenesExistentes.map((img) => (
+              <div
+                key={img.id}
+                className={`image-card ${img.esPortada && !portadaNueva ? "portada" : ""}`}
+                onClick={() => handleClickImagenExistente(img)}
+                onDoubleClick={() => abrirModal(img.url, false, img.id)}
+              >
+                <img src={img.url} alt="" />
+                <div
+                  className="delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEliminarImagen(img.id);
+                  }}
+                >
+                  ✕
+                </div>
+                {img.esPortada && !portadaNueva && <div className="portada-star">★</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* IMÁGENES NUEVAS (pendientes) */}
       <div className="mb-4">
-        <h5>Imágenes</h5>
-        {/* input siempre presente pero oculto */}
+        <label className="form-label" style={{ fontSize: "11px", color: esEdicion ? "#f59e0b" : "#6c7a91" }}>
+          {imagenesNuevas.length > 0 
+            ? (esEdicion ? "Imágenes pendientes (no pueden ser portada hasta guardar)" : "Imágenes pendientes (click para elegir portada)")
+            : "Añadir imágenes"}
+        </label>
+        <div className="image-grid">
+          {imagenesNuevas.map((archivo, idx) => (
+            <div
+              key={idx}
+              className={`image-card ${!esEdicion && portadaNuevaIdx === idx ? "portada" : ""}`}
+              onClick={() => handleClickImagenNueva(idx)}
+              onDoubleClick={() => abrirModal(URL.createObjectURL(archivo), true, idx)}
+              style={{ cursor: esEdicion ? "default" : "pointer" }}
+            >
+              <img src={URL.createObjectURL(archivo)} alt="Preview" />
+              <div
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  eliminarImagenNueva(idx);
+                }}
+              >
+                ✕
+              </div>
+              {!esEdicion && portadaNuevaIdx === idx && <div className="portada-star">★</div>}
+            </div>
+          ))}
+          <div className="add-image-btn" onClick={() => inputImagenRef.current.click()}>
+            +<span>Añadir</span>
+          </div>
+        </div>
         <input
           type="file"
           ref={inputImagenRef}
@@ -150,226 +231,97 @@ function GaleriaMultimedia({
           accept="image/*"
           onChange={handleSeleccionarImagenes}
         />
+      </div>
 
-        {/*grid de fotos */}
-        {cargando ? (
-          // situacion 1 - Cargando...
-          <div className="row g-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="col-6 col-md-3 col-lg-2">
-                <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
-                  <div className="placeholder-glow w-100 h-100">
-                    <span className="placeholder w-100 h-100 rounded"></span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* VISTA PREVIA PORTADA GRANDE */}
+      <div className="portada-preview">
+        <label className="form-label" style={{ fontSize: "10px" }}>Vista previa portada</label>
+        {imagenPortadaActual ? (
+          <img
+            src={imagenPortadaActual}
+            alt="Portada"
+            onClick={() => {
+              if (portadaNueva) {
+                abrirModal(portadaNueva, true, portadaNuevaIdx);
+              } else if (portadaExistente) {
+                abrirModal(portadaExistente.url, false, portadaExistente.id);
+              }
+            }}
+            style={{ cursor: "pointer" }}
+          />
         ) : (
-          <div>
-            <div className="row g-2">
-              {imagenesExistentes.map((img, index) => (
-                <div key={img.id} className="col-6 col-md-3 col-lg-2">
-                  <div className="ratio ratio-1x1 position-relative rounded overflow-hidden">
-                    <img
-                      src={img.url}
-                      className="w-100 h-100 position-absolute top-0 start-0"
-                      style={{ objectFit: "cover" }}
-                      alt={`Imagen ${img.id}`}
-                    />
-
-                    {/* Portada */}
-                    {img.esPortada && (
-                      <span
-                        className="position-absolute top-0 start-0 m-1 badge"
-                        style={{ background: "rgba(0,0,0,0.5)", zIndex: 2 }}
-                      >
-                        Portada
-                      </span>
-                    )}
-
-                    {/* Overlay con botones */}
-                    <div
-                      className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-1 gap-1"
-                      style={{ background: "rgba(0,0,0,0.45)", opacity: 0 }}
-                      onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-                      onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
-                    >
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-secondary w-100"
-                          onClick={() => handleMoverIzquierda(index)}
-                        >
-                          ← Mover
-                        </button>
-                      )}
-                      {!img.esPortada && (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-light w-100"
-                          onClick={() => handlePortada(vehiculoId, img.id)}
-                        >
-                          Portada
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger w-100"
-                        onClick={() => handleEliminarImg(vehiculoId, img.id)}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* Botón agregar*/}
-              <div className="col-6 col-md-3 col-lg-2">
-                <div
-                  className="ratio ratio-1x1 border rounded"
-                  style={{ cursor: "pointer", borderStyle: "dashed" }}
-                  onClick={() => inputImagenRef.current.click()}
-                >
-                  <div className="d-flex align-items-center justify-content-center w-100 h-100">
-                    <FaPlus size={28} className="text-muted" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Sección imágenes a subir */}
-            {imagenesNuevas.length > 0 && (
-              <div className="mt-3">
-                <h6 className="text-warning">
-                  Imágenes a subir ({imagenesNuevas.length})
-                  <small
-                    className="text-muted ms-2"
-                    style={{ fontSize: "12px" }}
-                  >
-                    Haz click para marcar portada
-                  </small>
-                </h6>
-                <div className="row g-2">
-                  {imagenesNuevas.map((archivo, i) => (
-                    <div key={i} className="col-6 col-md-3 col-lg-2">
-                      <div
-                        className="ratio ratio-1x1 position-relative rounded overflow-hidden"
-                        style={{
-                          cursor: "pointer",
-                          outline:
-                            portadaNuevaIdx === i
-                              ? "3px solid #0d6efd"
-                              : "none",
-                          borderRadius: "8px",
-                        }}
-                        onClick={() => setPortadaNuevaIdx(i)}
-                      >
-                        <img
-                          src={URL.createObjectURL(archivo)}
-                          className="w-100 h-100 position-absolute top-0 start-0"
-                          style={{ objectFit: "cover" }}
-                          alt={archivo.name}
-                        />
-                        {portadaNuevaIdx === i && (
-                          <span
-                            className="position-absolute top-0 start-0 m-1 badge bg-primary"
-                            style={{ zIndex: 2 }}
-                          >
-                            Portada
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: "22px",
-                            height: "22px",
-                            borderRadius: "50%",
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const nuevas = imagenesNuevas.filter(
-                              (_, idx) => idx !== i,
-                            );
-                            setImagenesNuevas(nuevas);
-                            if (portadaNuevaIdx === i) setPortadaNuevaIdx(0);
-                            else if (portadaNuevaIdx > i)
-                              setPortadaNuevaIdx(portadaNuevaIdx - 1);
-                          }}
-                        >
-                          <FaTimes size={10} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="portada-placeholder">
+            <span>Sin portada seleccionada</span>
+            <small>
+              {esEdicion 
+                ? "Haz click en una imagen guardada para establecerla como portada"
+                : "Haz click en una imagen para establecerla como portada"}
+            </small>
+          </div>
+        )}
+        {portadaNueva && (
+          <div className="text-muted mt-1" style={{ fontSize: "11px" }}>
+            Nueva portada (se aplicará al guardar)
           </div>
         )}
       </div>
 
-      {/* Sección videos */}
-      {vehiculoId ? (
-        <div className="mt-4">
-          <h5>Videos</h5>
-          <input
-            type="file"
-            ref={inputVideoRef}
-            className="d-none"
-            multiple
-            accept="video/*"
-            onChange={handleSeleccionarVideo}
-          />
-          <div className="row g-2">
-            {videosExistentes.map((vid) => (
-              <div key={vid.id} className="col-12 col-md-6 col-lg-4">
-                <div className="position-relative rounded overflow-hidden">
-                  <video
-                    src={vid.url}
-                    className="w-100 rounded"
-                    style={{ maxHeight: "180px", objectFit: "cover" }}
-                    controls
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "50%",
-                    }}
-                    onClick={() => handleEliminarVideo(vehiculoId, vid.id)}
-                  >
-                    <FaTimes size={10} />
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            {/* Botón agregar */}
-            <div className="col-12 col-md-6 col-lg-4">
-              <div
-                className="border rounded d-flex align-items-center justify-content-center"
-                style={{
-                  height: "180px",
-                  cursor: "pointer",
-                  borderStyle: "dashed",
-                }}
-                onClick={() => inputVideoRef.current.click()}
-              >
-                <FaPlus size={28} className="text-muted" />
-              </div>
+      {/* MODAL */}
+      {modalOpen && (
+        <div className="modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <img src={modalImage} alt="Preview" className="modal-image" />
+            <div className="modal-actions">
+              {(!esEdicion || !modalIsNew) && (
+                <button className="modal-btn portada" onClick={cambiarPortadaDesdeModal}>
+                  Establecer como portada
+                </button>
+              )}
+              <button className="modal-btn close" onClick={() => setModalOpen(false)}>
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
-      ) : (
-        <p className="text-muted small">
-          Guarda el vehículo primero para poder subir videos
-        </p>
       )}
+
+      {/* VIDEOS */}
+      <div className="video-section">
+        <label className="form-label">Videos (máx {MAX_VIDEOS})</label>
+        <div className="video-grid">
+          {videosExistentes.map((vid) => (
+            <div key={vid.id} className="video-card">
+              <video src={vid.url} controls />
+              <button className="delete-video-btn" onClick={() => handleEliminarVideo(vid.id)}>
+                ✕
+              </button>
+            </div>
+          ))}
+          {videosNuevos.map((video, idx) => (
+            <div key={`new-${idx}`} className="video-card">
+              <video src={URL.createObjectURL(video)} controls />
+              <button className="delete-video-btn" onClick={() => eliminarVideoNuevo(idx)}>
+                ✕
+              </button>
+            </div>
+          ))}
+          {videosExistentes.length + videosNuevos.length < MAX_VIDEOS && (
+            <div className="add-video-btn" onClick={() => inputVideoRef.current.click()}>
+              +<span>Añadir video</span>
+            </div>
+          )}
+        </div>
+        {videosExistentes.length + videosNuevos.length >= MAX_VIDEOS && (
+          <div className="video-limit-warning">Límite de {MAX_VIDEOS} videos alcanzado</div>
+        )}
+        <input
+          type="file"
+          ref={inputVideoRef}
+          className="d-none"
+          accept="video/mp4,video/mpeg,video/quicktime"
+          onChange={handleSeleccionarVideo}
+        />
+      </div>
     </div>
   );
 }

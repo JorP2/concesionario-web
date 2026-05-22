@@ -3,11 +3,22 @@ import { useEffect, useState } from "react";
 import {
   FaGasPump,
   FaCogs,
-  FaTachometerAlt
+  FaTachometerAlt,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTimes,
+  FaPlay,
+  FaEuroSign,
+  FaCalendarAlt,
+  FaDoorOpen,
+  FaUser,
+  FaPalette,
+  FaChair,
 } from "react-icons/fa";
 import { GiGearStick } from "react-icons/gi";
 import { getVehiculoByIdPublic } from "../api/vehiculoApi";
 import { getVideosByVehiculoId } from "../api/videoApi";
+import "../styles/VehiculoDetalle.css";
 
 function VehiculoDetalle() {
   const { id } = useParams();
@@ -15,7 +26,12 @@ function VehiculoDetalle() {
   const [error, setError] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [galeriaIndex, setGaleriaIndex] = useState(0);
+  const [videoSeleccionado, setVideoSeleccionado] = useState(null);
   const esMoto = vehiculo?.tipo === "MOTOCICLETA";
+
+  // Configuración de galería
+  const IMAGENES_POR_PAGINA = 4;
 
   useEffect(() => {
     getVehiculoByIdPublic(id)
@@ -24,96 +40,119 @@ function VehiculoDetalle() {
     getVideosByVehiculoId(id).then(setVideos);
   }, [id]);
 
+  // Navegación galería
+  const siguienteGrupo = () => {
+    const totalImagenes = vehiculo?.imagenes?.length || 0;
+    if (galeriaIndex + IMAGENES_POR_PAGINA < totalImagenes) {
+      setGaleriaIndex(galeriaIndex + 1);
+    }
+  };
+
+  const anteriorGrupo = () => {
+    if (galeriaIndex > 0) {
+      setGaleriaIndex(galeriaIndex - 1);
+    }
+  };
+
+  const imagenesVisibles = vehiculo?.imagenes?.slice(
+    galeriaIndex,
+    galeriaIndex + IMAGENES_POR_PAGINA
+  ) || [];
+
+  const hayMasImagenes = (vehiculo?.imagenes?.length || 0) > galeriaIndex + IMAGENES_POR_PAGINA;
+  const hayMenosImagenes = galeriaIndex > 0;
+
   if (error) {
     return (
-      <p className="text-center mt-5 text-danger">
-        Error al cargar el vehículo
-      </p>
+      <div className="vehiculo-detalle-container">
+        <div className="error-message">
+          <p>No se pudo cargar la información del vehículo</p>
+          <button onClick={() => window.location.reload()} className="btn-reintentar">
+            Reintentar
+          </button>
+        </div>
+      </div>
     );
   }
 
   if (!vehiculo) {
     return (
-      <div className="text-center mt-5">
-        <div className="spinner-border" role="status"></div>
-        <p className="mt-2">Cargando vehículo...</p>
+      <div className="vehiculo-detalle-container">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Cargando información del vehículo...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container py-3">
-      <div className="row g-4">
-        {/* IZQUIERDA */}
-        <div className="col-lg-8 pb-5">
-          {/* HERO */}
-          <div className="position-relative rounded-4 overflow-hidden shadow mb-4">
-            <div className="ratio ratio-16x9">
-              <img
-                src={vehiculo.imagenPortada}
-                alt=""
-                className="w-100 h-100 object-fit-cover"
-              />
-            </div>
-
-            <div 
-              className="position-absolute bottom-0 start-0 p-3 text-white"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)",
-              }}
-            >
-              <h2 className="fw-bold m-0">
-                {vehiculo.marca} {vehiculo.modelo}
-              </h2>
-              <small>{vehiculo.descripcion}</small>
-            </div>
+    <div className="vehiculo-detalle-container">
+      <div className="detalle-grid">
+        {/* COLUMNA IZQUIERDA - IMÁGENES Y VIDEOS */}
+        <div className="detalle-columna-izquierda">
+          {/* IMAGEN PRINCIPAL */}
+          <div className="imagen-principal">
+            <img
+              src={selectedImg || vehiculo.imagenPortada}
+              alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+              onClick={() => setSelectedImg(selectedImg || vehiculo.imagenPortada)}
+            />
+            {vehiculo.enOferta && vehiculo.precioOferta && (
+              <div className="ribbon-oferta">OFERTA</div>
+            )}
           </div>
 
-          {/* GALERÍA SIMPLE */}
+          {/* GALERÍA CON FLECHAS */}
           {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
-            <div
-              className="d-flex gap-3 mb-4 overflow-auto pb-2"
-              style={{
-                scrollbarWidth: "thin",
-              }}
-            >
-              {vehiculo.imagenes.map((img, i) => (
-                <img
-                  key={i}
-                  src={img}
-                  alt=""
-                  className="rounded-3 shadow-sm flex-shrink-0"
-                  style={{
-                    width: "280px",
-                    height: "170px",
-                    objectFit: "cover",
-                    cursor: "pointer",
-                    transition: "0.2s",
-                  }}
-                  onClick={() => setSelectedImg(img)}
-                />
-              ))}
+            <div className="galeria-section">
+              <button
+                className={`flecha-galeria ${!hayMenosImagenes ? "disabled" : ""}`}
+                onClick={anteriorGrupo}
+                disabled={!hayMenosImagenes}
+                aria-label="Imágenes anteriores"
+              >
+                <FaChevronLeft />
+              </button>
+
+              <div className="galeria-grid">
+                {imagenesVisibles.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className={`galeria-item ${selectedImg === img ? "activo" : ""}`}
+                    onClick={() => setSelectedImg(img)}
+                  >
+                    <img src={img} alt={`Vista ${idx + 1}`} />
+                  </div>
+                ))}
+              </div>
+
+              <button
+                className={`flecha-galeria ${!hayMasImagenes ? "disabled" : ""}`}
+                onClick={siguienteGrupo}
+                disabled={!hayMasImagenes}
+                aria-label="Imágenes siguientes"
+              >
+                <FaChevronRight />
+              </button>
             </div>
           )}
 
-          { /* GALERÍA VIDEOS */}
+          {/* SECCIÓN VIDEOS */}
           {videos.length > 0 && (
-            <div className="mb-4">
-              <div className="row g-3">
-                {videos.map((video, i) => (
-                  <div key={i} className="col-12 col-md-6">
-                    <div
-                    className="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm"
-                    style={{ cursor: "pointer" }}
-                    >
-                      <video
-                        src={video.url}
-                        controls
-                        preload="metadata"
-                        controlsList="nodownload"
-                        className="w-100 h-100 object-fit-cover"
-                      />
+            <div className="videos-section">
+              <h3>Videos del vehículo</h3>
+              <div className="videos-grid">
+                {videos.map((video, idx) => (
+                  <div
+                    key={idx}
+                    className="video-card"
+                    onClick={() => setVideoSeleccionado(video.url)}
+                  >
+                    <video src={video.url} preload="metadata" />
+                    <div className="video-overlay">
+                      <FaPlay />
+                      <span>Reproducir</span>
                     </div>
                   </div>
                 ))}
@@ -121,198 +160,180 @@ function VehiculoDetalle() {
             </div>
           )}
 
-          {/* MINI CARDS */}
-          <div className="row g-3">
-            <div className="col-6 col-md-3">
-              <div className="card text-center h-100 border-0 shadow-sm rounded-4">
-                <div className="card-body">
-                  <FaGasPump size={25} />
-                  <p className="my-1 small text-muted">Combustible</p>
+          {/* ESPECIFICACIONES TÉCNICAS */}
+          <div className="especificaciones-section">
+            <h3>Especificaciones técnicas</h3>
+            <div className="especificaciones-grid">
+              <div className="espec-item">
+                <FaGasPump />
+                <div>
+                  <span>Combustible</span>
                   <strong>{vehiculo.combustible}</strong>
                 </div>
               </div>
-            </div>
-
-            <div className="col-6 col-md-3">
-              <div className="card text-center h-100 border-0 shadow-sm rounded-4">
-                <div className="card-body">
-                  <FaCogs size={25} />
-                  <p className="my-1 small text-muted">Motor</p>
+              <div className="espec-item">
+                <FaCogs />
+                <div>
+                  <span>Motor</span>
                   <strong>{vehiculo.motor}</strong>
                 </div>
               </div>
-            </div>
-
-            <div className="col-6 col-md-3">
-              <div className="card text-center h-100 border-0 shadow-sm rounded-4">
-                <div className="card-body">
-                  <FaTachometerAlt size={25} />
-                  <p className="my-1 small text-muted">KM</p>
-                  <strong>{vehiculo.kilometros.toLocaleString()}</strong>
+              <div className="espec-item">
+                <FaTachometerAlt />
+                <div>
+                  <span>Kilómetros</span>
+                  <strong>{vehiculo.kilometros?.toLocaleString()} km</strong>
                 </div>
               </div>
-            </div>
-
-            <div className="col-6 col-md-3">
-              <div className="card text-center h-100 border-0 shadow-sm rounded-4">
-                <div className="card-body">
-                  <GiGearStick size={25} />
-                  <p className="my-1 small text-muted">Cambio</p>
+              <div className="espec-item">
+                <GiGearStick />
+                <div>
+                  <span>Transmisión</span>
                   <strong>{vehiculo.cambio}</strong>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* DETALLES */}
-          <div className="card shadow-sm rounded-4 border-0 mt-4">
-            <div className="card-body">
-              <h5 className="fw-bold mb-3">Detalles de {vehiculo.tipo.toLowerCase()}</h5>
-
-              <div className="row g-2 small">
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Año:</strong> {vehiculo.anio}
-                  </div>
-                </div>
-
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Pegatina:</strong> {vehiculo.pegatina}
-                  </div>
-                </div>
-
-                {!esMoto && (
-                  <div className="col-6">
-                    <div className="p-2 bg-light rounded-3">
-                      <strong>Puertas:</strong> {vehiculo.puertas}
-                    </div>
-                  </div>
-                )}
-
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Asientos:</strong> {vehiculo.asientos}
-                  </div>
-                </div>
-
-                <div className="col-6">
-                  <div className="p-2 bg-light rounded-3">
-                    <strong>Color:</strong> {vehiculo.colorExterior}
-                  </div>
-                </div>
-
-                {!esMoto && (
-                  <div className="col-6">
-                    <div className="p-2 bg-light rounded-3">
-                      <strong>Interior:</strong> {vehiculo.interior}
-                    </div>
-                  </div>
-                )}
+          {/* CARACTERÍSTICAS */}
+          <div className="caracteristicas-section">
+            <h3>Características</h3>
+            <div className="caracteristicas-grid">
+              <div className="caracteristica-item">
+                <FaCalendarAlt />
+                <span>Año</span>
+                <strong>{vehiculo.anio}</strong>
               </div>
+              <div className="caracteristica-item">
+                <FaEuroSign />
+                <span>Pegatina ambiental</span>
+                <strong>{vehiculo.pegatina}</strong>
+              </div>
+              {!esMoto && (
+                <div className="caracteristica-item">
+                  <FaDoorOpen />
+                  <span>Puertas</span>
+                  <strong>{vehiculo.puertas}</strong>
+                </div>
+              )}
+              <div className="caracteristica-item">
+                <FaUser />
+                <span>Asientos</span>
+                <strong>{vehiculo.asientos}</strong>
+              </div>
+              <div className="caracteristica-item">
+                <FaPalette />
+                <span>Color exterior</span>
+                <strong>{vehiculo.colorExterior}</strong>
+              </div>
+              {!esMoto && (
+                <div className="caracteristica-item">
+                  <FaChair />
+                  <span>Interior</span>
+                  <strong>{vehiculo.interior}</strong>
+                </div>
+              )}
             </div>
+          </div>
+
+          {/* DESCRIPCIÓN */}
+          <div className="descripcion-section">
+            <h3>Descripción</h3>
+            <p>{vehiculo.descripcion}</p>
           </div>
 
           {/* EXTRAS */}
           {vehiculo.extras && (
-            <div className="card shadow-sm rounded-4 border-0 mt-4">
-              <div className="card-body">
-                <h5 className="fw-bold mb-3">Extras</h5>
-
-                <div className="d-flex flex-wrap gap-2">
-                  {vehiculo.extras.split(",").map((extra, idx) => (
-                    <span
-                      key={idx}
-                      className="badge bg-light text-dark border rounded-pill px-3 py-2"
-                    >
-                      {extra.trim().charAt(0).toUpperCase() + extra.trim().slice(1)}
-                    </span>
-                  ))}
-                </div>
+            <div className="extras-section">
+              <h3>Equipamiento y extras</h3>
+              <div className="extras-grid">
+                {vehiculo.extras.split(",").map((extra, idx) => (
+                  <span key={idx} className="extra-badge">
+                    {extra.trim()}
+                  </span>
+                ))}
               </div>
             </div>
           )}
         </div>
 
-        {/* DERECHA */}
-        <div className="col-lg-4">
-          <div 
-            className="card shadow-sm rounded-4 position-sticky z-3"
-            style={{ top: "20px" }}
-          >
-            <div className="card-body">
+        {/* COLUMNA DERECHA - INFO Y CONTACTO */}
+        <div className="detalle-columna-derecha">
+          <div className="info-sticky">
+            <div className="info-card">
+              <h1>
+                {vehiculo.marca} {vehiculo.modelo}
+              </h1>
+              <div className="precio-container">
+                {vehiculo.precioOferta ? (
+                  <>
+                    <span className="precio-original">{vehiculo.precio.toLocaleString()}€</span>
+                    <span className="precio-oferta">{vehiculo.precioOferta.toLocaleString()}€</span>
+                    <span className="descuento-badge">
+                      -{Math.round((1 - vehiculo.precioOferta / vehiculo.precio) * 100)}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="precio-normal">{vehiculo.precio.toLocaleString()}€</span>
+                )}
+              </div>
 
-              <h4 className="fw-bold">
-                {vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}
-              </h4>
+              <div className="estado-vehiculo">
+                <span className={`estado-badge ${vehiculo.estadoVenta}`}>
+                  {vehiculo.estadoVenta === "en_venta" && "✓ En venta"}
+                  {vehiculo.estadoVenta === "vendido" && "✗ Vendido"}
+                  {vehiculo.estadoVenta === "reservado" && "⏱ Reservado"}
+                </span>
+              </div>
 
-              {vehiculo.precioOferta ? (
-                <>
-                  <div>
-                    <span className="display-6 fw-bold text-primary">{vehiculo.precioOferta}€</span>
-                  </div>
-                </>
-              ) : (
-                <div className="display-6 fw-bold text-primary">
-                  {vehiculo.precio}€
+              <div className="servicios-lista">
+                <div className="servicio-item">
+                  <span>✓</span> Garantía 12 meses
                 </div>
-              )}
+                <div className="servicio-item">
+                  <span>✓</span> Financiación a medida
+                </div>
+                <div className="servicio-item">
+                  <span>✓</span> Entrega inmediata
+                </div>
+                <div className="servicio-item">
+                  <span>✓</span> Revisión técnica incluida
+                </div>
+              </div>
 
-              <hr />
-
-              <ul className="list-unstyled small mb-3">
-                <li>✔ Garantía 12 meses</li>
-                <li>✔ Financiación disponible</li>
-                <li>✔ Entrega inmediata</li>
-              </ul>
-
-              <a
-                className="btn btn-primary w-100"
-                href="/contacto/#contactos">
-                Contactar
+              <a href="/contacto/#contactos" className="btn-contactar">
+                Solicitar información
               </a>
             </div>
-          </div>
 
-          {/* COMENTARIOS ANUNCIANTE */}
-          <div className="card shadow-sm rounded-4 my-4 position-sticky"
-            style={{ top: "300px" }}
-          >
-            <div className="card-body">
-              <h5 className="fw-bold">
-                Comentarios del anunciante
-              </h5>
-              <span>
-                {vehiculo.comentarios}
-              </span>
+            <div className="comentarios-card">
+              <h4>Comentarios del vendedor</h4>
+              <p>{vehiculo.comentarios}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* IMAGEN AMPLIADA */}
+      {/* MODAL IMAGEN AMPLIADA */}
       {selectedImg && (
-        <div
-          className="modal show fade d-block"
-          tabIndex="-1"
-          style={{
-            backgroundColor: "rgba(0,0,0,0.85)",
-            backdropFilter: "blur(3px)"
-          }}
-          onClick={() => setSelectedImg(null)}
-        >
-          <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content bg-transparent border-0">
-              <div className="modal-body text-center p-0">
-                <img
-                  src={selectedImg}
-                  alt=""
-                  className="img-fluid rounded-3 shadow"
-                  style={{ maxHeight: "80vh" }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-            </div>
+        <div className="modal-ampliado" onClick={() => setSelectedImg(null)}>
+          <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-cerrar" onClick={() => setSelectedImg(null)}>
+              <FaTimes />
+            </button>
+            <img src={selectedImg} alt="Imagen ampliada" />
+          </div>
+        </div>
+      )}
+
+      {/* MODAL VIDEO */}
+      {videoSeleccionado && (
+        <div className="modal-ampliado" onClick={() => setVideoSeleccionado(null)}>
+          <div className="modal-contenido video" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-cerrar" onClick={() => setVideoSeleccionado(null)}>
+              <FaTimes />
+            </button>
+            <video src={videoSeleccionado} controls autoPlay />
           </div>
         </div>
       )}

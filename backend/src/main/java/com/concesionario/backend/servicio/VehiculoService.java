@@ -20,21 +20,19 @@ import com.concesionario.backend.utils.DateUtils;
 @Transactional
 public class VehiculoService {
 
-	 private static final Logger log = LoggerFactory.getLogger(VehiculoService.class);
-	 
-	 
-	@Autowired
-	private ImagenService imagenService;
+    private static final Logger log = LoggerFactory.getLogger(VehiculoService.class);
+     
+    @Autowired
+    private ImagenService imagenService;
 
-	@Autowired
-	private VideoService videoService;
+    @Autowired
+    private VideoService videoService;
 
-	@Autowired
-	private UploadConfig uploadConfig;
+    @Autowired
+    private UploadConfig uploadConfig;
+    
     @Autowired
     private VehiculoRepository vehiculoRepository;
-
-    // .- CRUD BASICO
 
     public List<Vehiculo> obtenerTodos() {
         return vehiculoRepository.findAll();
@@ -42,13 +40,12 @@ public class VehiculoService {
 
     public Vehiculo obtenerPorId(Long id) {
         return vehiculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado."));
     }
 
     @Transactional
     public void eliminar(Long id) {
         try {
-            // Eliminar imágenes
             List<Imagen> imagenes = imagenService.obtenerImagenesPorVehiculo(id);
             for (Imagen img : imagenes) {
                 try {
@@ -58,7 +55,6 @@ public class VehiculoService {
                 }
             }
             
-            // Eliminar videos
             List<Video> videos = videoService.obtenerVideosPorVehiculo(id);
             for (Video vid : videos) {
                 try {
@@ -73,14 +69,13 @@ public class VehiculoService {
             
         } catch (Exception e) {
             log.error("Error general al eliminar vehículo {}: {}", id, e.getMessage());
-            throw new RuntimeException("Error al eliminar vehículo " + id + ": " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar el vehículo. Intente nuevamente.");
         }
     }
 
     private void eliminarCarpetas(Long id) {
         try {
             File carpetaVehiculo = new File(uploadConfig.getRuta() + id);
-            
             if (carpetaVehiculo.exists() && carpetaVehiculo.isDirectory()) {
                 eliminarDirectorio(carpetaVehiculo);
                 log.info("Carpeta del vehículo {} eliminada correctamente", id);
@@ -104,40 +99,50 @@ public class VehiculoService {
         directorio.delete();
     }
     
-    // CREAR
-
     public Vehiculo crearVehiculo(Vehiculo vehiculo) {
         log.info("Creando nuevo vehículo: {} {}", vehiculo.getMarca(), vehiculo.getModelo());
         
-        validarVehiculo(vehiculo);
-        asignarValoresPorDefecto(vehiculo);
-        Vehiculo resultado = vehiculoRepository.save(vehiculo);
-        
-        log.info("Vehículo creado con ID: {}", resultado.getId());
-        return resultado;
+        try {
+            validarVehiculo(vehiculo);
+            asignarValoresPorDefecto(vehiculo);
+            Vehiculo resultado = vehiculoRepository.save(vehiculo);
+            log.info("Vehículo creado con ID: {}", resultado.getId());
+            return resultado;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error al crear vehículo", e);
+            throw new RuntimeException("Error al crear el vehículo. Verifique los datos e intente nuevamente.");
+        }
     }
     
-
-    // ACTUALIZAR
     public Vehiculo actualizarVehiculo(Long id, Vehiculo vehiculoActualizado) {
         log.info("Actualizando vehículo ID: {}", id);
         
-        Vehiculo existente = obtenerPorId(id);
-        actualizarCampos(existente, vehiculoActualizado);
-        Vehiculo resultado = vehiculoRepository.save(existente);
-        
-        log.info("Vehículo ID: {} actualizado correctamente", id);
-        return resultado;
+        try {
+            Vehiculo existente = obtenerPorId(id);
+            actualizarCampos(existente, vehiculoActualizado);
+            validarVehiculo(existente);
+            Vehiculo resultado = vehiculoRepository.save(existente);
+            log.info("Vehículo ID: {} actualizado correctamente", id);
+            return resultado;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error al actualizar vehículo", e);
+            throw new RuntimeException("Error al actualizar el vehículo. Verifique los datos e intente nuevamente.");
+        }
     }
 
-    // .- GESTIÓN DE OFERTAS
-    // APLICAR OFERTA
     public Vehiculo aplicarOferta(Long id, Double descuento) {
         log.info("Aplicando oferta de {}% al vehículo ID: {}", descuento, id);
         
+        if (descuento == null) {
+            throw new RuntimeException("El descuento es obligatorio.");
+        }
+        
         if (descuento <= 0 || descuento > 100) {
-            log.warn("Descuento inválido: {} para vehículo ID: {}", descuento, id);
-            throw new RuntimeException("El descuento debe ser entre 1 y 100");
+            throw new RuntimeException("El descuento debe ser entre 1 y 100 por ciento.");
         }
 
         Vehiculo vehiculo = obtenerPorId(id);
@@ -159,28 +164,30 @@ public class VehiculoService {
         
         Vehiculo vehiculo = obtenerPorId(id);
         
-        if (nuevoPrecioOferta <= 0 || nuevoPrecioOferta >= vehiculo.getPrecio()) {
-            log.warn("Precio oferta inválido: {} para vehículo ID: {}", nuevoPrecioOferta, id);
-            throw new RuntimeException("El precio de oferta debe ser menor al precio original (" 
-            		+ vehiculo.getPrecio() + ")");
+        if (nuevoPrecioOferta == null) {
+            throw new RuntimeException("El precio de oferta es obligatorio.");
         }
         
-        // Validar que la fecha sea futura
+        if (nuevoPrecioOferta <= 0) {
+            throw new RuntimeException("El precio de oferta debe ser mayor que cero.");
+        }
+        
+        if (nuevoPrecioOferta >= vehiculo.getPrecio()) {
+            throw new RuntimeException("El precio de oferta debe ser menor al precio original de " + vehiculo.getPrecio() + " euros.");
+        }
+        
         if (fechaFinOferta.isBefore(LocalDateTime.now())) {
-            log.warn("Fecha de fin de oferta inválida: {} para vehículo ID: {}", fechaFinOferta, id);
-            throw new RuntimeException("La fecha de fin debe ser posterior a hoy");
+            throw new RuntimeException("La fecha de fin debe ser posterior al día de hoy.");
         }
         
         vehiculo.setPrecioOferta(nuevoPrecioOferta); 
         vehiculo.setEnOferta(true);
-        vehiculo.setFechaFinOferta(fechaFinOferta);  // ← Usa la fecha que envía el frontend
+        vehiculo.setFechaFinOferta(fechaFinOferta);
         
         log.info("Oferta de precio fijo aplicada al vehículo ID: {}", id);
         return vehiculoRepository.save(vehiculo);
     }
     
-    
-    // QUITAR OFERTA
     public Vehiculo quitarOferta(Long id) {
         log.info("Quitando oferta del vehículo ID: {}", id);
         
@@ -193,10 +200,12 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
-    // .- GESTION DE ESTADOS
-    // CAMBIAR VISIBILIDAD
     public Vehiculo cambiarVisibilidad(Long id, Boolean visible) {
         log.info("Cambiando visibilidad del vehículo ID: {} a {}", id, visible);
+        
+        if (visible == null) {
+            throw new RuntimeException("El valor de visibilidad es obligatorio.");
+        }
         
         Vehiculo vehiculo = obtenerPorId(id);
         vehiculo.setVisible(visible);
@@ -206,15 +215,17 @@ public class VehiculoService {
         return resultado;
     }
 
-    //CAMBIAR ESTADO
     public Vehiculo cambiarEstadoVenta(Long id, String estado) {
-
-    	log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
+        log.info("Cambiando estado de venta del vehículo ID: {} a {}", id, estado);
+        
+        if (estado == null || estado.isEmpty()) {
+            throw new RuntimeException("El estado de venta es obligatorio.");
+        }
         
         if (!estado.equals("en_venta") && !estado.equals("vendido") && !estado.equals("reservado")) {
-            log.warn("Estado inválido: {} para vehículo ID: {}", estado, id);
-            throw new RuntimeException("Estado no válido");
+            throw new RuntimeException("Estado no válido. Los estados permitidos son: en_venta, vendido, reservado.");
         }
+        
         Vehiculo vehiculo = obtenerPorId(id);
         vehiculo.setEstadoVenta(estado);
         
@@ -222,12 +233,9 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
-    // .-CONSULTAS PUBLICAS
-
     public List<Vehiculo> obtenerVehiculosEnVenta() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("en_venta");
     }
-
 
     public List<Vehiculo> obtenerVendidos() {
         return vehiculoRepository.findByVisibleTrueAndEstadoVenta("vendido");
@@ -241,9 +249,6 @@ public class VehiculoService {
         return vehiculoRepository.buscarAvanzado(marca, "en_venta", precioMin, precioMax, tipo);
     }
     
-
-    // .- ESTADÍSTICAS
-
     public long contarVehiculos() {
         return vehiculoRepository.count();
     }
@@ -256,22 +261,59 @@ public class VehiculoService {
         return vehiculoRepository.countByEstadoVenta("vendido");
     }
 
-    // METODOS PRIVADOS
-
     private void validarVehiculo(Vehiculo vehiculo) {
         int añoActual = LocalDateTime.now().getYear();
 
+        if (vehiculo.getMarca() == null || vehiculo.getMarca().trim().isEmpty()) {
+            throw new RuntimeException("La marca del vehículo es obligatoria.");
+        }
+        
+        if (vehiculo.getModelo() == null || vehiculo.getModelo().trim().isEmpty()) {
+            throw new RuntimeException("El modelo del vehículo es obligatorio.");
+        }
+        
+        if (vehiculo.getPrecio() == null) {
+            throw new RuntimeException("El precio es obligatorio.");
+        }
+        
         if (vehiculo.getPrecio() < 0) {
-            throw new RuntimeException("El precio no puede ser negativo");
+            throw new RuntimeException("El precio no puede ser negativo.");
         }
+        
+        if (vehiculo.getAnio() == null) {
+            throw new RuntimeException("El año es obligatorio.");
+        }
+        
         if (vehiculo.getAnio() < 1900 || vehiculo.getAnio() > añoActual + 1) {
-            throw new RuntimeException("Año no válido");
+            throw new RuntimeException("El año debe estar entre 1900 y " + (añoActual + 1) + ".");
         }
+        
+        if (vehiculo.getKilometros() == null) {
+            throw new RuntimeException("Los kilómetros son obligatorios.");
+        }
+        
         if (vehiculo.getKilometros() < 0) {
-            throw new RuntimeException("Los kilómetros no pueden ser negativos");
+            throw new RuntimeException("Los kilómetros no pueden ser negativos.");
         }
-        if (vehiculo.getAsientos() < 0 || vehiculo.getAsientos() > 9) {
-            throw new RuntimeException("Número de asientos no válido");
+        
+        if (vehiculo.getAsientos() == null) {
+            throw new RuntimeException("El número de asientos es obligatorio.");
+        }
+        
+        if (vehiculo.getAsientos() < 1 || vehiculo.getAsientos() > 9) {
+            throw new RuntimeException("El número de asientos debe estar entre 1 y 9.");
+        }
+        
+        if (vehiculo.getPuertas() == null) {
+            throw new RuntimeException("El número de puertas es obligatorio.");
+        }
+        
+        if (vehiculo.getPuertas() < 2 || vehiculo.getPuertas() > 6) {
+            throw new RuntimeException("El número de puertas debe estar entre 2 y 6.");
+        }
+        
+        if (vehiculo.getTipo() == null) {
+            throw new RuntimeException("El tipo de vehículo es obligatorio.");
         }
     }
 

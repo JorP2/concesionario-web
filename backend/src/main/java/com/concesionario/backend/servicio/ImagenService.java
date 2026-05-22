@@ -30,12 +30,17 @@ public class ImagenService {
     @Autowired
     private UploadConfig uploadConfig;
 
-    // ========== SUBIR IMAGEN ==========
-
     public Imagen subirImagen(Long vehiculoId, MultipartFile archivo) throws IOException {
         log.info("Subiendo imagen para vehículo ID: {}", vehiculoId);
         
-        validarQueEsImagen(archivo);
+        if (archivo == null || archivo.isEmpty()) {
+            throw new RuntimeException("Debe seleccionar un archivo de imagen.");
+        }
+        
+        if (!FileUtils.esImagen(archivo)) {
+            throw new RuntimeException("El archivo debe ser una imagen válida (JPEG, PNG, JPG o GIF).");
+        }
+        
         Vehiculo vehiculo = obtenerVehiculo(vehiculoId);
         String carpeta = crearCarpetaImagenes(vehiculoId);
         String uid = guardarArchivo(archivo, carpeta);
@@ -49,10 +54,12 @@ public class ImagenService {
         return resultado;
     }
 
-    // ========== SUBIR MÚLTIPLES IMÁGENES ==========
-
     public List<Imagen> subirMultiplesImagenes(Long vehiculoId, List<MultipartFile> archivos) throws IOException {
         log.info("Subiendo {} imágenes para vehículo ID: {}", archivos.size(), vehiculoId);
+        
+        if (archivos == null || archivos.isEmpty()) {
+            throw new RuntimeException("Debe seleccionar al menos una imagen para subir.");
+        }
         
         for (MultipartFile archivo : archivos) {
             subirImagen(vehiculoId, archivo);
@@ -63,17 +70,17 @@ public class ImagenService {
         return resultado;
     }
 
-    // ========== OBTENER IMÁGENES ==========
-
     public List<Imagen> obtenerImagenesPorVehiculo(Long vehiculoId) {
         log.info("Obteniendo imágenes del vehículo ID: {}", vehiculoId);
         return imagenRepository.findByVehiculoIdOrderByOrdenAsc(vehiculoId);
     }
 
-    // ========== REORDENAR IMÁGENES ==========
-
     public void reordenarImagenes(Long vehiculoId, List<Long> idsImagenes) {
         log.info("Reordenando imágenes del vehículo ID: {}", vehiculoId);
+        
+        if (idsImagenes == null || idsImagenes.isEmpty()) {
+            throw new RuntimeException("Debe proporcionar el orden de las imágenes.");
+        }
         
         int orden = 1;
         for (Long id : idsImagenes) {
@@ -86,8 +93,6 @@ public class ImagenService {
         log.info("Imágenes reordenadas para vehículo ID: {}", vehiculoId);
     }
 
-    // ========== CAMBIAR FOTO PRINCIPAL ==========
-
     public void cambiarFotoPrincipal(Long vehiculoId, Long imagenId) {
         log.info("Cambiando foto principal del vehículo ID: {} a imagen ID: {}", vehiculoId, imagenId);
         
@@ -96,8 +101,6 @@ public class ImagenService {
         
         log.info("Foto principal cambiada para vehículo ID: {}", vehiculoId);
     }
-
-    // ========== ELIMINAR IMAGEN ==========
 
     public void eliminarImagen(Long id) {
         log.info("Eliminando imagen ID: {}", id);
@@ -109,20 +112,11 @@ public class ImagenService {
         log.info("Imagen ID: {} eliminada", id);
     }
 
-    // ========== MÉTODOS PRIVADOS ==========
-
-    private void validarQueEsImagen(MultipartFile archivo) {
-        if (!FileUtils.esImagen(archivo)) {
-            log.warn("Archivo no válido: no es una imagen");
-            throw new RuntimeException("El archivo debe ser una imagen (JPEG, PNG, JPG, GIF)");
-        }
-    }
-
     private Vehiculo obtenerVehiculo(Long vehiculoId) {
         return vehiculoRepository.findById(vehiculoId)
                 .orElseThrow(() -> {
                     log.warn("Vehículo no encontrado con ID: {}", vehiculoId);
-                    return new RuntimeException("Vehículo no encontrado");
+                    return new RuntimeException("Vehículo no encontrado.");
                 });
     }
 
@@ -134,9 +128,14 @@ public class ImagenService {
     }
 
     private String guardarArchivo(MultipartFile archivo, String carpeta) throws IOException {
-        String uid = FileUtils.guardarArchivo(archivo, carpeta);
-        log.debug("Archivo guardado con UID: {}", uid);
-        return uid;
+        try {
+            String uid = FileUtils.guardarArchivo(archivo, carpeta);
+            log.debug("Archivo guardado con UID: {}", uid);
+            return uid;
+        } catch (IOException e) {
+            log.error("Error al guardar archivo", e);
+            throw new RuntimeException("Error al guardar la imagen en el servidor.");
+        }
     }
 
     private int calcularNuevoOrden(Long vehiculoId) {
@@ -164,14 +163,14 @@ public class ImagenService {
         return imagenRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Imagen no encontrada con ID: {}", id);
-                    return new RuntimeException("Imagen no encontrada");
+                    return new RuntimeException("Imagen no encontrada.");
                 });
     }
 
     private void validarPerteneceAlVehiculo(Imagen imagen, Long vehiculoId) {
         if (!imagen.getVehiculo().getId().equals(vehiculoId)) {
             log.warn("Imagen ID: {} no pertenece al vehículo ID: {}", imagen.getId(), vehiculoId);
-            throw new RuntimeException("La imagen no pertenece a este vehículo");
+            throw new RuntimeException("La imagen no pertenece a este vehículo.");
         }
     }
 
@@ -186,11 +185,10 @@ public class ImagenService {
 
     private void establecerPortada(Long imagenId, Long vehiculoId) {
         Imagen nuevaPortada = obtenerImagen(imagenId);
-  
         
         if (!nuevaPortada.getVehiculo().getId().equals(vehiculoId)) {
             log.warn("Intento de establecer portada: imagen {} no pertenece al vehículo {}", imagenId, vehiculoId);
-            throw new RuntimeException("La imagen no pertenece a este vehículo");
+            throw new RuntimeException("La imagen no pertenece a este vehículo.");
         }
         
         nuevaPortada.setEsPortada(true);

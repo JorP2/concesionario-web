@@ -7,14 +7,7 @@ import com.concesionario.backend.servicio.UsuarioService;
 import com.concesionario.backend.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,6 +47,20 @@ public class UsuarioController {
         Usuario usuarioActualizado = DTOConverter.toEntity(requestDTO);
         Usuario actualizado = usuarioService.actualizarUsuario(id, usuarioActualizado);
         return ResponseEntity.ok(DTOConverter.toUsuarioResponseDTO(actualizado));
+    }
+    
+    @PutMapping("/{id}/cambiar-password")
+    public ResponseEntity<UsuarioResponseDTO> cambiarPassword(
+            @PathVariable Long id,
+            @RequestParam String password) {
+        Usuario actualizado = usuarioService.cambiarPassword(id, password);
+        return ResponseEntity.ok(DTOConverter.toUsuarioResponseDTO(actualizado));
+    }
+    
+    @PutMapping("/{id}/restablecer-password")
+    public ResponseEntity<UsuarioResponseDTO> restablecerPassword(@PathVariable Long id) {
+        Usuario usuario = usuarioService.restablecerPasswordAdmin(id);
+        return ResponseEntity.ok(DTOConverter.toUsuarioResponseDTO(usuario));
     }
 
     @DeleteMapping("/{id}")

@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.concesionario.backend.dominio.Usuario;
@@ -22,8 +23,9 @@ public class UsuarioService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    // ========== CRUD BÁSICO ==========
+    
+    @Value("${admin.password:admin123}")
+    private String adminPassword;
 
     public List<Usuario> obtenerTodos() {
         log.info("Obteniendo todos los usuarios");
@@ -35,11 +37,9 @@ public class UsuarioService {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Usuario no encontrado con ID: {}", id);
-                    return new RuntimeException("Usuario no encontrado");
+                    return new RuntimeException("Usuario no existe. Verifique sus datos.");
                 });
     }
-
-    // ========== CREAR USUARIO ==========
 
     public Usuario crearUsuario(Usuario usuario) {
         log.info("Creando nuevo usuario: {}", usuario.getUsername());
@@ -58,8 +58,6 @@ public class UsuarioService {
         return resultado;
     }
 
-    // ========== ACTUALIZAR USUARIO ==========
-
     public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
         log.info("Actualizando usuario ID: {}", id);
         
@@ -73,8 +71,6 @@ public class UsuarioService {
         return resultado;
     }
 
-    // ========== CAMBIAR CONTRASEÑA ==========
-
     public Usuario cambiarPassword(Long id, String passwordNueva) {
         log.info("Cambiando contraseña del usuario ID: {}", id);
         
@@ -87,8 +83,22 @@ public class UsuarioService {
         log.info("Contraseña cambiada para usuario ID: {}", id);
         return resultado;
     }
-
-    // ========== LOGIN ==========
+    
+    public Usuario restablecerPasswordAdmin(Long id) {
+        log.info("Restableciendo contraseña del usuario ID: {}", id);
+        
+        Usuario usuario = obtenerPorId(id);
+        
+        if (!usuario.getEsSuperUsuario()) {
+            throw new RuntimeException("Esta función solo está disponible para el administrador.");
+        }
+        
+        usuario.setPassword(passwordEncoder.encode(adminPassword));
+        
+        Usuario resultado = usuarioRepository.save(usuario);
+        log.info("Contraseña restablecida para administrador ID: {}", id);
+        return resultado;
+    }
 
     public Usuario login(String username, String password) {
         log.info("Intento de login: {}", username);
@@ -96,7 +106,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> {
                     log.warn("Login fallido: usuario no encontrado - {}", username);
-                    return new RuntimeException("Usuario no encontrado");
+                    return new RuntimeException("Usuario no existe. Verifique sus datos.");
                 });
         
         validarUsuarioActivo(usuario, username);
@@ -105,8 +115,6 @@ public class UsuarioService {
         log.info("Login exitoso: {}", username);
         return usuario;
     }
-
-    // ========== GESTIÓN DE ESTADOS ==========
 
     public Usuario activarUsuario(Long id) {
         log.info("Activando usuario ID: {}", id);
@@ -125,6 +133,10 @@ public class UsuarioService {
         Usuario usuario = obtenerPorId(id);
         validarNoEsSuperUsuario(usuario);
         
+        if (usuario.getEsSuperUsuario()) {
+            throw new RuntimeException("No se puede desactivar la cuenta de administrador.");
+        }
+        
         usuario.setActivo(false);
         
         Usuario resultado = usuarioRepository.save(usuario);
@@ -132,7 +144,6 @@ public class UsuarioService {
         return resultado;
     }
     
-    // Guardar refresh token (por username)
     public void guardarRefreshToken(String username, String refreshToken) {
         Usuario usuario = obtenerPorUsername(username);
         usuario.setRefreshToken(refreshToken);
@@ -141,7 +152,6 @@ public class UsuarioService {
         log.info("Refresh token guardado para usuario: {}", username);
     }
 
-    // Validar refresh token
     public boolean validarRefreshToken(String username, String refreshToken) {
         Usuario usuario = obtenerPorUsername(username);
         
@@ -163,7 +173,6 @@ public class UsuarioService {
         return true;
     }
 
-    // Eliminar refresh token (logout)
     public void eliminarRefreshToken(String username) {
         Usuario usuario = obtenerPorUsername(username);
         usuario.setRefreshToken(null);
@@ -172,25 +181,24 @@ public class UsuarioService {
         log.info("Refresh token eliminado para usuario: {}", username);
     }
 
-    // Obtener rol del usuario
     public String obtenerRol(String username) {
         Usuario usuario = obtenerPorUsername(username);
         return usuario.getEsSuperUsuario() ? "ADMIN" : "USER";
     }
     
-    // ========== ELIMINAR USUARIO ==========
-
     public void eliminarUsuario(Long id) {
         log.info("Eliminando usuario ID: {}", id);
         
         Usuario usuario = obtenerPorId(id);
         validarNoEsSuperUsuario(usuario);
         
+        if (usuario.getEsSuperUsuario()) {
+            throw new RuntimeException("No se puede eliminar la cuenta de administrador.");
+        }
+        
         usuarioRepository.deleteById(id);
         log.info("Usuario ID: {} eliminado", id);
     }
-
-    // ========== CONSULTAS ==========
 
     public List<Usuario> obtenerActivos() {
         log.info("Obteniendo usuarios activos");
@@ -202,31 +210,28 @@ public class UsuarioService {
         return usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> {
                     log.warn("Usuario no encontrado con username: {}", username);
-                    return new RuntimeException("Usuario no encontrado");
+                    return new RuntimeException("Usuario no existe. Verifique sus datos.");
                 });
     }
-
-    
-    // ========== MÉTODOS PRIVADOS DE VALIDACIÓN ==========
 
     private void validarUsernameUnico(String username) {
         if (usuarioRepository.findByUsername(username).isPresent()) {
             log.warn("Username ya existe: {}", username);
-            throw new RuntimeException("El nombre de usuario ya existe");
+            throw new RuntimeException("El nombre de usuario ya está registrado.");
         }
     }
 
     private void validarEmailUnico(String email) {
         if (usuarioRepository.findByEmail(email).isPresent()) {
             log.warn("Email ya existe: {}", email);
-            throw new RuntimeException("El email ya está registrado");
+            throw new RuntimeException("El correo electrónico ya está en uso.");
         }
     }
 
     private void validarTelefono(String telefono) {
         if (telefono != null && !telefono.matches("\\d{9}")) {
             log.warn("Teléfono inválido: {}", telefono);
-            throw new RuntimeException("El teléfono debe tener 9 dígitos");
+            throw new RuntimeException("El teléfono debe contener 9 dígitos.");
         }
     }
 
@@ -237,7 +242,7 @@ public class UsuarioService {
         
         if (usuarioRepository.countByEsSuperUsuarioTrue() >= 1) {
             log.warn("Intento de crear otro super usuario");
-            throw new RuntimeException("Ya existe un super usuario");
+            throw new RuntimeException("Ya existe un super usuario.");
         }
     }
 
@@ -248,39 +253,37 @@ public class UsuarioService {
         
         if (!existente.getEsSuperUsuario() && usuarioRepository.countByEsSuperUsuarioTrue() >= 1) {
             log.warn("Intento de convertir a otro usuario en super usuario");
-            throw new RuntimeException("Ya existe un super usuario");
+            throw new RuntimeException("Ya existe un super usuario.");
         }
     }
 
     private void validarUsuarioActivo(Usuario usuario, String username) {
         if (!usuario.getActivo()) {
             log.warn("Login fallido: usuario desactivado - {}", username);
-            throw new RuntimeException("Usuario desactivado");
+            throw new RuntimeException("Usuario bloqueado. Contacte al administrador.");
         }
     }
 
     private void validarPasswordCorrecta(String password, Usuario usuario, String username) {
         if (!passwordEncoder.matches(password, usuario.getPassword())) {
             log.warn("Login fallido: contraseña incorrecta - {}", username);
-            throw new RuntimeException("Contraseña incorrecta");
+            throw new RuntimeException("Contraseña incorrecta. Intente nuevamente.");
         }
     }
 
     private void validarPassword(String password) {
         if (password == null || password.length() < 4) {
             log.warn("Contraseña inválida: longitud menor a 4");
-            throw new RuntimeException("La contraseña debe tener al menos 4 caracteres");
+            throw new RuntimeException("La contraseña debe tener al menos 4 caracteres.");
         }
     }
 
     private void validarNoEsSuperUsuario(Usuario usuario) {
         if (usuario.getEsSuperUsuario()) {
             log.warn("Intento de modificar/eliminar super usuario: {}", usuario.getUsername());
-            throw new RuntimeException("No puedes modificar al super usuario");
+            throw new RuntimeException("No puede modificar al super usuario.");
         }
     }
-
-    // ========== MÉTODOS PRIVADOS DE ASIGNACIÓN ==========
 
     private void asignarValoresPorDefecto(Usuario usuario) {
         if (usuario.getActivo() == null) {
@@ -300,11 +303,20 @@ public class UsuarioService {
             actualizarEmail(existente, nuevo.getEmail());
         }
         
-        validarTelefono(nuevo.getTelefono());
-        existente.setTelefono(nuevo.getTelefono());
+        if (nuevo.getTelefono() != null) {
+            validarTelefono(nuevo.getTelefono());
+            existente.setTelefono(nuevo.getTelefono());
+        }
         
         if (nuevo.getEsSuperUsuario() != null) {
             existente.setEsSuperUsuario(nuevo.getEsSuperUsuario());
+        }
+        
+        if (nuevo.getUsername() != null) {
+            if (!existente.getUsername().equals(nuevo.getUsername())) {
+                validarUsernameUnico(nuevo.getUsername());
+                existente.setUsername(nuevo.getUsername());
+            }
         }
     }
 
@@ -312,7 +324,7 @@ public class UsuarioService {
         if (!existente.getEmail().equals(nuevoEmail)) {
             if (usuarioRepository.findByEmail(nuevoEmail).isPresent()) {
                 log.warn("Email ya existe: {}", nuevoEmail);
-                throw new RuntimeException("El email ya está registrado");
+                throw new RuntimeException("El correo electrónico ya está en uso.");
             }
             existente.setEmail(nuevoEmail);
         }
