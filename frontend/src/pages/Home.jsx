@@ -1,6 +1,6 @@
 import { MdLocationOn, MdEuroSymbol } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
-import "../styles/Home.css";
+import "../styles/home.css";
 import { Link } from "react-router-dom";
 
 function Home() {
