@@ -41,7 +41,9 @@ function FiltroVehiculo({
   // Precios
   const precioMaximo = precioMax || 50000;
   const precioActual =
-    filtros.precio === "" ? precioMaximo : Number(filtros.precio);
+    filtros.precio === ""
+      ? precioMaximo
+      : Math.min(Number(filtros.precio), precioMaximo);
 
   return (
     <div className="card shadow-sm border-0 rounded-4 mb-4">
@@ -296,7 +298,12 @@ function FiltroVehiculo({
               step="1000"
               className="form-range"
               value={precioActual}
-              onChange={(e) => onChange("precio", Number(e.target.value))}
+              onChange={(e) =>
+                onChange(
+                  "precio",
+                  Math.min(Number(e.target.value), precioMaximo),
+                )
+              }
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>EUR 0</span>
@@ -308,7 +315,9 @@ function FiltroVehiculo({
             <label className="form-label fw-semibold">
               Kilómetros máximos
               <span className="text-muted fw-normal ms-2 small">
-                {Number(filtros.km || kmMax || 400000).toLocaleString("es-ES")}{" "}
+                {Number(
+                  Math.min(filtros.km || kmMax || 400000, kmMax || 400000),
+                ).toLocaleString("es-ES")}{" "}
                 km
               </span>
             </label>
@@ -318,8 +327,13 @@ function FiltroVehiculo({
               max={kmMax || 400000}
               step="5000"
               className="form-range"
-              value={filtros.km || kmMax || 400000}
-              onChange={(e) => onChange("km", e.target.value)}
+              value={Math.min(filtros.km || kmMax || 400000, kmMax || 400000)}
+              onChange={(e) =>
+                onChange(
+                  "km",
+                  Math.min(Number(e.target.value), kmMax || 400000),
+                )
+              }
             />
             <div className="d-flex justify-content-between text-muted small">
               <span>0 km</span>

@@ -10,7 +10,7 @@ import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 function Footer() {
   return (
     <footer
-      className="bg-dark text-white py-5 mt-5"
+      className="bg-dark text-white py-5"
       style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
     >
       <div className="container">
@@ -23,9 +23,7 @@ function Footer() {
               className="img-fluid mb-3"
               style={{ maxWidth: "170px" }}
             />
-            <p className="text-white-50 small">
-              Vehículos de confianza
-            </p>
+            <p className="text-white-50 small">Vehículos de confianza</p>
           </div>
 
           {/* HORARIOS */}
@@ -105,7 +103,10 @@ function Footer() {
           </p>
 
           <div className="d-flex justify-content-center flex-wrap">
-            <a href="/legalprivacidad" className="text-decoration-none text-white-50">
+            <a
+              href="/legalprivacidad"
+              className="text-decoration-none text-white-50"
+            >
               Política de Privacidad y Aviso Legal
             </a>
           </div>
