@@ -1,7 +1,6 @@
 import React from "react";
 import { FaArrowLeft, FaTag } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import GaleriaMultimedia from "../components/admin/GaleriaMultimedia";
 import {
   addVehiculo,
@@ -13,6 +12,7 @@ import {
   aplicarOfertaPrecioFijo,
 } from "../api/vehiculoApi";
 import { addImagenes, cambiarPortada } from "../api/imagenApi";
+import "../styles/vehiculoFormulario.css";
 
 const cardStyle = {
   background: "var(--bs-body-bg, #fff)",
@@ -77,42 +77,43 @@ function VehiculoFormulario() {
   });
 
   React.useEffect(() => {
-    if (esEdicion) {
-      const cargarVehiculo = async () => {
-        try {
-          const data = await getVehiculoById(id);
-          setVehiculo({
-            tipo: data.tipo ?? "",
-            marca: data.marca ?? "",
-            modelo: data.modelo ?? "",
-            anio: data.anio ?? "",
-            precio: data.precio ?? "",
-            kilometros: data.kilometros ?? "",
-            combustible: data.combustible ?? "",
-            colorExterior: data.colorExterior ?? "",
-            interior: data.interior ?? "",
-            asientos: data.asientos ?? "",
-            puertas: data.puertas ?? "",
-            motor: data.motor ?? "",
-            cambio: data.cambio ?? "",
-            pegatina: data.pegatina ?? "",
-            descripcion: data.descripcion ?? "",
-            comentarios: data.comentarios ?? "",
-            extras: data.extras ?? "",
-            enOferta: data.enOferta ?? false,
-            precioOferta: data.precioOferta ?? "",
-            fechaFinOferta: data.fechaFinOferta
-              ? data.fechaFinOferta.slice(0, 16)
-              : "",
-            visible: data.visible ?? true,
-            estadoVenta: data.estadoVenta ?? "en_venta",
-          });
-        } catch (error) {
-          console.error("Error al cargar el vehículo:", error);
-        }
-      };
-      cargarVehiculo();
-    }
+    if (!esEdicion) return;
+
+    const cargarVehiculo = async () => {
+      try {
+        const data = await getVehiculoById(id);
+        setVehiculo({
+          tipo: data.tipo ?? "",
+          marca: data.marca ?? "",
+          modelo: data.modelo ?? "",
+          anio: data.anio ?? "",
+          precio: data.precio ?? "",
+          kilometros: data.kilometros ?? "",
+          combustible: data.combustible ?? "",
+          colorExterior: data.colorExterior ?? "",
+          interior: data.interior ?? "",
+          asientos: data.asientos ?? "",
+          puertas: data.puertas ?? "",
+          motor: data.motor ?? "",
+          cambio: data.cambio ?? "",
+          pegatina: data.pegatina ?? "",
+          descripcion: data.descripcion ?? "",
+          comentarios: data.comentarios ?? "",
+          extras: data.extras ?? "",
+          enOferta: data.enOferta ?? false,
+          precioOferta: data.precioOferta ?? "",
+          fechaFinOferta: data.fechaFinOferta
+            ? data.fechaFinOferta.slice(0, 16)
+            : "",
+          visible: data.visible ?? true,
+          estadoVenta: data.estadoVenta ?? "en_venta",
+        });
+      } catch (error) {
+        console.error("Error al cargar el vehículo:", error);
+      }
+    };
+
+    cargarVehiculo();
   }, [id, esEdicion]);
 
   const handleChange = (e) => {
@@ -123,11 +124,17 @@ function VehiculoFormulario() {
       deleteOferta(id).catch(() => {});
     }
 
-    let vehiculoActualizado = { ...vehiculo, [name]: newValue };
+    const vehiculoActualizado = { ...vehiculo, [name]: newValue };
 
-    if (name === "tipo" && value === "MOTOCICLETA") {
-      vehiculoActualizado.interior = "Ninguno";
-      vehiculoActualizado.puertas = 0;
+    if (name === "tipo") {
+      if (value === "MOTOCICLETA") {
+        vehiculoActualizado.interior = "Ninguno";
+        vehiculoActualizado.puertas = 0;
+      } else if (vehiculo.tipo === "MOTOCICLETA") {
+        vehiculoActualizado.interior =
+          vehiculo.interior === "Ninguno" ? "" : vehiculo.interior;
+        vehiculoActualizado.puertas = vehiculo.puertas === 0 ? "" : vehiculo.puertas;
+      }
     }
 
     setVehiculo(vehiculoActualizado);
@@ -135,14 +142,13 @@ function VehiculoFormulario() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (
         vehiculo.enOferta &&
         (!vehiculo.precioOferta || !vehiculo.fechaFinOferta)
       ) {
-        alert(
-          "Si el vehículo está en oferta, debes indicar precio y fecha fin.",
-        );
+        alert("Si el vehículo está en oferta, debes indicar precio y fecha fin.");
         return;
       }
 
@@ -188,7 +194,6 @@ function VehiculoFormulario() {
 
   return (
     <div className="container-fluid px-3 px-md-4 mb-5">
-      {/* Cabecera */}
       <div className="d-flex align-items-center gap-3 my-4">
         <button
           type="button"
@@ -222,10 +227,8 @@ function VehiculoFormulario() {
 
       <form onSubmit={handleSubmit}>
         <div className="row g-3 align-items-start">
-          {/* ── Columna izquierda: galería + estado ── */}
           {esEdicion && (
             <div className="col-12 col-lg-5 col-xl-4 d-flex flex-column gap-3">
-              {/* Tarjeta Galería */}
               <div style={cardStyle}>
                 <GaleriaMultimedia
                   vehiculoId={id}
@@ -236,11 +239,9 @@ function VehiculoFormulario() {
                 />
               </div>
 
-              {/* Tarjeta Visibilidad y estado */}
               <div style={cardStyle}>
                 <p style={sectionTitleStyle}>Visibilidad y estado</p>
                 <div className="d-flex flex-column gap-2">
-                  {/* Visible */}
                   <div
                     className="d-flex align-items-center justify-content-between py-2"
                     style={{
@@ -248,16 +249,10 @@ function VehiculoFormulario() {
                     }}
                   >
                     <div>
-                      <p
-                        className="mb-0 fw-medium"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <p className="mb-0 fw-medium" style={{ fontSize: "14px" }}>
                         Visible al público
                       </p>
-                      <p
-                        className="mb-0 text-muted"
-                        style={{ fontSize: "12px" }}
-                      >
+                      <p className="mb-0 text-muted" style={{ fontSize: "12px" }}>
                         {vehiculo.visible
                           ? "Aparece en el catálogo"
                           : "Oculto en el catálogo"}
@@ -281,7 +276,6 @@ function VehiculoFormulario() {
                     </div>
                   </div>
 
-                  {/* En oferta */}
                   <div
                     className="d-flex align-items-center justify-content-between py-2"
                     style={{
@@ -289,16 +283,10 @@ function VehiculoFormulario() {
                     }}
                   >
                     <div>
-                      <p
-                        className="mb-0 fw-medium"
-                        style={{ fontSize: "14px" }}
-                      >
+                      <p className="mb-0 fw-medium" style={{ fontSize: "14px" }}>
                         En oferta
                       </p>
-                      <p
-                        className="mb-0 text-muted"
-                        style={{ fontSize: "12px" }}
-                      >
+                      <p className="mb-0 text-muted" style={{ fontSize: "12px" }}>
                         {vehiculo.enOferta
                           ? "Precio reducido activo"
                           : "Sin oferta activa"}
@@ -322,7 +310,6 @@ function VehiculoFormulario() {
                     </div>
                   </div>
 
-                  {/* Estado de venta */}
                   <div className="pt-1">
                     <label
                       className="form-label text-muted mb-1"
@@ -346,12 +333,10 @@ function VehiculoFormulario() {
             </div>
           )}
 
-          {/* ── Columna derecha: formulario ── */}
           <div
             className={`col-12 ${esEdicion ? "col-lg-7 col-xl-8" : "col-lg-8 mx-auto"}`}
           >
             <div className="d-flex flex-column gap-3">
-              {/* Si es creación, visibilidad y estado van aquí arriba */}
               {!esEdicion && (
                 <div style={cardStyle}>
                   <p style={sectionTitleStyle}>Visibilidad y estado</p>
@@ -367,10 +352,7 @@ function VehiculoFormulario() {
                           checked={vehiculo.visible}
                           onChange={handleChange}
                         />
-                        <label
-                          className="form-check-label"
-                          htmlFor="checkVisible"
-                        >
+                        <label className="form-check-label" htmlFor="checkVisible">
                           Visible
                         </label>
                       </div>
@@ -386,10 +368,7 @@ function VehiculoFormulario() {
                           checked={vehiculo.enOferta}
                           onChange={handleChange}
                         />
-                        <label
-                          className="form-check-label"
-                          htmlFor="checkOferta"
-                        >
+                        <label className="form-check-label" htmlFor="checkOferta">
                           En oferta
                         </label>
                       </div>
@@ -411,7 +390,6 @@ function VehiculoFormulario() {
                 </div>
               )}
 
-              {/* Tarjeta: Identificación */}
               <div style={cardStyle}>
                 <p style={sectionTitleStyle}>Identificación</p>
                 <div className="row g-3">
@@ -539,14 +517,12 @@ function VehiculoFormulario() {
                 </div>
               </div>
 
-              {/* Tarjeta: Características técnicas */}
               <div style={cardStyle}>
                 <p style={sectionTitleStyle}>Características técnicas</p>
                 <div className="row g-3">
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
-                      Combustible{" "}
-                      <Contador valor={vehiculo.combustible} max={20} />
+                      Combustible <Contador valor={vehiculo.combustible} max={20} />
                     </label>
                     <input
                       type="text"
@@ -589,14 +565,12 @@ function VehiculoFormulario() {
                 </div>
               </div>
 
-              {/* Tarjeta: Acabados */}
               <div style={cardStyle}>
                 <p style={sectionTitleStyle}>Acabados</p>
                 <div className="row g-3">
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
-                      Color exterior{" "}
-                      <Contador valor={vehiculo.colorExterior} max={25} />
+                      Color exterior <Contador valor={vehiculo.colorExterior} max={25} />
                     </label>
                     <input
                       type="text"
@@ -627,14 +601,12 @@ function VehiculoFormulario() {
                 </div>
               </div>
 
-              {/* Tarjeta: Descripción y extras */}
               <div style={cardStyle}>
                 <p style={sectionTitleStyle}>Descripción y extras</p>
                 <div className="row g-3">
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between">
-                      Descripción{" "}
-                      <Contador valor={vehiculo.descripcion} max={200} />
+                      Descripción <Contador valor={vehiculo.descripcion} max={200} />
                     </label>
                     <textarea
                       className="form-control"
@@ -672,13 +644,11 @@ function VehiculoFormulario() {
                       value={vehiculo.extras}
                       onChange={handleChange}
                       maxLength={500}
-                      required
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Tarjeta: Oferta — solo si enOferta está activo */}
               {vehiculo.enOferta && (
                 <div
                   style={{
@@ -721,7 +691,7 @@ function VehiculoFormulario() {
                         value={vehiculo.precioOferta}
                         onChange={handleChange}
                         max={vehiculo.precio}
-                        placeholder={`Máx. €${vehiculo.precio}`}
+                        placeholder={`${vehiculo.precio}€`}
                       />
                     </div>
                     <div className="col-12 col-sm-6">
@@ -741,7 +711,6 @@ function VehiculoFormulario() {
                 </div>
               )}
 
-              {/* Botón guardar */}
               <div className="d-flex justify-content-end pb-2">
                 <button
                   type="submit"

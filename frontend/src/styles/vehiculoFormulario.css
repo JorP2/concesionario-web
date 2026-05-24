@@ -1,0 +1,4 @@
+.form-control::placeholder {
+  font-style: italic;
+  font-size: small;
+}

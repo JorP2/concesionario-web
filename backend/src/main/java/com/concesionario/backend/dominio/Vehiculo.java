@@ -65,7 +65,7 @@ public class Vehiculo {
     private String descripcion;
     
     @NotBlank(message = "Los comentarios no pueden estar vacios")
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 2000)
     private String comentarios;
 
     @Column

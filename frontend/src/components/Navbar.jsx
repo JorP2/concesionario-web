@@ -6,6 +6,8 @@ import { logoutApi } from "../api/authApi";
 import "../styles/navbar.css";
 
 export const Navbar = () => {
+  const SCROLL_SHRINK_ON = 72;
+  const SCROLL_SHRINK_OFF = 28;
   const sesion = getSesion();
   const navigate = useNavigate();
   const location = useLocation(); // ← añade esto
@@ -17,9 +19,15 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      const y = window.scrollY;
+      setScrolled((prev) => {
+        if (!prev && y > SCROLL_SHRINK_ON) return true;
+        if (prev && y < SCROLL_SHRINK_OFF) return false;
+        return prev;
+      });
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
