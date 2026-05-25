@@ -48,11 +48,11 @@ function VehiculoDetalle() {
         <div className="col-lg-8 pb-5">
           {/* HERO */}
           <div className="position-relative rounded-4 overflow-hidden shadow mb-4">
-            <div className="ratio ratio-16x9">
+            <div className="ratio ratio-16x9 bg-light">
               <img
                 src={vehiculo.imagenPortada}
                 alt=""
-                className="w-100 h-100 object-fit-cover"
+                className="w-100 h-100 object-fit-contain"
               />
             </div>
 
@@ -87,7 +87,8 @@ function VehiculoDetalle() {
                   style={{
                     width: "280px",
                     height: "170px",
-                    objectFit: "cover",
+                    objectFit: "contain",
+                    background: "#f5f6f8",
                     cursor: "pointer",
                     transition: "0.2s",
                   }}

@@ -3,6 +3,15 @@ import { authFetch } from "../utils/authFetch";
 const API_URL = process.env.REACT_APP_API_URL + "/vehiculos";
 const API_URL_PUBLIC = process.env.REACT_APP_API_URL + "/vehiculos/public";
 
+const getErrorMessage = async (response, fallback) => {
+  try {
+    const data = await response.json();
+    return data?.message || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 // ── PÚBLICAS (fetch normal) ──────────────────────────────
 
 export const getVehiculosPorTipo = async (tipo) => {
@@ -68,7 +77,9 @@ export const addVehiculo = async (vehiculo) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(vehiculo),
   });
-  if (!response.ok) throw new Error("Error al agregar el vehículo");
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Error al agregar el vehículo"));
+  }
   return await response.json();
 };
 
@@ -78,7 +89,9 @@ export const updateVehiculo = async (id, vehiculo) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(vehiculo),
   });
-  if (!response.ok) throw new Error("Error al actualizar el vehículo");
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Error al actualizar el vehículo"));
+  }
   return await response.json();
 };
 
@@ -113,6 +126,8 @@ export const aplicarOfertaPrecioFijo = async (id, precioOferta, fechaFin) => {
     `${API_URL}/${id}/oferta-precio?precioOferta=${encodeURIComponent(precioOferta)}&fechaFin=${encodeURIComponent(fechaFin)}`,
     { method: "POST" }
   );
-  if (!response.ok) throw new Error("Error al aplicar la oferta");
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response, "Error al aplicar la oferta"));
+  }
   return await response.json();
 };

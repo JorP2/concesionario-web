@@ -1,6 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import "../styles/nosotros.css";
 import React from "react";
+import GaleriaNosotros from "../components/GaleriaNosotros";
 
 function Nosotros() {
   const reviews = [
@@ -41,6 +42,7 @@ function Nosotros() {
       link: "https://maps.app.goo.gl/iNisKNdoFHNKC9WW9",
     },
   ];
+
   const reviewsLoop = [...reviews, ...reviews];
 
   return (
@@ -118,6 +120,8 @@ function Nosotros() {
           </div>
         </div>
       </section>
+
+      <GaleriaNosotros />
 
       <section id="opiniones" className="nosotros-reviews">
         <div className="container">
