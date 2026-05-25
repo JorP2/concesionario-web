@@ -102,7 +102,7 @@ function Administrador() {
                 to="/administrador/vehiculo-form"
                 className="btn btn-success"
               >
-                + Anadir vehículo
+                + Añadir vehículo
               </Link>
             </div>
           )}

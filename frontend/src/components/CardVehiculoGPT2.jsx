@@ -14,6 +14,15 @@ import "../styles/vehiculoCard.css";
 
 const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
   const [showGallery, setShowGallery] = React.useState(false);
+  const imagenesGaleria = React.useMemo(() => {
+    const imagenes = vehiculo.imagenes || [];
+    if (!vehiculo.imagenPortada) return imagenes;
+
+    return [
+      vehiculo.imagenPortada,
+      ...imagenes.filter((url) => url !== vehiculo.imagenPortada),
+    ];
+  }, [vehiculo.imagenPortada, vehiculo.imagenes]);
 
   const getFuelIcon = (tipo) => {
     if (!tipo) return <FaGasPump size={12} />;
@@ -128,42 +137,45 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
             className="modal-dialog modal-lg modal-dialog-centered"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-content">
+            <div className="modal-content vehiculo-gallery-modal">
               <button
-                className="btn-close m-2 ms-auto"
+                className="btn-close gallery-close"
+                type="button"
+                aria-label="Cerrar galeria"
                 onClick={() => setShowGallery(false)}
               />
 
               {/* Sin imágenes */}
-              {(!vehiculo.imagenes || vehiculo.imagenes.length === 0) && (
+              {imagenesGaleria.length === 0 && (
                 <img
                   src={sinImagen}
-                  className="d-block w-100"
+                  className="d-block w-100 gallery-image"
                   alt="Sin imágenes"
                 />
               )}
 
               {/* Con imágenes */}
-              {vehiculo.imagenes && vehiculo.imagenes.length > 0 && (
+              {imagenesGaleria.length > 0 && (
                 <div id={`carousel-${vehiculo.id}`} className="carousel slide">
                   <div className="carousel-inner">
-                    {vehiculo.imagenes.map((url, index) => (
+                    {imagenesGaleria.map((url, index) => (
                       <div
                         key={index}
                         className={`carousel-item ${index === 0 ? "active" : ""}`}
                       >
-                        <img
-                          src={url}
-                          className="d-block w-100"
-                          alt={`${vehiculo.marca} ${vehiculo.modelo} - foto ${index + 1}`}
-                          style={{ maxHeight: "500px", objectFit: "cover" }}
-                        />
+                        <div className="gallery-image-frame">
+                          <img
+                            src={url}
+                            className="d-block w-100 gallery-image"
+                            alt={`${vehiculo.marca} ${vehiculo.modelo} - foto ${index + 1}`}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   {/* Controles solo si hay más de 1 imagen */}
-                  {vehiculo.imagenes.length > 1 && (
+                  {imagenesGaleria.length > 1 && (
                     <>
                       <button
                         className="carousel-control-prev"
@@ -182,7 +194,7 @@ const CardVehiculoGPT = ({ vehiculo, vendido = false }) => {
 
                       {/* Indicadores */}
                       <div className="carousel-indicators">
-                        {vehiculo.imagenes.map((_, index) => (
+                        {imagenesGaleria.map((_, index) => (
                           <button
                             key={index}
                             type="button"

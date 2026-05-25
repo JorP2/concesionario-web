@@ -44,6 +44,15 @@ const Contador = ({ valor, max }) => {
   );
 };
 
+const ErrorCampo = ({ mensaje }) =>
+  mensaje ? <div className="text-danger mt-1 small">{mensaje}</div> : null;
+
+const toNumber = (valor) => {
+  if (valor === "" || valor === null || valor === undefined) return null;
+  const numero = Number(valor);
+  return Number.isFinite(numero) ? numero : null;
+};
+
 function VehiculoFormulario() {
   const { id } = useParams();
   const esEdicion = Boolean(id);
@@ -75,6 +84,7 @@ function VehiculoFormulario() {
     visible: true,
     estadoVenta: "en_venta",
   });
+  const [errores, setErrores] = React.useState({});
 
   React.useEffect(() => {
     if (esEdicion) {
@@ -131,10 +141,129 @@ function VehiculoFormulario() {
     }
 
     setVehiculo(vehiculoActualizado);
+    setErrores((prev) => ({ ...prev, [name]: "", general: "" }));
+  };
+
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+    const anioActual = new Date().getFullYear();
+    const precio = toNumber(vehiculo.precio);
+    const anio = toNumber(vehiculo.anio);
+    const kilometros = toNumber(vehiculo.kilometros);
+    const asientos = toNumber(vehiculo.asientos);
+    const puertas = toNumber(vehiculo.puertas);
+    const precioOferta = toNumber(vehiculo.precioOferta);
+
+    const requeridos = [
+      ["tipo", "Selecciona un tipo."],
+      ["pegatina", "La pegatina es obligatoria."],
+      ["marca", "La marca es obligatoria."],
+      ["modelo", "El modelo es obligatorio."],
+      ["combustible", "El combustible es obligatorio."],
+      ["motor", "El motor es obligatorio."],
+      ["cambio", "El cambio es obligatorio."],
+      ["colorExterior", "El color exterior es obligatorio."],
+      ["descripcion", "La descripcion es obligatoria."],
+      ["comentarios", "Los comentarios son obligatorios."],
+      ["extras", "Los extras son obligatorios."],
+    ];
+
+    if (vehiculo.tipo !== "MOTOCICLETA") {
+      requeridos.push(["interior", "El interior es obligatorio."]);
+    }
+
+    requeridos.forEach(([campo, mensaje]) => {
+      if (!String(vehiculo[campo] ?? "").trim()) {
+        nuevosErrores[campo] = mensaje;
+      }
+    });
+
+    if (precio === null) {
+      nuevosErrores.precio = "El precio es obligatorio.";
+    } else if (precio <= 0) {
+      nuevosErrores.precio = "El precio debe ser mayor que 0.";
+    } else if (precio > 999999999) {
+      nuevosErrores.precio = "El precio no puede superar 999.999.999.";
+    }
+
+    if (anio === null) {
+      nuevosErrores.anio = "El anio es obligatorio.";
+    } else if (anio < 1900 || anio > anioActual + 1) {
+      nuevosErrores.anio = `El anio debe estar entre 1900 y ${anioActual + 1}.`;
+    }
+
+    if (kilometros === null) {
+      nuevosErrores.kilometros = "Los kilometros son obligatorios.";
+    } else if (kilometros < 0) {
+      nuevosErrores.kilometros = "Los kilometros no pueden ser negativos.";
+    } else if (kilometros > 9999999) {
+      nuevosErrores.kilometros =
+        "Los kilometros no pueden superar 9.999.999.";
+    }
+
+    if (vehiculo.tipo !== "MOTOCICLETA") {
+      if (puertas === null) {
+        nuevosErrores.puertas = "Las puertas son obligatorias.";
+      } else if (puertas < 0 || puertas > 9) {
+        nuevosErrores.puertas = "Las puertas deben estar entre 0 y 9.";
+      }
+    }
+
+    if (asientos === null) {
+      nuevosErrores.asientos = "Los asientos son obligatorios.";
+    } else if (asientos < 0 || asientos > 9) {
+      nuevosErrores.asientos = "Los asientos deben estar entre 0 y 9.";
+    }
+
+    if (vehiculo.enOferta) {
+      if (precioOferta === null) {
+        nuevosErrores.precioOferta = "El precio de oferta es obligatorio.";
+      } else if (precioOferta <= 0) {
+        nuevosErrores.precioOferta =
+          "El precio de oferta debe ser mayor que 0.";
+      } else if (precio !== null && precioOferta >= precio) {
+        nuevosErrores.precioOferta =
+          "El precio de oferta debe ser menor al precio original.";
+      }
+
+      if (!vehiculo.fechaFinOferta) {
+        nuevosErrores.fechaFinOferta =
+          "La fecha fin de oferta es obligatoria.";
+      } else if (new Date(vehiculo.fechaFinOferta) <= new Date()) {
+        nuevosErrores.fechaFinOferta =
+          "La fecha de fin debe ser posterior a hoy.";
+      }
+    }
+
+    return nuevosErrores;
+  };
+
+  const aplicarErrorBackend = (mensaje) => {
+    const texto = mensaje || "Error al guardar el vehiculo.";
+    const textoLower = texto.toLowerCase();
+    const mapa = [
+      ["asientos", "asientos"],
+      ["puertas", "puertas"],
+      ["precio de oferta", "precioOferta"],
+      ["precio", "precio"],
+      ["anio", "anio"],
+      ["año", "anio"],
+      ["kilomet", "kilometros"],
+      ["fecha", "fechaFinOferta"],
+    ];
+    const campo = mapa.find(([clave]) => textoLower.includes(clave))?.[1];
+
+    setErrores(campo ? { [campo]: texto } : { general: texto });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const erroresFormulario = validarFormulario();
+    if (Object.keys(erroresFormulario).length > 0) {
+      setErrores(erroresFormulario);
+      return;
+    }
+
     try {
       if (
         vehiculo.enOferta &&
@@ -183,6 +312,7 @@ function VehiculoFormulario() {
       navigate("/administrador");
     } catch (error) {
       console.error("Error al guardar el vehículo:", error);
+      aplicarErrorBackend(error.message);
     }
   };
 
@@ -220,7 +350,8 @@ function VehiculoFormulario() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
+        <ErrorCampo mensaje={errores.general} />
         <div className="row g-3 align-items-start">
           {/* ── Columna izquierda: galería + estado ── */}
           {esEdicion && (
@@ -431,6 +562,7 @@ function VehiculoFormulario() {
                       <option value="FURGONETA">Furgoneta</option>
                       <option value="MOTOCICLETA">Motocicleta</option>
                     </select>
+                    <ErrorCampo mensaje={errores.tipo} />
                   </div>
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
@@ -445,6 +577,7 @@ function VehiculoFormulario() {
                       maxLength={10}
                       required
                     />
+                    <ErrorCampo mensaje={errores.pegatina} />
                   </div>
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
@@ -459,6 +592,7 @@ function VehiculoFormulario() {
                       maxLength={20}
                       required
                     />
+                    <ErrorCampo mensaje={errores.marca} />
                   </div>
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
@@ -473,6 +607,7 @@ function VehiculoFormulario() {
                       maxLength={30}
                       required
                     />
+                    <ErrorCampo mensaje={errores.modelo} />
                   </div>
                   <div className="col-6 col-sm-3">
                     <label className="form-label">Año</label>
@@ -482,9 +617,11 @@ function VehiculoFormulario() {
                       name="anio"
                       value={vehiculo.anio}
                       onChange={handleChange}
-                      max={new Date().getFullYear()}
+                      min={1900}
+                      max={new Date().getFullYear() + 1}
                       required
                     />
+                    <ErrorCampo mensaje={errores.anio} />
                   </div>
                   <div className="col-6 col-sm-3">
                     <label className="form-label">Kilómetros</label>
@@ -498,6 +635,7 @@ function VehiculoFormulario() {
                       max={9999999}
                       required
                     />
+                    <ErrorCampo mensaje={errores.kilometros} />
                   </div>
                   <div className="col-6 col-sm-3">
                     <label className="form-label">Precio (€)</label>
@@ -511,6 +649,7 @@ function VehiculoFormulario() {
                       max={999999999}
                       required
                     />
+                    <ErrorCampo mensaje={errores.precio} />
                   </div>
                   {vehiculo.tipo !== "MOTOCICLETA" && (
                     <div className="col-6 col-sm-3">
@@ -521,8 +660,11 @@ function VehiculoFormulario() {
                         name="puertas"
                         value={vehiculo.puertas}
                         onChange={handleChange}
+                        min={0}
+                        max={9}
                         required
                       />
+                      <ErrorCampo mensaje={errores.puertas} />
                     </div>
                   )}
                   <div className="col-6 col-sm-3">
@@ -533,8 +675,11 @@ function VehiculoFormulario() {
                       name="asientos"
                       value={vehiculo.asientos}
                       onChange={handleChange}
+                      min={0}
+                      max={9}
                       required
                     />
+                    <ErrorCampo mensaje={errores.asientos} />
                   </div>
                 </div>
               </div>
@@ -557,6 +702,7 @@ function VehiculoFormulario() {
                       maxLength={20}
                       required
                     />
+                    <ErrorCampo mensaje={errores.combustible} />
                   </div>
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
@@ -571,6 +717,7 @@ function VehiculoFormulario() {
                       maxLength={30}
                       required
                     />
+                    <ErrorCampo mensaje={errores.motor} />
                   </div>
                   <div className="col-12 col-sm-6">
                     <label className="form-label d-flex justify-content-between">
@@ -585,6 +732,7 @@ function VehiculoFormulario() {
                       maxLength={20}
                       required
                     />
+                    <ErrorCampo mensaje={errores.cambio} />
                   </div>
                 </div>
               </div>
@@ -607,6 +755,7 @@ function VehiculoFormulario() {
                       maxLength={25}
                       required
                     />
+                    <ErrorCampo mensaje={errores.colorExterior} />
                   </div>
                   {vehiculo.tipo !== "MOTOCICLETA" && (
                     <div className="col-12 col-sm-6">
@@ -622,6 +771,7 @@ function VehiculoFormulario() {
                         maxLength={25}
                         required
                       />
+                      <ErrorCampo mensaje={errores.interior} />
                     </div>
                   )}
                 </div>
@@ -645,6 +795,7 @@ function VehiculoFormulario() {
                       maxLength={200}
                       required
                     />
+                    <ErrorCampo mensaje={errores.descripcion} />
                   </div>
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between">
@@ -660,6 +811,7 @@ function VehiculoFormulario() {
                       maxLength={500}
                       required
                     />
+                    <ErrorCampo mensaje={errores.comentarios} />
                   </div>
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between">
@@ -674,6 +826,7 @@ function VehiculoFormulario() {
                       maxLength={500}
                       required
                     />
+                    <ErrorCampo mensaje={errores.extras} />
                   </div>
                 </div>
               </div>
@@ -714,6 +867,7 @@ function VehiculoFormulario() {
                           </span>
                         )}
                       </label>
+                      <ErrorCampo mensaje={errores.precioOferta} />
                       <input
                         type="number"
                         className="form-control"
@@ -726,6 +880,7 @@ function VehiculoFormulario() {
                     </div>
                     <div className="col-12 col-sm-6">
                       <label className="form-label">Fecha fin oferta</label>
+                      <ErrorCampo mensaje={errores.fechaFinOferta} />
                       <input
                         type="datetime-local"
                         className="form-control"

@@ -1,6 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import "../styles/nosotros.css";
 import React from "react";
+import GaleriaNosotros from "../components/GaleriaNosotros";
 
 function Nosotros() {
   const reviews = [
@@ -41,7 +42,6 @@ function Nosotros() {
       link: "https://maps.app.goo.gl/iNisKNdoFHNKC9WW9",
     },
   ];
-  const reviewsLoop = [...reviews, ...reviews];
 
   return (
     <div className="nosotros-page mb-5">
@@ -119,6 +119,8 @@ function Nosotros() {
         </div>
       </section>
 
+      <GaleriaNosotros />
+
       <section id="opiniones" className="nosotros-reviews">
         <div className="container">
           <div className="nosotros-heading text-center">
@@ -127,49 +129,43 @@ function Nosotros() {
             <p>Cómo lo recuerdan quienes ya han comprado con nosotros.</p>
           </div>
 
-          <div className="nosotros-reviews-carousel">
-            <div className="nosotros-reviews-track nosotros-reviews-track--auto">
-              {reviewsLoop.map((review, index) => (
-                <div
-                  key={`${review.name}-${index}`}
-                  className="nosotros-review-slide"
-                >
-                  <a
-                    href={review.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="nosotros-review-link"
-                  >
-                    <div className="nosotros-review-card">
-                      <div className="nosotros-review-user">
-                        <div className="nosotros-review-avatar">
-                          {review.name.charAt(0)}
-                        </div>
-                        <div>
-                          <strong>{review.name}</strong>
-                          <span>{review.role}</span>
-                        </div>
-                      </div>
-                      <div className="nosotros-review-stars mb-3">
-                        {Array(5)
-                          .fill()
-                          .map((_, starIndex) => (
-                            <FaStar key={starIndex} />
-                          ))}
-                      </div>
-                      <p className="mb-4">{review.text}</p>
-                      <div className="nosotros-review-footer">
-                        <strong></strong>
-                        <span>Ver en Google -&gt;</span>
-                      </div>
+          <div className="nosotros-reviews-grid">
+            {reviews.map((review) => (
+              <a
+                key={review.name}
+                href={review.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nosotros-review-link"
+              >
+                <div className="nosotros-review-card">
+                  <div className="nosotros-review-user">
+                    <div className="nosotros-review-avatar">
+                      {review.name.charAt(0)}
                     </div>
-                  </a>
+                    <div>
+                      <strong>{review.name}</strong>
+                      <span>{review.role}</span>
+                    </div>
+                  </div>
+                  <div className="nosotros-review-stars mb-3">
+                    {Array(5)
+                      .fill()
+                      .map((_, starIndex) => (
+                        <FaStar key={starIndex} />
+                      ))}
+                  </div>
+                  <p className="mb-4">{review.text}</p>
+                  <div className="nosotros-review-footer">
+                    <strong>Google Reviews</strong>
+                    <span>Ver opinion -&gt;</span>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </a>
+            ))}
           </div>
 
-          <div className="text-center mt-5">
+          <div className="text-center mt-4">
             <a
               className="btn btn-outline-dark btn-lg px-5"
               href="https://www.google.com/search?hl=en-AU&gl=au&q=Nohales+Autom%C3%B3viles,+Calle+R%C3%ADo+Jarama,+65,+Toledo&ludocid=6490944929613204907#lrd=0xd6a0dbd75458da7:0x5a147805e237cdab,1,,,"
