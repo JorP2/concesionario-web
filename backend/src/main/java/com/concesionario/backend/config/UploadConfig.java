@@ -18,8 +18,23 @@ public class UploadConfig {
             carpeta.mkdirs();
             System.out.println("Carpeta creada: " + ruta);
         }
+        // Crear carpeta para galería
+        crearCarpetaGaleria();
     }
 
     public String getRuta() { return ruta; }
     public void setRuta(String ruta) { this.ruta = ruta; }
+
+    // NUEVO MÉTODO para la galería
+    public String getRutaGaleria() {
+        return "uploads/galeria/";
+    }
+
+    private void crearCarpetaGaleria() {
+        File carpetaGaleria = new File(getRutaGaleria());
+        if (!carpetaGaleria.exists()) {
+            carpetaGaleria.mkdirs();
+            System.out.println("Carpeta creada: " + getRutaGaleria());
+        }
+    }
 }

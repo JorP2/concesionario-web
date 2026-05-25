@@ -20,4 +20,8 @@ public class UrlService {
     public String getVideoUrl(Long vehiculoId, String uid) {
         return appProperties.getBaseUrl() + "/uploads/vehiculos/" + vehiculoId + "/videos/" + uid;
     }
+    
+    public String getGaleriaImageUrl(String uid) {
+        return appProperties.getBaseUrl() + "/uploads/galeria/" + uid;
+    }
 }

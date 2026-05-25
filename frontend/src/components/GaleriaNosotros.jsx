@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { FaTimes, FaExpandAlt } from "react-icons/fa";
-import galeriaFotos from "../data/galeriaConfig";
+//import galeriaFotos from "../data/galeriaConfig";
+import { getTodasLasImagenes } from "../api/galeriaApi";
 
 const categorias = [
   { key: "todas", label: "Todas" },
@@ -12,6 +13,54 @@ const categorias = [
 function GaleriaNosotros() {
   const [categoriaActiva, setCategoriaActiva] = useState("todas");
   const [fotoActiva, setFotoActiva] = useState(null);
+  const [galeriaFotos, setGaleriaFotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [limite, setLimite] = useState(9);
+
+  React.useEffect(() => {
+    const cargarGaleria = async () => {
+      try {
+        const data = await getTodasLasImagenes();
+
+        const fotosTransformadas = [];
+
+        Object.entries(data.porCategoria || {}).forEach(
+          ([categoria, imagenes]) => {
+            imagenes.forEach((img, index) => {
+              fotosTransformadas.push({
+                id: img.id,
+                src: img.url,
+                categoria: categoria.toLowerCase(),
+                destacada: index === 0,
+
+                // temporales por ahora
+                titulo: categoria.charAt(0) + categoria.slice(1).toLowerCase(),
+
+                descripcion:
+                  categoria === "CONCESIONARIO"
+                    ? "Instalaciones del concesionario"
+                    : categoria === "TALLER"
+                      ? "Zona de taller"
+                      : "Entrega realizada",
+              });
+            });
+          },
+        );
+
+        setGaleriaFotos(fotosTransformadas);
+      } catch (error) {
+        console.error("Error al cargar galería:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarGaleria();
+  }, []);
+
+  React.useEffect(() => {
+    setLimite(9);
+  }, [categoriaActiva]);
 
   const fotosFiltradas = useMemo(() => {
     if (categoriaActiva === "todas") {
@@ -19,8 +68,17 @@ function GaleriaNosotros() {
     }
 
     return galeriaFotos.filter((foto) => foto.categoria === categoriaActiva);
-  }, [categoriaActiva]);
+  }, [categoriaActiva, galeriaFotos]);
 
+  const fotosVisibles = fotosFiltradas.slice(0, limite);
+
+  if (loading) {
+    return (
+      <section className="nosotros-galeria">
+        <div className="container py-5 text-center">Cargando galería...</div>
+      </section>
+    );
+  }
   return (
     <section className="nosotros-galeria">
       <div className="container">
@@ -34,7 +92,10 @@ function GaleriaNosotros() {
             </p>
           </div>
 
-          <div className="nosotros-galeria-filtros" aria-label="Filtros de galeria">
+          <div
+            className="nosotros-galeria-filtros"
+            aria-label="Filtros de galeria"
+          >
             {categorias.map((categoria) => (
               <button
                 key={categoria.key}
@@ -53,7 +114,7 @@ function GaleriaNosotros() {
         </div>
 
         <div className="nosotros-galeria-grid">
-          {fotosFiltradas.map((foto, index) => (
+          {fotosVisibles.map((foto, index) => (
             <button
               key={foto.id}
               type="button"
@@ -66,14 +127,17 @@ function GaleriaNosotros() {
             >
               <img src={foto.src} alt={foto.titulo} loading="lazy" />
               <span className="nosotros-galeria-badge">
-                {categorias.find((categoria) => categoria.key === foto.categoria)?.label}
+                {
+                  categorias.find(
+                    (categoria) => categoria.key === foto.categoria,
+                  )?.label
+                }
               </span>
               <span className="nosotros-galeria-zoom" aria-hidden="true">
                 <FaExpandAlt />
               </span>
               <span className="nosotros-galeria-copy">
                 <strong>{foto.titulo}</strong>
-                <small>{foto.descripcion}</small>
               </span>
             </button>
           ))}
@@ -105,7 +169,7 @@ function GaleriaNosotros() {
               <span>
                 {
                   categorias.find(
-                    (categoria) => categoria.key === fotoActiva.categoria
+                    (categoria) => categoria.key === fotoActiva.categoria,
                   )?.label
                 }
               </span>
@@ -113,6 +177,16 @@ function GaleriaNosotros() {
               <p>{fotoActiva.descripcion}</p>
             </div>
           </div>
+        </div>
+      )}
+      {limite < fotosFiltradas.length && (
+        <div className="text-center mt-4">
+          <button
+            className="btn btn-outline-dark px-4"
+            onClick={() => setLimite((prev) => prev + 6)}
+          >
+            Ver más
+          </button>
         </div>
       )}
     </section>

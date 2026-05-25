@@ -61,14 +61,14 @@ public class Vehiculo {
     private String pegatina;
 
     @NotBlank(message = "La descripción no puede estar vacía")
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 2000)
     private String descripcion;
     
     @NotBlank(message = "Los comentarios no pueden estar vacios")
     @Column(nullable = false, length = 2000)
     private String comentarios;
 
-    @Column
+    @Column(length = 2000)
     private String extras;
 
     @Column(name = "en_oferta")

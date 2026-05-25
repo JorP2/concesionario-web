@@ -2,6 +2,7 @@ import React from "react";
 import { deleteVehiculo, getVehiculos } from "../api/vehiculoApi";
 import VehiculosLista from "../components/admin/VehiculosLista";
 import GestionUsuarios from "../components/admin/GestionUsuarios";
+import GestionGaleria from "../components/admin/GestionGaleria";
 import { Link } from "react-router-dom";
 import { getSesion } from "../utils/auth";
 import "../styles/admin/administrador.css";
@@ -135,12 +136,22 @@ function Administrador() {
             >
               Vehículos
             </button>
+
             {esSuperUsuario && (
               <button
                 className={`tab-btn ${pestana === "usuarios" ? "activo" : ""}`}
                 onClick={() => setPestana("usuarios")}
               >
                 Usuarios
+              </button>
+            )}
+
+            {esSuperUsuario && (
+              <button
+                className={`tab-btn ${pestana === "galeria" ? "activo" : ""}`}
+                onClick={() => setPestana("galeria")}
+              >
+                Galería
               </button>
             )}
           </div>
@@ -202,6 +213,7 @@ function Administrador() {
           )}
 
           {pestana === "usuarios" && esSuperUsuario && <GestionUsuarios />}
+          {pestana === "galeria" && esSuperUsuario && <GestionGaleria />}
         </section>
       </div>
     </div>

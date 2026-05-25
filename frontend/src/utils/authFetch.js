@@ -7,10 +7,11 @@ import { refreshToken as pedirNuevoToken } from "../api/authApi";
 export const authFetch = async (url, options = {}) => {
 
   // Construye los headers añadiendo el token actual
-  const headers = {
-    ...options.headers,
-    Authorization: `Bearer ${getAccessToken()}`,
-  };
+const token = getAccessToken();
+const headers = {
+  ...options.headers,
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+};
 
   // Hace la petición con el token
   let response = await fetch(url, { ...options, headers });

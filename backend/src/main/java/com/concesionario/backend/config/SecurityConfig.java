@@ -3,6 +3,7 @@ package com.concesionario.backend.config;
 import com.concesionario.backend.security.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod; // ← IMPORTANTE
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,20 +30,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
-    	http
+        http
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configure(http))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/contacto/**").permitAll()
             .requestMatchers("/api/vehiculos/public/**").permitAll()
+            .requestMatchers("/api/vehiculos/*/videos").permitAll()
             .requestMatchers("/uploads/**").permitAll()
+
+            // ========= GALERÍA =========
+            .requestMatchers(HttpMethod.GET, "/api/galeria/**").permitAll()
+            .requestMatchers("/api/galeria/**").hasRole("ADMIN")
+
             .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
             .requestMatchers("/api/vehiculos/**").hasAnyRole("ADMIN", "USER")
             .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
