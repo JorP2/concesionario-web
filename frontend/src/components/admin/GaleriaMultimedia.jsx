@@ -144,9 +144,7 @@ function GaleriaMultimedia({
                 textTransform: "none",
                 letterSpacing: 0,
               }}
-            >
-              Primera imagen = portada
-            </span>
+            ></span>
           )}
         </p>
 
