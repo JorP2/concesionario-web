@@ -54,7 +54,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition:
     height 0.25s ease,
-    margin-top 0.25s ease,
     background 0.25s ease,
     backdrop-filter 0.25s ease,
     box-shadow 0.25s ease;
@@ -79,8 +78,7 @@
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
   transition:
     transform 0.25s ease,
-    width 0.25s ease,
-    height 0.25s ease;
+    filter 0.25s ease;
   transform-origin: left center;
   will-change: transform;
 }
@@ -99,7 +97,11 @@
   font-size: 1.02rem;
   padding: 10px 14px !important;
   border-radius: 6px;
-  transition: color 0.25s ease, transform 0.25s ease;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease,
+    padding 0.25s ease,
+    font-size 0.25s ease;
 }
 
 .modern-nav-link::after {
@@ -300,7 +302,6 @@
 
 /* ESTADO SCROLL */
 .navbar-scrolled {
-  margin-top: 0;
   height: 82px;
   backdrop-filter: blur(5px);
   background: rgba(26, 30, 33, 0.94) !important;
@@ -308,9 +309,13 @@
 }
 
 .navbar-scrolled .brand-logo {
-  width: 182px;
-  height: 64px;
-  transform: scale(0.94);
+  transform: scale(0.88);
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.28));
+}
+
+.navbar-scrolled .modern-nav-link {
+  font-size: 0.96rem;
+  padding: 7px 12px !important;
 }
 
 .topbar-hidden {

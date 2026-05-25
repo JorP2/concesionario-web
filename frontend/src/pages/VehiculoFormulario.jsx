@@ -778,7 +778,7 @@ function VehiculoFormulario() {
                   <div className="col-12">
                     <label className="form-label d-flex justify-content-between">
                       Descripción{" "}
-                      <Contador valor={vehiculo.descripcion} max={200} />
+                      <Contador valor={vehiculo.descripcion} max={2000} />
                     </label>
                     <textarea
                       className="form-control"
@@ -786,7 +786,7 @@ function VehiculoFormulario() {
                       rows={3}
                       value={vehiculo.descripcion}
                       onChange={handleChange}
-                      maxLength={200}
+                      maxLength={2000}
                       required
                     />
                     <ErrorCampo mensaje={errores.descripcion} />
@@ -802,7 +802,7 @@ function VehiculoFormulario() {
                       rows={3}
                       value={vehiculo.comentarios}
                       onChange={handleChange}
-                      maxLength={500}
+                      maxLength={2000}
                       required
                     />
                     <ErrorCampo mensaje={errores.comentarios} />

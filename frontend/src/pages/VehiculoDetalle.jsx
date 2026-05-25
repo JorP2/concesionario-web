@@ -239,7 +239,7 @@ function VehiculoDetalle() {
         <div className="col-lg-4">
           <div 
             className="card shadow-sm rounded-4 position-sticky z-3"
-            style={{ top: "20px" }}
+            style={{ top: "100px" }}
           >
             <div className="card-body">
 
@@ -277,7 +277,7 @@ function VehiculoDetalle() {
 
           {/* COMENTARIOS ANUNCIANTE */}
           <div className="card shadow-sm rounded-4 my-4 position-sticky"
-            style={{ top: "300px" }}
+            style={{ top: "390px" }}
           >
             <div className="card-body">
               <h5 className="fw-bold">
