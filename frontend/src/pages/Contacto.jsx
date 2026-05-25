@@ -2,11 +2,21 @@ import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 import { FaWhatsapp, FaFacebookF, FaInstagram } from "react-icons/fa";
 import "../styles/contacto.css";
 import React from "react";
+import { enviarFormularioContacto } from "../api/contactoApi";
 
 function Contacto() {
   const turnstileSiteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY;
   const [captchaToken, setCaptchaToken] = React.useState("");
   const [captchaError, setCaptchaError] = React.useState("");
+  const [form, setForm] = React.useState({
+    nombre: "",
+    email: "",
+    telefono: "",
+    mensaje: "",
+  });
+  const [sending, setSending] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState("");
+  const [submitSuccess, setSubmitSuccess] = React.useState("");
 
   React.useEffect(() => {
     window.onTurnstileSuccess = (token) => {
@@ -19,7 +29,12 @@ function Contacto() {
     };
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (turnstileSiteKey && !captchaToken) {
@@ -28,6 +43,29 @@ function Contacto() {
     }
 
     setCaptchaError("");
+    setSubmitError("");
+    setSubmitSuccess("");
+    setSending(true);
+
+    try {
+      await enviarFormularioContacto({
+        ...form,
+        captchaToken: captchaToken || null,
+      });
+
+      setSubmitSuccess("Mensaje enviado correctamente. Te responderemos pronto.");
+      setForm({
+        nombre: "",
+        email: "",
+        telefono: "",
+        mensaje: "",
+      });
+      setCaptchaToken("");
+    } catch (error) {
+      setSubmitError(error.message || "No se pudo enviar el mensaje.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -125,7 +163,7 @@ function Contacto() {
             <div className="contacto-panel" id="formulario">
               <div className="contacto-heading text-start">
                 <span className="text-primary">Formulario</span>
-                <h2>Envianos un mensaje</h2>
+                <h2>Envíanos un mensaje</h2>
                 <p>Te responderemos lo antes posible.</p>
               </div>
 
@@ -135,6 +173,11 @@ function Contacto() {
                     type="text"
                     className="form-control"
                     placeholder="Tu nombre"
+                    name="nombre"
+                    value={form.nombre}
+                    onChange={handleChange}
+                    maxLength={100}
+                    required
                   />
                 </div>
 
@@ -144,6 +187,11 @@ function Contacto() {
                       type="email"
                       className="form-control"
                       placeholder="Tu email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      maxLength={150}
+                      required
                     />
                   </div>
 
@@ -152,6 +200,10 @@ function Contacto() {
                       type="text"
                       className="form-control"
                       placeholder="Tu teléfono"
+                      name="telefono"
+                      value={form.telefono}
+                      onChange={handleChange}
+                      maxLength={30}
                     />
                   </div>
                 </div>
@@ -161,6 +213,11 @@ function Contacto() {
                     className="form-control"
                     rows="5"
                     placeholder="¿En qué podemos ayudarte?"
+                    name="mensaje"
+                    value={form.mensaje}
+                    onChange={handleChange}
+                    maxLength={3000}
+                    required
                   ></textarea>
                 </div>
 
@@ -179,11 +236,24 @@ function Contacto() {
                   </div>
                 )}
 
+                {submitError && (
+                  <div className="mb-3">
+                    <small className="text-danger d-block">{submitError}</small>
+                  </div>
+                )}
+
+                {submitSuccess && (
+                  <div className="mb-3">
+                    <small className="text-success d-block">{submitSuccess}</small>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   className="btn btn-primary contacto-submit"
+                  disabled={sending}
                 >
-                  Enviar mensaje
+                  {sending ? "Enviando..." : "Enviar mensaje"}
                 </button>
               </form>
             </div>
@@ -219,7 +289,7 @@ function Contacto() {
               </div>
 
               <div className="contacto-socials">
-                <span>Siguenos en redes</span>
+                <span>Síguenos en redes</span>
                 <div className="d-flex gap-3">
                   <a
                     href="https://www.facebook.com/nohalesauto#"
